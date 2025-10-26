@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Saver Controls</title>
+  <style>
+    /* Dark Theme Base */
+    body {
+      font-family: sans-serif;
+      margin: 12px;
+      width: 220px;
+      /* Dark mode colors */
+      background-color: #2c2c2c; /* Dark background */
+      color: #f0f0f0; /* Light text */
+    }
+    
+    /* Headings */
+    h3 {
+      margin-bottom: 15px;
+      font-size: 18px;
+      color: #8b00ff; /* Purple primary color */
+      text-align: center;
+    }
+    
+    /* Labels/Options */
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 12px 0;
+      padding: 5px 0;
+      font-size: 14px;
+    }
+    
+    /* Toggle Switch Styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+    
+    /* Hide default checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    /* Slider (the visual toggle) */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #555; /* Off state color */
+      transition: .4s;
+      border-radius: 20px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    /* On state color */
+    input:checked + .slider {
+      background-color: #8b00ff; /* Purple primary color (On) */
+    }
+    
+    /* Move slider handle for On state */
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+    
+    /* Button */
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 8px;
+      border: none;
+      background: #8b00ff; /* Purple primary color */
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background: #6a00cc; /* Slightly darker purple on hover */
+    }
+  </style>
+</head>
+<body>
+  <h3>Data Saver Controls</h3>
+  
+  <label>
+    <span>Block Ads</span>
+    <div class="switch">
+      <input type="checkbox" id="adsToggle">
+      <span class="slider"></span>
+    </div>
+  </label>
+  
+  <label>
+    <span>Block Images</span>
+    <div class="switch">
+      <input type="checkbox" id="imagesToggle">
+      <span class="slider"></span>
+    </div>
+  </label>
+  
+  <label>
+    <span>Block Videos</span>
+    <div class="switch">
+      <input type="checkbox" id="mediaToggle">
+      <span class="slider"></span>
+    </div>
+  </label>
+  
+  <button id="saveBtn">Save Settings</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
