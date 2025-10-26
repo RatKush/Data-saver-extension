@@ -1,93 +1,122 @@
-// Define the unique ID for the content script
+// ----------------------------
+// 🧩 Data Saver Background Script
+// ----------------------------
+
+// --- Unique ID for media content script ---
 const MEDIA_SCRIPT_ID = 'data-saver-media-blocker';
+
 const mediaContentScript = {
   id: MEDIA_SCRIPT_ID,
-  matches: ["<all_urls>"],
-  js: ["stop_all_videos.js"],
-  run_at: "document_start",
-  all_frames: true
+  matches: ['<all_urls>'],
+  js: ['stop_all_videos.js'],
+  runAt: 'document_start',
+  allFrames: true
 };
 
-// --- DNR Rules Management (Your existing function) ---
+// ----------------------------
+// ⚙️ DNR Rules Management
+// ----------------------------
 function enableRules() {
-  // NOTE: When using the popup, the ruleset states are controlled there.
-  // This function ensures all rulesets are 'available' to be toggled.
-  // We should fetch the user's settings to set the correct initial state.
-  chrome.declarativeNetRequest.updateEnabledRulesets({
-    enableRulesetIds: ["ads", "images", "media"] // Enables all if they were disabled externally
-  }, () => {
-    if (chrome.runtime.lastError) {
-      console.warn("⚠️ Error enabling rules:", chrome.runtime.lastError.message);
-    } else {
-      console.log("✅ Data Saver rulesets ensured active");
-      // Now, load the actual state from storage and update DNR based on that.
-      loadAndSetInitialState();
+  chrome.declarativeNetRequest.updateEnabledRulesets(
+    { enableRulesetIds: ['ads', 'images', 'media'] },
+    () => {
+      if (chrome.runtime.lastError) {
+        console.warn('⚠️ Error enabling rules:', chrome.runtime.lastError.message);
+        return;
+      }
+      console.log('✅ Data Saver rulesets ensured active');
+
+      // Delay ensures async completion before loading stored state
+      setTimeout(loadAndSetInitialState, 50);
     }
-  });
+  );
 }
 
-// --- Content Script Management ---
+// ----------------------------
+// 🎬 Content Script Management
+// ----------------------------
 function updateContentScript(isMediaBlocked) {
   if (isMediaBlocked) {
-    // Media blocking is ON: Register and run the content script
+    // --- Media blocking ON ---
     chrome.scripting.getRegisteredContentScripts({ ids: [MEDIA_SCRIPT_ID] }, (scripts) => {
       if (scripts.length === 0) {
         chrome.scripting.registerContentScripts([mediaContentScript], () => {
-          console.log("✅ stop_all_videos.js registered.");
+          if (chrome.runtime.lastError) {
+            console.warn('⚠️ registerContentScripts error:', chrome.runtime.lastError.message);
+          } else {
+            console.log('✅ stop_all_videos.js registered.');
+          }
         });
+      } else {
+        console.log('ℹ️ stop_all_videos.js already registered.');
       }
     });
   } else {
-    // Media blocking is OFF: Unregister the content script
+    // --- Media blocking OFF ---
     chrome.scripting.unregisterContentScripts({ ids: [MEDIA_SCRIPT_ID] }, () => {
-      console.log("❌ stop_all_videos.js unregistered.");
+      if (chrome.runtime.lastError) {
+        console.warn('⚠️ unregisterContentScripts error:', chrome.runtime.lastError.message);
+      } else {
+        console.log('❌ stop_all_videos.js unregistered.');
+      }
     });
   }
 }
 
-// --- Initial State Load and Application ---
+// ----------------------------
+// 🔄 Initial State Load & Application
+// ----------------------------
 function loadAndSetInitialState() {
-  chrome.storage.sync.get(['ads', 'images', 'media'], (data) => {
-    // The popup defaults to true, so we use true if the key is missing
-    const isMediaBlocked = data.media ?? true;
-    
-    // 1. Update DNR rules based on all settings (though the popup does this too, good for startup)
+  chrome.storage.sync.get({ ads: true, images: true, media: true }, (data) => {
+    const { ads, images, media } = data;
+
     const enableIds = [];
     const disableIds = [];
-    if (data.ads ?? true) enableIds.push('ads'); else disableIds.push('ads');
-    if (data.images ?? true) enableIds.push('images'); else disableIds.push('images');
-    if (data.media ?? true) enableIds.push('media'); else disableIds.push('media');
 
-    chrome.declarativeNetRequest.updateEnabledRulesets({
-      enableRulesetIds: enableIds,
-      disableRulesetIds: disableIds
-    }, () => {
-      console.log('🔄 Initial DNR state set:', enableIds);
-      
-      // 2. Control the content script based on the media setting
-      updateContentScript(isMediaBlocked);
-    });
+    if (ads) enableIds.push('ads'); else disableIds.push('ads');
+    if (images) enableIds.push('images'); else disableIds.push('images');
+    if (media) enableIds.push('media'); else disableIds.push('media');
+
+    chrome.declarativeNetRequest.updateEnabledRulesets(
+      {
+        enableRulesetIds: enableIds,
+        disableRulesetIds: disableIds
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.warn('⚠️ Error updating initial DNR state:', chrome.runtime.lastError.message);
+          return;
+        }
+        console.log('🔄 Initial DNR state set:', enableIds);
+        updateContentScript(media);
+      }
+    );
   });
 }
 
-// --- Event Listeners ---
-
-// Trigger when installed or browser starts
+// ----------------------------
+// 🚀 Event Listeners
+// ----------------------------
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("🚀 Data Saver Extension installed");
-  enableRules(); // Ensures DNR rules are set up and then loads the state
+  console.log('🚀 Data Saver Extension installed');
+  enableRules();
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  console.log("🔁 Browser restarted — ensuring rules are active");
-  enableRules(); // Ensures DNR rules are set up and then loads the state
+  console.log('🔁 Browser restarted — ensuring clean rules & scripts');
+  // Clean stale scripts before re-registering
+  chrome.scripting.unregisterContentScripts({ ids: [MEDIA_SCRIPT_ID] }, () => {
+    enableRules();
+  });
 });
 
-// Listen for changes from the popup
+// ----------------------------
+// 🧠 React to Settings Changes
+// ----------------------------
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.media) {
-    // The popup already handled DNR for media, now we handle the content script
+    console.log(`🎬 Media blocking toggled: ${changes.media.newValue ? 'ON' : 'OFF'}`);
     updateContentScript(changes.media.newValue);
   }
-  // No need to check for ads/images as they only use DNR, which the popup handles.
+  // Ads/images DNR toggling handled by popup.js
 });
