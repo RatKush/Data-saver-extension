@@ -1,5 +1,6 @@
 # Data-saver-extension
 get it from chrome web store https://chromewebstore.google.com/detail/Data%20Saver/cjijlgnefahbmcogbhacnnnlnaeolmjg
+<img width="1164" height="135" alt="image" src="https://github.com/user-attachments/assets/0da75b03-a552-40f3-a90c-928e141a6855" />
 
 a tool that save internet bandwidth data by blocking costly images/ ads/ media. Specially useful for rural areas where bandwidth is low or limited.
 For best experiance block all 3 options available images/ ads and media. It will save at least 50% bandwidth, for a typical new site saving can be almost 90% approx.
