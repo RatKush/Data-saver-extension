@@ -1,5 +1,6 @@
 # Data-saver-extension
 get it from chrome web store https://chromewebstore.google.com/detail/Data%20Saver/cjijlgnefahbmcogbhacnnnlnaeolmjg
+
 2000+ users are taking benefits of the tool.
 
 <img width="1105" height="76" alt="image" src="https://github.com/user-attachments/assets/6a959ee1-1985-4289-b580-0b93f542ec9c" />
