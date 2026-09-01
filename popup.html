@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Saver Controls</title>
+  <style>
+    :root {
+      --bg: #1e1e20;
+      --surface: #29292c;
+      --surface-2: #323235;
+      --border: #3a3a3e;
+      --text: #f2f2f3;
+      --text-muted: #9a9aa0;
+      --accent: #9b3bff;
+      --accent-hover: #8425f0;
+      --accent-soft: rgba(155, 59, 255, 0.16);
+      --off: #55555b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      width: 300px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header img {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .header-text p {
+      margin: 2px 0 0;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* ---------- Toggle rows ---------- */
+    .rules {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .rule-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 10px;
+      border-radius: 10px;
+      transition: background 0.15s ease;
+    }
+
+    .rule-row:hover {
+      background: var(--surface);
+    }
+
+    .rule-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .rule-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rule-title {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .rule-subtitle {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* ---------- Switch ---------- */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--off);
+      transition: background-color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      top: 2px;
+      background-color: white;
+      transition: transform 0.2s ease;
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(16px);
+    }
+
+    input:focus-visible + .slider {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ---------- Site card ---------- */
+    .site-card {
+      margin: 4px 12px 14px;
+      padding: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-card-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .site-card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    #siteHost {
+      font-size: 12.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #siteStatus {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    #siteStatus.paused {
+      color: var(--accent);
+    }
+
+    #siteToggleBtn {
+      flex-shrink: 0;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--surface-2);
+      color: var(--text);
+      transition: background 0.15s ease;
+    }
+
+    #siteToggleBtn:hover {
+      background: var(--off);
+    }
+
+    #siteToggleBtn.is-paused {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    #siteToggleBtn:disabled {
+      opacity: 0.45;
+      cursor: default;
+      background: var(--surface-2);
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      padding: 10px 18px 14px;
+      text-align: center;
+    }
+
+    .saved-flash {
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      height: 14px;
+    }
+
+    .saved-flash.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon48.png" alt="">
+    <div class="header-text">
+      <h1>Data Saver</h1>
+      <p>Blocking ads, images &amp; autoplay video</p>
+    </div>
+  </div>
+
+  <div class="rules">
+    <label class="rule-row">
+      <span class="rule-icon">🚫</span>
+      <span class="rule-body">
+        <span class="rule-title">Block Ads</span>
+        <span class="rule-subtitle">Ad networks &amp; trackers</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="adsToggle">
+        <span class="slider"></span>
+      </span>
+    </label>
+
+    <label class="rule-row">
+      <span class="rule-icon">🖼️</span>
+      <span class="rule-body">
+        <span class="rule-title">Block Images</span>
+        <span class="rule-subtitle">Loads pages as text-only</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="imagesToggle">
+        <span class="slider"></span>
+      </span>
+    </label>
+
+    <label class="rule-row">
+      <span class="rule-icon">🎬</span>
+      <span class="rule-body">
+        <span class="rule-title">Block Videos</span>
+        <span class="rule-subtitle">Stops autoplay &amp; streaming</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="mediaToggle">
+        <span class="slider"></span>
+      </span>
+    </label>
+  </div>
+
+  <div class="site-card">
+    <span class="site-card-icon">⏸</span>
+    <span class="site-card-body">
+      <div id="siteHost">&nbsp;</div>
+      <div id="siteStatus">&nbsp;</div>
+    </span>
+    <button id="siteToggleBtn">Pause</button>
+  </div>
+
+  <div class="footer">
+    <div class="saved-flash" id="savedFlash">Saved</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<title>Data Saver Privacy Policy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #FAF9FC;
+    --surface: #F1EEF7;
+    --surface-border: #E2DEEC;
+    --text: #1C1B22;
+    --text-muted: #6B6775;
+    --accent: #6D28D9;
+    --accent-soft: #EDE5FB;
+    --rule: #E2DEEC;
+    --good: #1F7A4C;
+    --good-soft: #E3F3EA;
+
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17151C;
+      --surface: #211F29;
+      --surface-border: #322E3D;
+      --text: #F0EEF5;
+      --text-muted: #9C97AA;
+      --accent: #A78BFA;
+      --accent-soft: #2E2540;
+      --rule: #322E3D;
+      --good: #7FD8AA;
+      --good-soft: #1C3129;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #17151C;
+    --surface: #211F29;
+    --surface-border: #322E3D;
+    --text: #F0EEF5;
+    --text-muted: #9C97AA;
+    --accent: #A78BFA;
+    --accent-soft: #2E2540;
+    --rule: #322E3D;
+    --good: #7FD8AA;
+    --good-soft: #1C3129;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 16.5px;
+    margin: 0 0 28px;
+    max-width: 52ch;
+  }
+
+  /* fact card */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--surface-border);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+
+  .fact {
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+
+  .fact dt {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 0 0 4px;
+  }
+
+  .fact dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* tl;dr */
+  .tldr {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--good-soft);
+    border: 1px solid var(--good-soft);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 44px;
+  }
+
+  .tldr-mark {
+    color: var(--good);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .tldr p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  section {
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.005em;
+    margin: 0 0 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  section:first-of-type h2 { border-top: none; padding-top: 0; }
+
+  p { margin: 0 0 14px; max-width: 66ch; }
+  p:last-child { margin-bottom: 0; }
+
+  ul { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  li:last-child { margin-bottom: 0; }
+
+  code, .domain {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    padding: 1px 6px;
+    border-radius: 5px;
+  }
+
+  /* permissions table */
+  .perms {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    margin-bottom: 4px;
+  }
+
+  .perms th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 0 12px 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .perms td {
+    padding: 12px 12px 12px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  .perms tr:last-child td { border-bottom: none; }
+
+  .perm-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    white-space: nowrap;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .perm-why { color: var(--text-muted); }
+
+  .note {
+    font-size: 14px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 16px;
+  }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    color: var(--text-muted);
+    font-size: 13.5px;
+  }
+
+  footer a { color: var(--text-muted); }
+
+  @media (max-width: 520px) {
+    .facts { grid-template-columns: 1fr; }
+    main { padding: 40px 18px 72px; }
+  }
+</style>
+
+<main>
+  <p class="eyebrow">Privacy Policy</p>
+  <h1>Data Saver</h1>
+  <p class="subtitle">A browser extension that blocks ads, images, and autoplaying video to reduce bandwidth use.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Effective</dt><dd>August 28, 2026</dd></div>
+    <div class="fact"><dt>Applies to</dt><dd>Data Saver v2.1+</dd></div>
+    <div class="fact"><dt>Data collected</dt><dd>None</dd></div>
+  </dl>
+
+  <div class="tldr">
+    <span class="tldr-mark">TL;DR</span>
+    <p>Data Saver collects nothing, sends nothing to any server, and has no analytics. Every rule it enforces ships inside the extension itself and runs entirely inside your own browser. Your on/off settings are stored using Chrome's own <code>storage.sync</code>, which is Google's mechanism, not ours — we never see it.</p>
+  </div>
+
+  <section>
+    <h2>What this extension does</h2>
+    <p>Data Saver blocks advertising and tracking requests, blocks images, and stops video/audio from autoplaying or streaming, using Chrome's built-in <code>declarativeNetRequest</code> API. Blocking decisions are made by Chrome itself, evaluating rule files bundled inside the extension package — Data Saver's own code never inspects, reads, or otherwise has access to the content of your browsing.</p>
+  </section>
+
+  <section>
+    <h2>Data we collect</h2>
+    <p>None. Specifically:</p>
+    <ul>
+      <li>We do not collect, log, or transmit your browsing history, page content, or the URLs you visit.</li>
+      <li>We do not run analytics, telemetry, or crash reporting of any kind.</li>
+      <li>We do not operate any server. Nothing your browser does is ever sent anywhere by this extension.</li>
+      <li>The only data stored is your own on/off preferences for each blocking category, plus the list of sites you've chosen to pause blocking on — both held in Chrome's <code>storage.sync</code>, under your own Google account if Chrome Sync is enabled, never accessible to us.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Permissions we request</h2>
+    <p>Chrome requires every permission to be declared up front. Here is what each one is actually used for:</p>
+    <table class="perms">
+      <thead>
+        <tr><th>Permission</th><th>Why we need it</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="perm-name">host_permissions<br>&lt;all_urls&gt;</td>
+          <td class="perm-why">The extension's entire purpose is blocking ads/trackers/images/video on any site you visit — that only works if its rules and scripts can apply to any site, which is what a broad host permission grants. It is not used to read or collect page content.</td>
+        </tr>
+        <tr>
+          <td class="perm-name">declarativeNetRequest<br>declarativeNetRequestWithHostAccess</td>
+          <td class="perm-why">Lets Chrome itself block matching network requests (ads, trackers, images, video) using rule files bundled in the extension — the blocking decision happens inside Chrome, not in code we control.</td>
+        </tr>
+        <tr>
+          <td class="perm-name">storage</td>
+          <td class="perm-why">Saves your toggle choices and per-site pause list locally/synced via your own Chrome account, so your settings persist between browsing sessions.</td>
+        </tr>
+        <tr>
+          <td class="perm-name">scripting</td>
+          <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio and clean up broken-image placeholders left behind by blocked images.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">One of these on-page scripts (active only while "Block Videos" is on) deliberately opens closed <code>shadow DOM</code> roots so autoplay video hidden inside them can still be paused. This is a real, disclosed trade-off: it weakens shadow-DOM encapsulation site-wide while active, which in principle could let other scripts on that page read content a site intended to keep closed. Turn off "Block Videos," or use "Pause on this site," on any page where you don't want this active.</p>
+  </section>
+
+  <section>
+    <h2>Third-party rule data</h2>
+    <p>The ad/tracker blocklist bundled inside the extension is compiled, at build time, from <a href="https://pgl.yoyo.org/adservers/" target="_blank" rel="noopener">Peter Lowe's ad and tracking server list</a> — a maintained, publicly available list of known ad and tracking domains, credited here per its usage policy. This data is a static list of domain names, refreshed manually by re-running a build script; the extension does not fetch anything from this or any other server while it's running in your browser.</p>
+  </section>
+
+  <section>
+    <h2>Data sharing &amp; sale</h2>
+    <p>There is nothing to share or sell, because nothing is collected. Data Saver has no business model built on user data — it doesn't have a business model at all.</p>
+  </section>
+
+  <section>
+    <h2>Children's privacy</h2>
+    <p>Data Saver is a general-purpose browser utility, not directed at children, and does not knowingly collect information from anyone, of any age — see "Data we collect" above.</p>
+  </section>
+
+  <section>
+    <h2>Changes to this policy</h2>
+    <p>If this policy changes, the "Effective" date at the top of this page will be updated accordingly. Material changes will also be reflected in the extension's Chrome Web Store listing.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p><em>[Add a contact email or support link here before publishing to the Chrome Web Store — a way for users and Google's review team to reach you is required.]</em></p>
+  </section>
+
+  <footer>
+    Data Saver is an independent browser extension and is not affiliated with Google, Chrome, or any ad network it blocks.
+  </footer>
+</main>

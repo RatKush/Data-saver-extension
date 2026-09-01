@@ -1,0 +1,591 @@
+[
+  {
+    "id": 1,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "adservice",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "adserver",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "analytics",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "tracker",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "pixel",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "smetrics",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "impression",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "priority": 10,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "advertising",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "image",
+        "sub_frame",
+        "media"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/ads/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/banner/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/promo/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/sponsor/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/affiliate/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/affiliates/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/metric/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "priority": 5,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/metrics/",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "image",
+        "xmlhttprequest"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "cdn",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "static",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "assets",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "api",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "fonts",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "maps",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "payment",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "priority": 20,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "widget",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 25,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "tracking",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "collect",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 27,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "measure",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "telemetry",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 29,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "beacon",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 30,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "stats",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  },
+  {
+    "id": 31,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "data-logger",
+      "isUrlFilterCaseSensitive": false,
+      "resourceTypes": [
+        "xmlhttprequest",
+        "script"
+      ],
+      "domainType": "thirdParty",
+      "excludedRequestDomains": [
+        "twimg.com"
+      ]
+    }
+  }
+]

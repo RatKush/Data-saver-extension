@@ -1,0 +1,13 @@
+# OS cruft
+.DS_Store
+
+# Chrome's own runtime-generated ruleset index cache — regenerated
+# automatically whenever the unpacked extension loads, not source.
+_metadata/
+
+# Build output — regenerate with scripts/package.sh
+dist/
+
+# Private business data — Chrome Web Store analytics export.
+# Remove this line if you actually want it version-controlled.
+Installs_uninstall data.csv
