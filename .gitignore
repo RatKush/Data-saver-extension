@@ -14,3 +14,6 @@ dist/
 Installs_uninstall data.csv
 Weekly users over time*.csv
 Weekly users over time*.xlsx
+
+# Created when make-screenshots.py imports the CDP client out of e2e-edge.py
+__pycache__/

@@ -20,6 +20,7 @@ Writes to store-listing/screenshots/.
 
 import base64
 import http.server
+import importlib.util
 import json
 import os
 import shutil
@@ -36,12 +37,17 @@ OUT = os.path.join(ROOT, "store-listing", "screenshots")
 EDGE = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
 PORT = 8742
 
-BG = "#1e1e20"
-SURFACE = "#29292c"
-BORDER = "#3a3a3e"
-TEXT = "#f2f2f3"
-MUTED = "#9a9aa0"
-ACCENT = "#9b3bff"
+# Kept in step with popup.html's dark tokens. These are the frame the popup is
+# composited onto, so if they drift from the popup's own palette the store art
+# shows a teal panel floating on the colours of a design that no longer exists.
+BG = "#1B1C1E"
+SURFACE = "#232629"
+BORDER = "#34383D"
+TEXT = "#F1F3F4"
+MUTED = "#98A0A6"
+ACCENT = "#35C2AC"
+ACCENT_SOFT = "rgba(53, 194, 172, .15)"
+ACCENT_LINE = "rgba(53, 194, 172, .40)"
 
 
 # ---------------------------------------------------------------------------
@@ -151,16 +157,80 @@ class Handler(http.server.BaseHTTPRequestHandler):
         pass
 
 
-def shoot(url, out, w, h, with_extension, scale=2):
+# Edge's one-shot `--headless --screenshot=URL` hangs indefinitely on any
+# http:// URL on this machine, though it is fine with file://. The fixture has
+# to be served over http — declarativeNetRequest rules and <all_urls> content
+# scripts do not apply to file:// — so screenshots are taken the way
+# scripts/e2e-edge.py already drives the browser successfully: launch Edge with
+# a debugging port and capture through CDP. That client is imported rather than
+# copied so there is one WebSocket implementation to maintain.
+PORT_CDP = 9344
+
+def _load_cdp():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "e2e-edge.py")
+    spec = importlib.util.spec_from_file_location("ds_e2e_edge", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.WS
+
+
+WS = _load_cdp()
+
+
+def _wait_for_cdp(timeout=25):
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            with urllib.request.urlopen(f"http://127.0.0.1:{PORT_CDP}/json/version", timeout=2):
+                return
+        except Exception:
+            time.sleep(0.25)
+    raise RuntimeError("Edge never opened its debugging port")
+
+
+def shoot(url, out, w, h, with_extension, scale=2, dark=False):
     profile = tempfile.mkdtemp(prefix="ds-shot-")
-    args = [EDGE, f"--user-data-dir={profile}", "--headless=new", "--disable-gpu",
-            "--no-first-run", "--no-default-browser-check", "--hide-scrollbars",
-            f"--force-device-scale-factor={scale}", f"--window-size={w},{h}",
-            f"--screenshot={out}"]
+    args = [EDGE, f"--user-data-dir={profile}", f"--remote-debugging-port={PORT_CDP}",
+            "--headless=new", "--disable-gpu", "--no-first-run",
+            "--no-default-browser-check", "--hide-scrollbars"]
     if with_extension:
         args += [f"--load-extension={ROOT}", f"--disable-extensions-except={ROOT}"]
-    subprocess.run(args + [url], capture_output=True, timeout=90)
-    shutil.rmtree(profile, ignore_errors=True)
+    proc = subprocess.Popen(args + ["about:blank"],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    try:
+        _wait_for_cdp()
+        with urllib.request.urlopen(f"http://127.0.0.1:{PORT_CDP}/json/list", timeout=5) as r:
+            targets = json.load(r)
+        page = next(t for t in targets if t.get("type") == "page")
+        ws = WS(page["webSocketDebuggerUrl"])
+
+        # Set the viewport through CDP rather than --window-size: headless
+        # rounds the window down by the OS chrome otherwise, and the composited
+        # frames need exact pixel dimensions.
+        ws.call("Emulation.setDeviceMetricsOverride",
+                {"width": w, "height": h, "deviceScaleFactor": scale, "mobile": False})
+        if dark:
+            # popup.html follows prefers-color-scheme, and a light panel on a
+            # dark store frame reads as a screenshot of something else.
+            ws.call("Emulation.setEmulatedMedia",
+                    {"features": [{"name": "prefers-color-scheme", "value": "dark"}]})
+        ws.call("Page.enable")
+        ws.call("Page.navigate", {"url": url})
+        # A page whose resources are being blocked may never reach a quiet
+        # network state, so settle on a fixed pause rather than an event.
+        time.sleep(3.5)
+
+        shot = ws.call("Page.captureScreenshot", {"format": "png"})
+        with open(out, "wb") as fh:
+            fh.write(base64.b64decode(shot["data"]))
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+        shutil.rmtree(profile, ignore_errors=True)
+
     if not os.path.exists(out):
         raise RuntimeError(f"Edge produced no screenshot for {url}")
     return out
@@ -187,16 +257,19 @@ FRAME_CSS = f"""
           line-height:1.45; }}
   .stage {{ flex:1; margin-top:34px; position:relative; display:flex;
             gap:26px; align-items:flex-end; justify-content:center; }}
-  .shot {{ border:1px solid {BORDER}; border-radius:12px; overflow:hidden;
+  .shot {{ flex:none; border:1px solid {BORDER}; border-radius:12px; overflow:hidden;
            box-shadow:0 26px 60px rgba(0,0,0,.5); background:{SURFACE}; }}
   .shot img {{ display:block; }}
-  .popup {{ border-radius:14px; overflow:hidden; border:1px solid {BORDER};
+  .popup {{ flex:none; border-radius:14px; overflow:hidden; border:1px solid {BORDER};
             box-shadow:0 30px 70px rgba(0,0,0,.62); }}
-  .popup img {{ display:block; width:340px; }}
+  .popup img {{ display:block; width:342px; }}
+  .popup.crop {{ height:470px; }}
+  .frame.split {{ flex-direction:row; align-items:center; gap:54px; }}
+  .frame.split .copy {{ flex:1; }}
   .tag {{ position:absolute; font-size:13px; font-weight:600; letter-spacing:.06em;
           text-transform:uppercase; padding:7px 13px; border-radius:999px;
           background:{SURFACE}; border:1px solid {BORDER}; color:{MUTED}; }}
-  .tag.on {{ background:rgba(155,59,255,.16); border-color:rgba(155,59,255,.4); color:{ACCENT}; }}
+  .tag.on {{ background:{ACCENT_SOFT}; border-color:{ACCENT_LINE}; color:{ACCENT}; }}
 """
 
 
@@ -215,20 +288,51 @@ def build(tmp):
 
     print("  rendering popup with sample savings …")
     popup_src = open(os.path.join(ROOT, "popup.html")).read()
+    # Stub the APIs popup.js actually uses today. This has to be kept in step
+    # with the popup: an out-of-date stub does not error, it just renders an
+    # empty panel into the store art.
     stub = """<script>
-    window.chrome={storage:{local:{get:(d,cb)=>cb({stats:{ads:4821,images:12043,media:311,
-      bytes:4821*30*1024+12043*35*1024+311*300*1024,since:Date.now()-86400000*16}})},
-    sync:{get:(d,cb)=>cb({ads:true,images:true,media:true,allowlist:[]}),set:(o,cb)=>cb&&cb()},
-    onChanged:{addListener:()=>{}}},
-    tabs:{query:(q,cb)=>cb([{id:1,url:'https://theharbourreview.example/world'}]),reload:()=>{}}};
+    const M={savingsRequests:'requests blocked',savingsBytes:'\\u2248 $1 saved',
+      savingsEstimatedSince:'Estimated, since $1',savingsAds:'ads',savingsImages:'images',
+      savingsVideos:'videos',savingsReset:'Reset',blockAds:'Block Ads',
+      blockAdsSub:'Ad networks & trackers',blockImages:'Block Images',
+      blockImagesSub:'Loads pages as text-only',blockVideos:'Block Videos',
+      blockVideosSub:'Stops autoplay & streaming',popupTitle:'Data Saver',
+      popupTagline:'Blocking ads, images & autoplay video',
+      siteDontBlock:"Don't block on this site",siteBlocking:'Blocking active',
+      shortcutHint:'or press',dashOpen:'Per-site rules & history',saved:'Saved',
+      pillBlocking:'Blocking here',pillAllowing:'Allowed here','@@bidi_dir':'ltr'};
+    window.chrome={
+      i18n:{getMessage:(k,s)=>{let m=M[k]; if(!m) return '';
+        if(s)(Array.isArray(s)?s:[s]).forEach((v,i)=>{m=m.split('$'+(i+1)).join(v);}); return m;}},
+      storage:{
+        local:{get:(d,cb)=>cb({stats:{ads:4821,images:12043,media:311,
+          bytes:4821*30*1024+12043*35*1024+311*300*1024,since:Date.now()-86400000*16}}),
+          set:(o,cb)=>cb&&cb()},
+        sync:{get:(d,cb)=>cb({ads:true,images:true,media:true,allowlist:[],siteProfiles:{}}),
+          set:(o,cb)=>cb&&cb()},
+        onChanged:{addListener:()=>{}}},
+      tabs:{query:(q,cb)=>cb([{id:1,url:'https://theharbourreview.example/world'}]),
+        reload:()=>{},create:()=>{}},
+      runtime:{id:'shot',lastError:undefined,openOptionsPage:()=>{},
+        sendMessage:(m,cb)=>{
+          // Review prompt and data budget are OFF by default, so the store art
+          // shows what a new user actually gets rather than an unusual state.
+          if(m.type==='ds-site-state') cb({paused:false});
+          else if(m.type==='ds-review-state') cb({show:false});
+          else if(m.type==='ds-budget-state') cb({enabled:false});
+          else cb&&cb({ok:true});}}};
     </script>"""
     shutil.copy(os.path.join(ROOT, "popup.js"), os.path.join(tmp, "popup.js"))
     os.makedirs(os.path.join(tmp, "icons"), exist_ok=True)
     shutil.copy(os.path.join(ROOT, "icons", "icon48.png"), os.path.join(tmp, "icons", "icon48.png"))
     open(os.path.join(tmp, "popup.html"), "w").write(
         popup_src.replace('<script src="popup.js"></script>', stub + '<script src="popup.js"></script>'))
+    # 360 wide because the panel was widened from 300. 650 tall is the panel's
+    # own content height — taller leaves an empty strip below the last row in
+    # the composited frame, which reads as a rendering fault.
     popup = shoot("file://" + os.path.join(tmp, "popup.html"),
-                  os.path.join(tmp, "popup.png"), 300, 430, False)
+                  os.path.join(tmp, "popup.png"), 360, 650, False, dark=True)
 
     u_normal, u_blocked, u_popup = data_uri(normal), data_uri(blocked), data_uri(popup)
 
@@ -239,8 +343,8 @@ def build(tmp):
           <p class="sub">Every ad, image and video blocked is counted, with a running estimate
           of the data it would have cost you.</p>
           <div class="stage">
-            <div class="shot"><img src="{u_blocked}" width="820"></div>
-            <div class="popup" style="margin-bottom:8px"><img src="{u_popup}"></div>
+            <div class="shot"><img src="{u_blocked}" style="width:748px"></div>
+            <div class="popup crop" style="margin-bottom:8px"><img src="{u_popup}"></div>
           </div>
         </div>"""),
 
@@ -251,24 +355,25 @@ def build(tmp):
           before a single byte is downloaded.</p>
           <div class="stage" style="align-items:center">
             <div style="position:relative">
-              <div class="shot"><img src="{u_normal}" width="540"></div>
+              <div class="shot"><img src="{u_normal}" style="width:540px"></div>
               <span class="tag" style="top:-15px; left:14px">Blocking off</span>
             </div>
             <div style="position:relative">
-              <div class="shot"><img src="{u_blocked}" width="540"></div>
+              <div class="shot"><img src="{u_blocked}" style="width:540px"></div>
               <span class="tag on" style="top:-15px; left:14px">Blocking on</span>
             </div>
           </div>
         </div>"""),
 
         ("03-controls.png", f"""
-        <div class="frame">
-          <h1>Three switches. <em>Your call.</em></h1>
-          <p class="sub">Block all three for a text-only browser, or keep images and turn off
-          just the ads. Pause any single site without touching your settings.</p>
-          <div class="stage" style="align-items:center">
-            <div class="popup"><img src="{u_popup}" style="width:400px"></div>
+        <div class="frame split">
+          <div class="copy">
+            <h1>Three switches. <em>Your call.</em></h1>
+            <p class="sub">Block all three for a text-only browser, or keep images and turn
+            off just the ads. Set a rule for one site, or stop blocking there entirely —
+            without touching anything else.</p>
           </div>
+          <div class="popup"><img src="{u_popup}"></div>
         </div>"""),
     ]
 
