@@ -303,6 +303,84 @@ await test('pages with no host clear the badge instead of throwing', async () =>
 });
 
 // ---------------------------------------------------------------------------
+// background.js — YouTube ships unblocked
+// ---------------------------------------------------------------------------
+
+console.log('\nbackground.js — default allowlist');
+
+await test('a fresh install ships with youtube.com unblocked', async () => {
+  const { chrome, ctx } = loadBackground();
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+  const { allowlist, defaultsSeeded } = chrome.storage.sync._dump();
+  assert.deepEqual(plain(allowlist), ['youtube.com']);
+  assert.equal(defaultsSeeded, true);
+});
+
+await test('seeding preserves a user\'s existing allowlist', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ allowlist: ['mysite.example'] });
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist).sort(),
+                   ['mysite.example', 'youtube.com']);
+});
+
+await test('seeding runs once — resuming on YouTube sticks', async () => {
+  const { chrome, ctx } = loadBackground();
+  const seed = vm.runInContext('seedDefaultAllowlist', ctx);
+  await seed();
+
+  // User resumes blocking on YouTube.
+  await vm.runInContext('toggleSite', ctx)('www.youtube.com');
+  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist), []);
+
+  // A later browser restart must not quietly put it back.
+  await seed();
+  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist), [],
+                   'youtube.com came back after the user removed it');
+});
+
+await test('subdomains count as allowlisted', async () => {
+  const { ctx } = loadBackground();
+  const isAllowlisted = vm.runInContext('isAllowlisted', ctx);
+  const list = ['youtube.com'];
+  for (const h of ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com']) {
+    assert.equal(isAllowlisted(h, list), true, `${h} should be allowlisted`);
+  }
+  // Must not match a lookalike registered domain.
+  for (const h of ['notyoutube.com', 'youtube.com.evil.test', 'example.com']) {
+    assert.equal(isAllowlisted(h, list), false, `${h} must NOT be allowlisted`);
+  }
+});
+
+await test('resuming from a subdomain removes the covering entry', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ allowlist: ['youtube.com'] });
+  // Naively this would append 'www.youtube.com' and change nothing.
+  const paused = await vm.runInContext('toggleSite', ctx)('www.youtube.com');
+  assert.equal(paused, false, 'toggling should report blocking resumed');
+  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist), []);
+});
+
+await test('popup state query agrees with the rules on www.youtube.com', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync.set({ allowlist: ['youtube.com'] });
+  const handler = chrome._listeners.message[0];
+  let reply = null;
+  handler({ type: 'ds-site-state', hostname: 'www.youtube.com' }, {}, (r) => { reply = r; });
+  await settle();
+  assert.equal(plain(reply).paused, true,
+               'popup would have shown "Blocking active" while rules allowed it');
+});
+
+await test('badge reads OFF on a YouTube subdomain', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ allowlist: ['youtube.com'] });
+  vm.runInContext('updateBadge', ctx)(9, 'https://m.youtube.com/watch?v=x');
+  await settle();
+  assert.equal(chrome.action._badge[9], 'OFF');
+});
+
+// ---------------------------------------------------------------------------
 // savings_counter.js — classification
 // ---------------------------------------------------------------------------
 
