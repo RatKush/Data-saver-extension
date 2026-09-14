@@ -485,6 +485,40 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // Matching is subdomain-aware for the same reason the allowlist is: the DNR
 // condition below uses initiatorDomains, which already covers subdomains, so
 // the stored key must too or the popup and the rules would disagree.
+// chrome.storage.sync allows 8 KB PER ITEM. siteProfiles and userChoices are
+// each one item and each grows every time the user makes a site-level
+// decision, so without a cap they eventually exceed it — measured at roughly
+// 128 profiles and 227 choices. Past that the write simply fails: it degrades
+// safely (the handler still answers, so nothing hangs), but the user's choice
+// would silently stop being remembered, which is worse than forgetting the
+// oldest one on purpose.
+//
+// Object keys keep insertion order for non-numeric strings, so "oldest first"
+// needs no timestamps.
+const SITE_PROFILES_MAX = 100;
+const USER_CHOICES_MAX = 200;
+
+function pruneOldest(map, max, protectedKeys) {
+  const keys = Object.keys(map);
+  if (keys.length <= max) return map;
+
+  const keep = new Set(protectedKeys || []);
+  const out = Object.assign({}, map);
+  // Drop unprotected entries oldest-first until we are back under the cap.
+  for (const k of keys) {
+    if (Object.keys(out).length <= max) break;
+    if (keep.has(k)) continue;
+    delete out[k];
+  }
+  // Only if the protected set alone still exceeds the cap — it cannot today,
+  // DEFAULT_ALLOWLIST is 30 entries — fall back to dropping oldest outright.
+  for (const k of Object.keys(out)) {
+    if (Object.keys(out).length <= max) break;
+    delete out[k];
+  }
+  return out;
+}
+
 const PROFILE_KEYS = ['ads', 'images', 'media'];
 
 function profileEntryFor(hostname, siteProfiles) {
@@ -582,7 +616,9 @@ function setSiteProfile(hostname, profile) {
       if (Object.keys(clean).length === 0) delete next[key];
       else next[key] = clean;
 
-      return chrome.storage.sync.set({ siteProfiles: next }).then(() => clean);
+      return chrome.storage.sync
+        .set({ siteProfiles: pruneOldest(next, SITE_PROFILES_MAX) })
+        .then(() => clean);
     });
 }
 
@@ -903,7 +939,14 @@ function toggleSite(hostname) {
       choices[key] = !covering; // pressing while covered means "block here again"
 
       return chrome.storage.sync
-        .set({ allowlist: next, userChoices: choices })
+        .set({
+          allowlist: next,
+          // Entries for shipped defaults are protected from pruning: dropping
+          // a `false` there would let seedDefaultAllowlist re-add a site the
+          // user had deliberately blocked, which is the exact regression
+          // seededDefaults was introduced to prevent.
+          userChoices: pruneOldest(choices, USER_CHOICES_MAX, DEFAULT_ALLOWLIST)
+        })
         .then(() => !covering);
     });
 }
@@ -921,7 +964,9 @@ function seedDefaultAllowlist() {
   return chrome.storage.sync
     .get({ allowlist: [], seededDefaults: null, defaultsSeeded: false, userChoices: {} })
     .then(({ allowlist, seededDefaults, defaultsSeeded, userChoices }) => {
-      // Migrate v2.2's boolean flag, which only ever covered youtube.com.
+      // Migrate the boolean flag from the 2.2 builds, which only ever covered
+      // youtube.com. 2.2 was packaged but never uploaded, so this path matters
+      // only for profiles that ran it unpacked — kept because it costs nothing.
       const offered = seededDefaults || (defaultsSeeded ? ['youtube.com'] : []);
 
       const toAdd = DEFAULT_ALLOWLIST.filter((d) =>

@@ -1,4 +1,4 @@
-// Smoke tests for the v2.2 savings meter.
+// Smoke tests for the savings meter and everything built on it.
 //
 // There is no Chrome on this machine, so these run background.js and
 // savings_counter.js inside a Node VM against a hand-stubbed `chrome` API.
@@ -722,6 +722,57 @@ await test('editing from a subdomain updates the covering rule', async () => {
   const stored = plain(chrome.storage.sync._dump().siteProfiles);
   assert.deepEqual(Object.keys(stored), ['example.com'], 'a narrower duplicate rule was added');
   assert.deepEqual(stored['example.com'], { images: false, media: false });
+});
+
+console.log('\nbackground.js — sync quota caps');
+
+await test('site profiles stay under the sync per-item cap', async () => {
+  const { chrome, ctx } = loadBackground();
+  const max = vm.runInContext('SITE_PROFILES_MAX', ctx);
+  const set = vm.runInContext('setSiteProfile', ctx);
+  for (let i = 0; i < max + 20; i++) await set(`s${i}.example`, { images: false });
+
+  const stored = plain(chrome.storage.sync._dump().siteProfiles);
+  assert.equal(Object.keys(stored).length, max);
+  assert.ok(stored[`s${max + 19}.example`], 'the newest rule was dropped');
+  assert.ok(!stored['s0.example'], 'the oldest rule survived the cap');
+
+  // The whole point of the cap: the item still fits in what sync will accept.
+  assert.ok(JSON.stringify(stored).length < 8192,
+            'siteProfiles would exceed chrome.storage.sync QUOTA_BYTES_PER_ITEM');
+});
+
+await test('remembered site choices stay under the cap', async () => {
+  const { chrome, ctx } = loadBackground();
+  const max = vm.runInContext('USER_CHOICES_MAX', ctx);
+  const toggle = vm.runInContext('toggleSite', ctx);
+  for (let i = 0; i < max + 20; i++) await toggle(`c${i}.example`);
+
+  const stored = plain(chrome.storage.sync._dump().userChoices);
+  assert.equal(Object.keys(stored).length, max);
+  assert.ok(JSON.stringify(stored).length < 8192,
+            'userChoices would exceed chrome.storage.sync QUOTA_BYTES_PER_ITEM');
+});
+
+await test('pruning never forgets that the user blocked a shipped default', async () => {
+  const { chrome, ctx } = loadBackground();
+  const max = vm.runInContext('USER_CHOICES_MAX', ctx);
+  const toggle = vm.runInContext('toggleSite', ctx);
+
+  // The user blocks YouTube — a shipped default — then visits many other sites.
+  chrome.storage.sync.set({ allowlist: ['youtube.com'] });
+  await toggle('youtube.com');
+  assert.equal(plain(chrome.storage.sync._dump().userChoices)['youtube.com'], false);
+  for (let i = 0; i < max + 20; i++) await toggle(`c${i}.example`);
+
+  const choices = plain(chrome.storage.sync._dump().userChoices);
+  assert.equal(choices['youtube.com'], false,
+               'the decision to block a shipped default was pruned away');
+
+  // And seeding must still honour it.
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+  assert.ok(!plain(chrome.storage.sync._dump().allowlist).includes('youtube.com'),
+            'a pruned choice let seeding re-add a site the user had blocked');
 });
 
 console.log('\nbackground.js — managed policy & auto-mode');
