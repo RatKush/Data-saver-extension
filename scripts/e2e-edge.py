@@ -240,12 +240,15 @@ def main():
         # onInstalled — this is the default that stops the extension looking
         # broken on the site people try first.
         seeded = sw_eval(
-            "chrome.storage.sync.get({allowlist:[],defaultsSeeded:false})"
+            "chrome.storage.sync.get({allowlist:[],seededDefaults:null})"
             ".then(r=>JSON.stringify(r))")
         seeded = json.loads(seeded) if seeded else {}
-        print(f"default allowlist: {seeded.get('allowlist')} (seeded={seeded.get('defaultsSeeded')})")
-        yt_ok = ('youtube.com' in (seeded.get('allowlist') or [])
-                 and seeded.get('defaultsSeeded') is True)
+        seeded_list = seeded.get("allowlist") or []
+        expected = json.loads(sw_eval("Promise.resolve(JSON.stringify(DEFAULT_ALLOWLIST))"))
+        print(f"default allowlist: {len(seeded_list)} entries seeded "
+              f"({', '.join(seeded_list[:4])}, …)")
+        yt_ok = (sorted(seeded_list) == sorted(expected)
+                 and sorted(seeded.get("seededDefaults") or []) == sorted(expected))
 
         yt_state = sw_eval(
             "chrome.storage.sync.get({allowlist:[]})"
@@ -295,7 +298,7 @@ def main():
         time.sleep(2)
 
         allowlist = sw_eval("chrome.storage.sync.get({allowlist:[]})"
-                            ".then(r=>r.allowlist.filter(d=>d!=='youtube.com').join(','))")
+                            ".then(r=>r.allowlist.filter(d=>!DEFAULT_ALLOWLIST.includes(d)).join(','))")
         print(f"allowlist      : {allowlist!r}")
 
         browser.call("Target.createTarget", {"url": fixture})
@@ -308,7 +311,7 @@ def main():
 
         ok = True
         if not yt_ok:
-            print("FAIL: youtube.com was not seeded into the allowlist on install", file=sys.stderr)
+            print(f"FAIL: allowlist not seeded correctly on install -> {seeded_list}", file=sys.stderr)
             ok = False
         if yt_state != ("youtube.com=true www.youtube.com=true "
                         "m.youtube.com=true notyoutube.com=false"):

@@ -137,11 +137,67 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // them — the popup used to write the allowlist itself, which would have meant
 // two copies of this logic the moment the shortcut existed.
 
-// Sites that ship unblocked. YouTube simply does not work with media blocking
-// on — the page loads and nothing plays — so shipping it blocked by default
-// trains people to believe the extension is broken rather than working. It is
-// a normal allowlist entry, so "Resume blocking here" removes it like any other.
-const DEFAULT_ALLOWLIST = ['youtube.com'];
+// Sites that ship unblocked.
+//
+// THE TEST FOR ADDING ONE: blocking must make the site's primary function
+// IMPOSSIBLE, not merely worse. YouTube qualifies — the page loads and nothing
+// ever plays, so the extension reads as broken rather than working. Facebook
+// and X do not: with images off they are plainer, but posting, reading and
+// messaging all still work, and they are exactly the data-hungry sites someone
+// installed a data saver to tame. Allowlisting merely-degraded sites is how a
+// data saver quietly stops saving data.
+//
+// Every entry is an ordinary allowlist entry, so "Resume blocking here" removes
+// it like any other, and subdomains are covered (see allowlistEntryFor).
+const DEFAULT_ALLOWLIST = [
+  // --- Video-on-demand: people arrive here to watch, and know it costs data
+  'youtube.com',
+  'netflix.com',
+  'primevideo.com',
+  'disneyplus.com',
+  'hulu.com',
+  'max.com',
+  'paramountplus.com',
+  'peacocktv.com',
+  'crunchyroll.com',
+  'vimeo.com',
+  'dailymotion.com',
+
+  // --- India is the largest single market for this extension (~24% of
+  // installs), so its streaming services belong here as much as the US ones
+  'hotstar.com',
+  'jiocinema.com',
+  'sonyliv.com',
+  'zee5.com',
+  'mxplayer.in',
+
+  // --- Live streaming
+  'twitch.tv',
+  'kick.com',
+  'rumble.com',
+
+  // --- Large non-Western video platforms
+  'bilibili.com',
+  'iqiyi.com',
+  'youku.com',
+
+  // --- Short-form video: there is no text mode to fall back to
+  'tiktok.com',
+  'instagram.com',
+
+  // --- Audio streaming. Not video, but the same test applies: nothing plays
+  // with media blocking on, and the user came here knowing it streams.
+  'spotify.com',
+  'soundcloud.com',
+
+  // --- Calls. Different reasoning from the rest: not somewhere people go to
+  // consume media, but media blocking must never be the reason someone drops
+  // a meeting. The cost of being wrong here dwarfs the data saved.
+  'meet.google.com',
+  'zoom.us',
+  'teams.microsoft.com',
+  'whereby.com'
+];
 
 function hostnameOf(url) {
   try {
@@ -175,17 +231,28 @@ function toggleSite(hostname) {
   });
 }
 
-// Applied once, not as a read-time default: a `get` default only fires while
-// the key is absent, so existing users who had ever used pause would silently
-// miss the new default while everyone else got it. The flag also means that
-// once someone resumes blocking on YouTube, it stays resumed.
+// Applied once per entry, not as a read-time default: a `get` default only
+// fires while the key is absent, so existing users who had ever used pause
+// would silently miss new defaults while everyone else got them.
+//
+// `seededDefaults` records which entries have EVER been offered, rather than a
+// single "done" flag. That matters because this list grows: with a boolean,
+// adding a site later would re-add every earlier default too, silently undoing
+// the choice of anyone who had resumed blocking on one. Offering each entry
+// exactly once means a user's removal sticks permanently.
 function seedDefaultAllowlist() {
   return chrome.storage.sync
-    .get({ allowlist: [], defaultsSeeded: false })
-    .then(({ allowlist, defaultsSeeded }) => {
-      if (defaultsSeeded) return;
-      const merged = [...new Set([...allowlist, ...DEFAULT_ALLOWLIST])];
-      return chrome.storage.sync.set({ allowlist: merged, defaultsSeeded: true });
+    .get({ allowlist: [], seededDefaults: null, defaultsSeeded: false })
+    .then(({ allowlist, seededDefaults, defaultsSeeded }) => {
+      // Migrate v2.2's boolean flag, which only ever covered youtube.com.
+      const offered = seededDefaults || (defaultsSeeded ? ['youtube.com'] : []);
+      const toAdd = DEFAULT_ALLOWLIST.filter((d) => !offered.includes(d));
+      if (!toAdd.length && seededDefaults) return;
+
+      return chrome.storage.sync.set({
+        allowlist: [...new Set([...allowlist, ...toAdd])],
+        seededDefaults: [...new Set([...offered, ...DEFAULT_ALLOWLIST])]
+      });
     });
 }
 
