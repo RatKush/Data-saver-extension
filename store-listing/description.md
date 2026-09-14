@@ -26,14 +26,22 @@ adaptive-streaming (HLS/DASH) requests that most video sites use, not
 just old-style direct video downloads — so streaming sites actually
 stop consuming bandwidth, not just visibly-playing `<video>` tags.
 
+**See what you're saving**
+
+📊 **Savings meter** — the popup shows how many ads, images and videos
+have been blocked and roughly how much data that saved. Counted on your
+device from what actually got blocked; nothing is sent anywhere.
+
 **Built for control, not all-or-nothing**
 
 - Three independent toggles — turn off just images, just video, or just
   ads, however you want to balance data savings against how a page
   looks.
-- **Pause on this site** — one tap disables all blocking on the site
-  you're currently on, without touching your settings anywhere else.
-  Come back later and it's exactly as you left it.
+- **One tap to unblock a site** — the first thing in the popup is a
+  button that stops all blocking on the site you're on, without
+  touching your settings anywhere else. Or press Alt+Shift+D without
+  opening anything. The toolbar icon shows "OFF" on sites you've
+  unblocked, and your choice sticks until you change it.
 
 **Privacy**
 
@@ -43,6 +51,9 @@ entirely inside your browser. Full privacy policy: [link]
 
 ---
 
-*Note: the video-streaming paragraph and the ads paragraph describe
-what shipped in v2.1 — update this file if the blocking behavior
-changes materially in a future version, so the listing stays accurate.*
+*Note: the video-streaming, ads and savings-meter paragraphs describe
+what shipped in v2.2 — update this file if the blocking behavior
+changes materially in a future version, so the listing stays accurate.
+The meter is an ESTIMATE derived from blocked-request counts (Chrome
+exposes no per-request byte total to extensions); don't describe it as a
+measurement.*

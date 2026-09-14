@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Data Saver",
-  "version": "2.1",
+  "version": "2.2",
   "minimum_chrome_version": "111",
   "description": "Save data by blocking ads, images, and autoplay videos — browse in text-only mode.",
   "permissions": [
@@ -10,7 +10,9 @@
     "storage",
     "scripting"
   ],
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },
@@ -30,10 +32,34 @@
   },
   "declarative_net_request": {
     "rule_resources": [
-      { "id": "ads", "enabled": true, "path": "rules/ads.json" },
-      { "id": "ad-domains", "enabled": true, "path": "rules/ad-domains.json" },
-      { "id": "images", "enabled": true, "path": "rules/images.json" },
-      { "id": "media", "enabled": true, "path": "rules/media.json" }
+      {
+        "id": "ads",
+        "enabled": true,
+        "path": "rules/ads.json"
+      },
+      {
+        "id": "ad-domains",
+        "enabled": true,
+        "path": "rules/ad-domains.json"
+      },
+      {
+        "id": "images",
+        "enabled": true,
+        "path": "rules/images.json"
+      },
+      {
+        "id": "media",
+        "enabled": true,
+        "path": "rules/media.json"
+      }
     ]
+  },
+  "commands": {
+    "toggle-site": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Stop or resume blocking on the current site"
+    }
   }
 }

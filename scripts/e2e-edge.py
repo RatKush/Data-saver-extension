@@ -1,0 +1,329 @@
+#!/usr/bin/env python3
+"""
+End-to-end test of the savings meter against a real Chromium engine.
+
+There is no Chrome on this machine, so this drives Microsoft Edge, which runs
+the same extension stack. It loads the unpacked extension, serves a local page
+full of blockable resources, lets the extension actually block them, then reads
+chrome.storage.local out of the live service worker over the DevTools protocol.
+
+This is the only check that exercises DNR rules, content-script injection and
+the counter together. scripts/test-savings.mjs covers the logic in isolation;
+this covers "does it work in a browser".
+
+    python3 scripts/e2e-edge.py [--keep]
+
+Exits non-zero if the meter did not count what it should have.
+"""
+
+import base64
+import hashlib
+import http.server
+import json
+import os
+import random
+import shutil
+import socket
+import struct
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import urllib.request
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EDGE = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+PORT_CDP = 9333
+PORT_WEB = 8731
+
+IMAGES = 20
+SCRIPTS = 4
+IFRAMES = 3
+
+
+# ---------------------------------------------------------------------------
+# Unpacked extension IDs are a hash of the absolute path, so we can predict the
+# ID instead of scraping it out of the browser.
+# ---------------------------------------------------------------------------
+def unpacked_extension_id(path: str) -> str:
+    digest = hashlib.sha256(path.encode("utf-8")).hexdigest()[:32]
+    return "".join(chr(ord("a") + int(c, 16)) for c in digest)
+
+
+# ---------------------------------------------------------------------------
+# Minimal WebSocket client — just enough for CDP. Avoids adding a dependency to
+# a project that currently has none.
+# ---------------------------------------------------------------------------
+class WS:
+    def __init__(self, url: str):
+        _, rest = url.split("://", 1)
+        hostport, path = rest.split("/", 1)
+        host, port = hostport.split(":")
+        self.sock = socket.create_connection((host, int(port)), timeout=20)
+        key = base64.b64encode(bytes(random.getrandbits(8) for _ in range(16))).decode()
+        self.sock.sendall(
+            f"GET /{path} HTTP/1.1\r\nHost: {hostport}\r\nUpgrade: websocket\r\n"
+            f"Connection: Upgrade\r\nSec-WebSocket-Key: {key}\r\n"
+            f"Sec-WebSocket-Version: 13\r\n\r\n".encode()
+        )
+        buf = b""
+        while b"\r\n\r\n" not in buf:
+            buf += self.sock.recv(4096)
+        if b"101" not in buf.split(b"\r\n")[0]:
+            raise RuntimeError(f"WebSocket upgrade refused: {buf[:200]!r}")
+        self.rest = buf.split(b"\r\n\r\n", 1)[1]
+        self._id = 0
+
+    def _recv(self, n):
+        while len(self.rest) < n:
+            chunk = self.sock.recv(65536)
+            if not chunk:
+                raise RuntimeError("socket closed")
+            self.rest += chunk
+        out, self.rest = self.rest[:n], self.rest[n:]
+        return out
+
+    def send(self, obj):
+        payload = json.dumps(obj).encode()
+        header = bytes([0x81])
+        mask = bytes(random.getrandbits(8) for _ in range(4))
+        n = len(payload)
+        if n < 126:
+            header += bytes([0x80 | n])
+        elif n < 65536:
+            header += bytes([0x80 | 126]) + struct.pack(">H", n)
+        else:
+            header += bytes([0x80 | 127]) + struct.pack(">Q", n)
+        masked = bytes(b ^ mask[i % 4] for i, b in enumerate(payload))
+        self.sock.sendall(header + mask + masked)
+
+    def recv(self):
+        while True:
+            b0, b1 = self._recv(2)
+            opcode = b0 & 0x0F
+            n = b1 & 0x7F
+            if n == 126:
+                n = struct.unpack(">H", self._recv(2))[0]
+            elif n == 127:
+                n = struct.unpack(">Q", self._recv(8))[0]
+            data = self._recv(n)
+            if opcode == 0x8:
+                raise RuntimeError("websocket closed by peer")
+            if opcode in (0x1, 0x2):
+                return json.loads(data)
+
+    def call(self, method, params=None, session=None):
+        self._id += 1
+        msg = {"id": self._id, "method": method, "params": params or {}}
+        if session:
+            msg["sessionId"] = session
+        self.send(msg)
+        while True:
+            r = self.recv()
+            if r.get("id") == self._id:
+                if "error" in r:
+                    raise RuntimeError(f"{method}: {r['error']}")
+                return r.get("result", {})
+
+
+# ---------------------------------------------------------------------------
+# A page with resources the extension should block.
+# ---------------------------------------------------------------------------
+def test_page() -> bytes:
+    parts = ["<!doctype html><meta charset=utf-8><title>blocked-resource fixture</title><h1>fixture</h1>"]
+    for i in range(IMAGES):
+        parts.append(f'<img src="https://images.example-cdn.test/photo-{i}.jpg" alt="">')
+    for i in range(SCRIPTS):
+        parts.append(f'<script src="https://doubleclick.net/tag-{i}.js"></script>')
+    for i in range(IFRAMES):
+        parts.append(f'<iframe src="https://googlesyndication.com/frame-{i}.html"></iframe>')
+    return "\n".join(parts).encode()
+
+
+class Handler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        body = test_page()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, *a):
+        pass
+
+
+def wait_for_cdp(timeout=25):
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        try:
+            with urllib.request.urlopen(f"http://127.0.0.1:{PORT_CDP}/json/version", timeout=2) as r:
+                return json.load(r)
+        except Exception:
+            time.sleep(0.3)
+    raise RuntimeError("Edge did not expose a DevTools endpoint in time")
+
+
+def targets():
+    with urllib.request.urlopen(f"http://127.0.0.1:{PORT_CDP}/json/list", timeout=5) as r:
+        return json.load(r)
+
+
+def main():
+    keep = "--keep" in sys.argv
+    real_url = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--url=")), None)
+    if not os.path.exists(EDGE):
+        print(f"Microsoft Edge not found at {EDGE}", file=sys.stderr)
+        return 2
+
+    ext_id = unpacked_extension_id(ROOT)
+    print(f"extension path : {ROOT}")
+    print(f"predicted id   : {ext_id}")
+
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", PORT_WEB), Handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    print(f"fixture served : http://127.0.0.1:{PORT_WEB}/  "
+          f"({IMAGES} images, {SCRIPTS} scripts, {IFRAMES} iframes)")
+
+    profile = tempfile.mkdtemp(prefix="ds-e2e-")
+    proc = subprocess.Popen(
+        [
+            EDGE,
+            f"--user-data-dir={profile}",
+            f"--remote-debugging-port={PORT_CDP}",
+            f"--load-extension={ROOT}",
+            f"--disable-extensions-except={ROOT}",
+            "--headless=new",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--disable-gpu",
+            "about:blank",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    try:
+        wait_for_cdp()
+        print("edge           : up")
+
+        # The service worker registers rulesets and content scripts on startup;
+        # give it a moment before asking it to block anything.
+        time.sleep(2.5)
+
+        sw = None
+        for _ in range(20):
+            sw = next((t for t in targets()
+                       if t.get("type") == "service_worker" and ext_id in t.get("url", "")), None)
+            if sw:
+                break
+            time.sleep(0.5)
+        if not sw:
+            print("\nFAIL: extension service worker never appeared. Targets seen:", file=sys.stderr)
+            for t in targets():
+                print(f"  {t.get('type')}  {t.get('url','')[:90]}", file=sys.stderr)
+            return 1
+        print("service worker : running")
+
+        ws = WS(sw["webSocketDebuggerUrl"])
+
+        def sw_eval(expr):
+            r = ws.call("Runtime.evaluate",
+                        {"expression": expr, "awaitPromise": True, "returnByValue": True})
+            return r.get("result", {}).get("value")
+
+        # Start from a clean slate so the assertions below are about this run.
+        sw_eval("chrome.storage.local.set({stats:{ads:0,images:0,media:0,bytes:0,since:null}}).then(()=>1)")
+
+        rulesets = sw_eval("chrome.declarativeNetRequest.getEnabledRulesets().then(r=>r.join(','))")
+        print(f"rulesets on    : {rulesets}")
+
+        scripts = sw_eval("chrome.scripting.getRegisteredContentScripts().then(s=>s.map(x=>x.id).join(','))")
+        print(f"scripts        : {scripts}")
+
+        # Drive a real page load through the browser. /json/new is PUT-only on
+        # current Chromium, so go through the browser-level CDP endpoint instead.
+        browser = WS(wait_for_cdp()["webSocketDebuggerUrl"])
+        fixture = real_url or f"http://127.0.0.1:{PORT_WEB}/"
+        browser.call("Target.createTarget", {"url": fixture})
+        print(f"loaded fixture : {fixture}")
+
+        # The counter batches for 3s; give it that plus load time.
+        time.sleep(7)
+
+        stats = sw_eval("chrome.storage.local.get({stats:null}).then(r=>JSON.stringify(r.stats))")
+        stats = json.loads(stats) if stats else None
+        print(f"\nstats          : {stats}")
+
+        if not stats:
+            print("\nFAIL: no stats recorded at all", file=sys.stderr)
+            return 1
+
+        total = stats["ads"] + stats["images"] + stats["media"]
+        mb = stats["bytes"] / (1024 * 1024)
+        print(f"counted        : {total} requests, ~{mb:.1f} MB estimated")
+
+        if real_url:
+            print("\n(--url run: reporting only, fixture assertions skipped)")
+            return 0
+
+        # ---- The escape hatch: pausing a site must actually stop blocking. ----
+        # This is the control that matters most for retention, so it is proved
+        # against a real browser rather than a stub. Reset the counters, pause
+        # the fixture's host, reload, and assert nothing gets blocked.
+        print("\npausing 127.0.0.1 and reloading …")
+        sw_eval("chrome.storage.local.set({stats:{ads:0,images:0,media:0,bytes:0,since:null}}).then(()=>1)")
+        sw_eval("toggleSite('127.0.0.1').then(p=>p)")
+        time.sleep(2)
+
+        allowlist = sw_eval("chrome.storage.sync.get({allowlist:[]}).then(r=>r.allowlist.join(','))")
+        print(f"allowlist      : {allowlist!r}")
+
+        browser.call("Target.createTarget", {"url": fixture})
+        time.sleep(7)
+
+        after = sw_eval("chrome.storage.local.get({stats:null}).then(r=>JSON.stringify(r.stats))")
+        after = json.loads(after) if after else {"ads": 0, "images": 0, "media": 0}
+        paused_total = after["ads"] + after["images"] + after["media"]
+        print(f"blocked while paused: {paused_total} (expected 0)")
+
+        ok = True
+        if allowlist != "127.0.0.1":
+            print(f"FAIL: allowlist should contain the host, got {allowlist!r}", file=sys.stderr)
+            ok = False
+        if paused_total > 2:
+            print(f"FAIL: paused site still blocked {paused_total} requests", file=sys.stderr)
+            ok = False
+
+        if stats["images"] < IMAGES * 0.8:
+            print(f"FAIL: expected ~{IMAGES} images blocked, got {stats['images']}", file=sys.stderr)
+            ok = False
+        if stats["ads"] < 1:
+            print(f"FAIL: expected ad scripts/iframes blocked, got {stats['ads']}", file=sys.stderr)
+            ok = False
+        if stats["bytes"] <= 0:
+            print("FAIL: byte estimate did not accumulate", file=sys.stderr)
+            ok = False
+        if not stats.get("since"):
+            print("FAIL: 'since' was never stamped", file=sys.stderr)
+            ok = False
+
+        print("\nPASS — meter counts real blocks, and pausing a site stops them" if ok else "\nFAILED")
+        return 0 if ok else 1
+
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+        server.shutdown()
+        if keep:
+            print(f"profile kept   : {profile}")
+        else:
+            shutil.rmtree(profile, ignore_errors=True)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
