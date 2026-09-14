@@ -308,35 +308,66 @@ await test('pages with no host clear the badge instead of throwing', async () =>
 
 console.log('\nbackground.js — default allowlist');
 
-await test('a fresh install ships with youtube.com unblocked', async () => {
+await test('a fresh install ships the video platforms unblocked', async () => {
   const { chrome, ctx } = loadBackground();
+  const defaults = plain(vm.runInContext('DEFAULT_ALLOWLIST', ctx));
   await vm.runInContext('seedDefaultAllowlist', ctx)();
-  const { allowlist, defaultsSeeded } = chrome.storage.sync._dump();
-  assert.deepEqual(plain(allowlist), ['youtube.com']);
-  assert.equal(defaultsSeeded, true);
+  const { allowlist, seededDefaults } = chrome.storage.sync._dump();
+  assert.deepEqual(plain(allowlist).sort(), [...defaults].sort());
+  assert.deepEqual(plain(seededDefaults).sort(), [...defaults].sort());
+  for (const d of ['youtube.com', 'netflix.com', 'twitch.tv', 'tiktok.com', 'instagram.com']) {
+    assert.ok(defaults.includes(d), `${d} should be a default`);
+  }
 });
 
 await test('seeding preserves a user\'s existing allowlist', async () => {
   const { chrome, ctx } = loadBackground();
   chrome.storage.sync.set({ allowlist: ['mysite.example'] });
   await vm.runInContext('seedDefaultAllowlist', ctx)();
-  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist).sort(),
-                   ['mysite.example', 'youtube.com']);
+  const list = plain(chrome.storage.sync._dump().allowlist);
+  assert.ok(list.includes('mysite.example'), 'user entry must survive seeding');
+  assert.ok(list.includes('netflix.com'), 'defaults must still be added');
 });
 
-await test('seeding runs once — resuming on YouTube sticks', async () => {
+await test('seeding runs once per entry — resuming on YouTube sticks', async () => {
   const { chrome, ctx } = loadBackground();
   const seed = vm.runInContext('seedDefaultAllowlist', ctx);
   await seed();
 
-  // User resumes blocking on YouTube.
   await vm.runInContext('toggleSite', ctx)('www.youtube.com');
-  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist), []);
+  assert.ok(!plain(chrome.storage.sync._dump().allowlist).includes('youtube.com'));
 
   // A later browser restart must not quietly put it back.
   await seed();
-  assert.deepEqual(plain(chrome.storage.sync._dump().allowlist), [],
-                   'youtube.com came back after the user removed it');
+  assert.ok(!plain(chrome.storage.sync._dump().allowlist).includes('youtube.com'),
+            'youtube.com came back after the user removed it');
+});
+
+await test('adding a NEW default later does not resurrect removed ones', async () => {
+  const { chrome, ctx } = loadBackground();
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+  await vm.runInContext('toggleSite', ctx)('netflix.com');
+  assert.ok(!plain(chrome.storage.sync._dump().allowlist).includes('netflix.com'));
+
+  // Simulate a future release that appends an entry to DEFAULT_ALLOWLIST.
+  vm.runInContext("DEFAULT_ALLOWLIST.push('newvideo.example')", ctx);
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+
+  const list = plain(chrome.storage.sync._dump().allowlist);
+  assert.ok(list.includes('newvideo.example'), 'the new default should be added');
+  assert.ok(!list.includes('netflix.com'), 'a removed default must stay removed');
+});
+
+await test('upgrading from the v2.2 boolean flag adds only the new entries', async () => {
+  const { chrome, ctx } = loadBackground();
+  // v2.2 state: boolean flag set, and the user had already removed youtube.com.
+  chrome.storage.sync.set({ allowlist: ['mysite.example'], defaultsSeeded: true });
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+
+  const list = plain(chrome.storage.sync._dump().allowlist);
+  assert.ok(!list.includes('youtube.com'), 'v2.2 removal must be respected');
+  assert.ok(list.includes('netflix.com'), 'genuinely new defaults should arrive');
+  assert.ok(list.includes('mysite.example'));
 });
 
 await test('subdomains count as allowlisted', async () => {

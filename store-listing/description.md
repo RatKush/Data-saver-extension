@@ -34,9 +34,10 @@ device from what actually got blocked; nothing is sent anywhere.
 
 **Sensible out of the box**
 
-▶️ **YouTube works straight away** — video sites break badly with media
-blocking switched on, so YouTube ships unblocked. Want to save data
-there too? One tap turns blocking back on for it.
+▶️ **Streaming sites work straight away** — YouTube, Netflix, Instagram,
+TikTok, Twitch and other video platforms ship unblocked. You already know
+those cost data; blocking them just stops them working. Want to save data
+on one anyway? A single tap turns blocking back on for it.
 
 **Built for control, not all-or-nothing**
 
