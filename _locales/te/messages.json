@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "డేటా సేవర్"
+  },
+  "reviewTitle": {
+    "message": "డేటా సేవర్ నచ్చిందా?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "ఇప్పటివరకు $COUNT$ అభ్యర్థనలు బ్లాక్ చేయబడ్డాయి. ఒక చిన్న రేటింగ్ పరిమిత డేటా ఉన్న ఇతరులకు దీన్ని కనుగొనడంలో సహాయపడుతుంది.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "రేట్ చేయండి",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "ఇప్పుడు కాదు",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

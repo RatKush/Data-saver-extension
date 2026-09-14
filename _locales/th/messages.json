@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "ประหยัดเน็ต"
+  },
+  "reviewTitle": {
+    "message": "ชอบ ประหยัดเน็ต ไหม",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "คุณบล็อกคำขอไปแล้ว $COUNT$ รายการ การให้คะแนนสั้น ๆ ช่วยให้คนอื่นที่มีเน็ตจำกัดค้นหาส่วนขยายนี้เจอ",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "ให้คะแนน",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "ไว้ก่อน",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

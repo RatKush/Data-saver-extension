@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "데이터 세이버"
+  },
+  "reviewTitle": {
+    "message": "데이터 세이버이(가) 마음에 드시나요?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "지금까지 $COUNT$개의 요청을 차단했습니다. 짧은 평가는 데이터가 제한된 다른 사용자가 이 확장 프로그램을 찾는 데 도움이 됩니다.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "평가하기",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "나중에",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Tiết Kiệm Dữ Liệu"
+  },
+  "reviewTitle": {
+    "message": "Bạn thấy Tiết Kiệm Dữ Liệu thế nào?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Bạn đã chặn $COUNT$ yêu cầu. Một đánh giá ngắn giúp những người có dung lượng hạn chế tìm thấy tiện ích này.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Đánh giá",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Để sau",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

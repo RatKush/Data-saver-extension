@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "ডেটা সেভার"
+  },
+  "reviewTitle": {
+    "message": "ডেটা সেভার ভালো লাগছে?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "এখন পর্যন্ত $COUNT$টি রিকোয়েস্ট ব্লক করা হয়েছে। একটি দ্রুত রেটিং সীমিত ডেটার অন্যদের এটি খুঁজে পেতে সাহায্য করে।",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "রেটিং দিন",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "এখন নয়",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

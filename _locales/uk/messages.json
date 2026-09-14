@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Економія трафіку"
+  },
+  "reviewTitle": {
+    "message": "Подобається Економія трафіку?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Ви заблокували $COUNT$ запитів. Коротка оцінка допоможе іншим із обмеженим трафіком знайти розширення.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Оцінити",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Не зараз",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

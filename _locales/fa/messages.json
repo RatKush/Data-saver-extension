@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "ذخیره‌ساز داده"
+  },
+  "reviewTitle": {
+    "message": "از ذخیره‌ساز داده راضی هستید؟",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "تا کنون $COUNT$ درخواست مسدود شده است. یک امتیاز کوتاه به دیگرانی که اینترنت محدود دارند کمک می‌کند آن را پیدا کنند.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "امتیاز دادن",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "الان نه",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

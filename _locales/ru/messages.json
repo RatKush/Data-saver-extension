@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Экономия трафика"
+  },
+  "reviewTitle": {
+    "message": "Нравится Экономия трафика?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Вы заблокировали $COUNT$ запросов. Короткая оценка поможет другим пользователям с ограниченным трафиком найти расширение.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Оценить",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Не сейчас",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }
