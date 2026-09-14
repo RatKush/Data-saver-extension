@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Veri bütçesi",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Fatura döneminiz ilerledikçe engelleme sertleşir. Gerçekte ne kadar veri harcadığınızı ölçemez — hiçbir uzantı ölçemez — bu yüzden asla bir rakam iddia etmez. Yalnızca kotanıza ve tarihe göre tempo belirler ve her zaman sadece engellemeyi artırır.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Aylık kota (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Sıfırlanma günü",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "$DAYS$ günün $DAY$. günü · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Gevşek",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Sıkı",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Çok sıkı",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Gevşet",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Gevşetildi",
+    "description": "Dashboard / data budget string."
   }
 }

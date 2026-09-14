@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "டேட்டா பட்ஜெட்",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "பில்லிங் சுழற்சி முடிவை நெருங்கும்போது தடுப்பு கடுமையாகிறது. நீங்கள் உண்மையில் எவ்வளவு டேட்டா பயன்படுத்தினீர்கள் என்பதை இது அளக்க முடியாது — எந்த நீட்டிப்பாலும் முடியாது — எனவே இது எந்த எண்ணையும் கூறுவதில்லை. உங்கள் வரம்பு மற்றும் தேதியை வைத்து மட்டுமே வேகத்தை நிர்ணயிக்கிறது, எப்போதும் தடுப்பை மட்டுமே அதிகரிக்கிறது.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "மாதாந்திர வரம்பு (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "மீட்டமைப்பு நாள்",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "நாள் $DAY$/$DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "தளர்வான",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "இயல்பான",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "இறுக்கமான",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "மிகக் கடுமையான",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "தளர்த்து",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "தளர்த்தப்பட்டது",
+    "description": "Dashboard / data budget string."
   }
 }

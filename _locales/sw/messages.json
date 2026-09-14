@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Bajeti ya data",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Huzuia kwa nguvu zaidi kadri mzunguko wako wa bili unavyosonga. Haiwezi kupima ni data kiasi gani umetumia kwa kweli — hakuna kiendelezi kinachoweza — hivyo haitaji kamwe takwimu yoyote. Hupanga mwendo kutokana na kiwango chako na tarehe pekee, na huongeza uzuiaji tu.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Kiwango cha mwezi (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Huanza upya siku",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Siku ya $DAY$ kati ya $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Nafuu",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Kawaida",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Mkali",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Mkali sana",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Punguza",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Imepunguzwa",
+    "description": "Dashboard / data budget string."
   }
 }

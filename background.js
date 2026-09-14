@@ -309,7 +309,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const counts = Object.assign({}, msg.counts);
         counts.ads = (counts.ads || 0) + frames;
         return recordBlocked(counts, host);
-      });
+      })
+      // Never let a budget re-check break the counting it rides on.
+      .then(() => ensureBudgetStage())
+      .catch((e) => console.warn('⚠️ Could not re-check the data budget:', e));
     sendResponse({ ok: true });
     return false;
   }
@@ -358,6 +361,42 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       .catch((e) => {
         console.warn('⚠️ Could not import settings:', e);
         sendResponse({ ok: false, error: String(e && e.message || e) });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-budget-state') {
+    chrome.storage.sync
+      .get({ budgetEnabled: false, budgetMB: 0, budgetResetDay: 1, budgetEase: null })
+      .then((cfg) => {
+        if (!cfg.budgetEnabled) { sendResponse({ enabled: false }); return; }
+        const { stage, cycle } = budgetStage({
+          budgetMB: cfg.budgetMB,
+          budgetResetDay: cfg.budgetResetDay,
+          budgetEase: cfg.budgetEase,
+          now: Date.now()
+        });
+        sendResponse({
+          enabled: true,
+          stage,
+          day: cycle.dayIndex,
+          days: cycle.days,
+          eased: Boolean(cfg.budgetEase && cfg.budgetEase.cycleStart === cycle.start)
+        });
+      })
+      .catch((e) => {
+        console.warn('⚠️ Could not read the data budget:', e);
+        sendResponse({ enabled: false });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-budget-ease') {
+    easeBudget()
+      .then(() => sendResponse({ ok: true }))
+      .catch((e) => {
+        console.warn('⚠️ Could not ease the data budget:', e);
+        sendResponse({ ok: false });
       });
     return true;
   }
@@ -548,6 +587,140 @@ function setSiteProfile(hostname, profile) {
 }
 
 // ----------------------------
+// 🪫 Data budget
+// ----------------------------
+// WHAT THIS IS NOT: a meter. The extension cannot measure data consumption
+// and must never pretend to.
+//   - stats.bytes is what we BLOCKED, inferred from AVG_BYTES, not what was used.
+//   - Chrome exposes no production API for real byte counts (getMatchedRules
+//     costs a permission warning and covers 5 minutes; onRuleMatchedDebug is
+//     unpacked-only).
+//   - Resource Timing reports transferSize 0 for cross-origin resources
+//     without Timing-Allow-Origin, so any total built from it undercounts badly.
+//   - The carrier's cap covers the whole DEVICE. We see one browser.
+// So the UI never says "1.2 GB remaining". It says what it actually did.
+//
+// WHAT THIS IS: a pacing policy. The allowance sets where on the ladder the
+// cycle starts; the calendar walks it up from there. Every input is something
+// the user told us, and every output is something we control.
+const BUDGET_STAGES = ['relaxed', 'normal', 'tight', 'strict'];
+
+// Where a cycle starts, by allowance. A tiny plan begins cautious; a very
+// large one begins relaxed and is capped below 'strict' further down.
+function budgetBaseStage(budgetMB) {
+  if (!budgetMB || budgetMB <= 0) return 1;      // unset — behave like a normal month
+  if (budgetMB < 1024) return 2;                 // under 1 GB
+  if (budgetMB < 5 * 1024) return 1;             // 1-5 GB
+  return 0;                                      // 5 GB and up
+}
+
+// Billing cycles are anchored to a day of the month. Capped at 28 so the
+// anchor exists in February and the cycle length never silently changes.
+function cycleInfo(resetDay, now) {
+  const day = Math.min(Math.max(parseInt(resetDay, 10) || 1, 1), 28);
+  const d = new Date(now);
+  const start = new Date(d.getFullYear(), d.getMonth(), day);
+  if (d < start) start.setMonth(start.getMonth() - 1);
+  const end = new Date(start.getFullYear(), start.getMonth() + 1, day);
+
+  const days = Math.round((end - start) / DAY_MS);
+  const elapsed = (d - start) / DAY_MS;
+  return {
+    start: start.getTime(),
+    days,
+    dayIndex: Math.min(Math.floor(elapsed) + 1, days),
+    fraction: Math.min(Math.max(elapsed / days, 0), 1)
+  };
+}
+
+// Pure: the stage this cycle is on right now.
+function budgetStage({ budgetMB, budgetResetDay, budgetEase, now }) {
+  const cycle = cycleInfo(budgetResetDay, now);
+
+  let index = budgetBaseStage(budgetMB);
+  if (cycle.fraction >= 0.5) index += 1;
+  if (cycle.fraction >= 0.8) index += 1;
+
+  // A generous allowance never reaches the stage that trims the video
+  // allowlist — at 20 GB the cap is not what is going to bite.
+  const ceiling = (budgetMB && budgetMB >= 20 * 1024) ? 1 : BUDGET_STAGES.length - 1;
+  index = Math.min(index, ceiling);
+
+  // "Ease off" drops one stage for the REST OF THIS CYCLE only, so the choice
+  // does not silently persist into a month the user never agreed to.
+  if (budgetEase && budgetEase.cycleStart === cycle.start) index -= 1;
+
+  index = Math.min(Math.max(index, 0), BUDGET_STAGES.length - 1);
+  return { stage: BUDGET_STAGES[index], index, cycle };
+}
+
+// What each stage actually switches on. It can only ever ADD blocking —
+// a budget that turned protection off would be a bug, not a feature.
+function applyBudgetStage(data, stage) {
+  const out = Object.assign({}, data);
+  if (stage === 'relaxed') {
+    out.ads = true;
+  } else if (stage === 'normal') {
+    out.ads = true;
+    out.media = true;
+  } else if (stage === 'tight' || stage === 'strict') {
+    out.ads = true;
+    out.images = true;
+    out.media = true;
+  }
+
+  if (stage === 'strict') {
+    // Drop the video platforms we shipped unblocked, but keep anything the
+    // user explicitly chose (userChoices[x] === true) and every call site.
+    // This is exactly the distinction userChoices was added to preserve.
+    const choices = data.userChoices || {};
+    out.allowlist = (data.allowlist || []).filter(
+      (d) => choices[d] === true || CALL_SITES.includes(d)
+    );
+  }
+
+  out.budgetStage = stage;
+  return out;
+}
+
+// The stage advances with the calendar, so it has to be re-applied without
+// the user touching anything. Rather than add an alarms permission for it,
+// this rides on traffic the extension already sees: the counter reports
+// blocked requests constantly while browsing, which is exactly when a stage
+// change matters. One local read, and a reconcile only when it actually moved.
+function ensureBudgetStage(now = Date.now()) {
+  return chrome.storage.sync
+    .get({ budgetEnabled: false, budgetMB: 0, budgetResetDay: 1, budgetEase: null })
+    .then((cfg) => {
+      if (!cfg.budgetEnabled) return null;
+      const { stage } = budgetStage({
+        budgetMB: cfg.budgetMB,
+        budgetResetDay: cfg.budgetResetDay,
+        budgetEase: cfg.budgetEase,
+        now
+      });
+      return chrome.storage.local.get({ appliedBudgetStage: null }).then(({ appliedBudgetStage }) => {
+        if (appliedBudgetStage === stage) return null;
+        return chrome.storage.local
+          .set({ appliedBudgetStage: stage })
+          .then(() => { loadAndSetInitialState(); return stage; });
+      });
+    });
+}
+
+// "Ease off" steps the stage down for the rest of THIS cycle only. Stamped
+// with the cycle start so it expires on its own at the next reset rather than
+// quietly persisting into a month the user never agreed to.
+function easeBudget(now = Date.now()) {
+  return chrome.storage.sync
+    .get({ budgetResetDay: 1 })
+    .then(({ budgetResetDay }) => {
+      const cycle = cycleInfo(budgetResetDay, now);
+      return chrome.storage.sync.set({ budgetEase: { cycleStart: cycle.start } });
+    });
+}
+
+// ----------------------------
 // 📤 Export / import
 // ----------------------------
 // The same shape an administrator would push through managed storage, so a
@@ -678,6 +851,10 @@ const DEFAULT_ALLOWLIST = [
   'teams.microsoft.com',
   'whereby.com'
 ];
+
+// Never trimmed, whatever the data budget says. Dropping a meeting to save a
+// few megabytes is not a trade anyone wants made on their behalf.
+const CALL_SITES = ['meet.google.com', 'zoom.us', 'teams.microsoft.com', 'whereby.com'];
 
 function hostnameOf(url) {
   try {
@@ -1015,11 +1192,25 @@ function refreshAll(data) {
 // Managed policy and auto-mode are layered on top of what the user chose, in
 // that order, and the result is what everything downstream sees. Pure so the
 // precedence can be tested without a browser.
-function mergeSettings(user, managed, autoState) {
-  const out = Object.assign({}, user);
+function mergeSettings(user, managed, autoState, now = Date.now()) {
+  let out = Object.assign({}, user);
 
-  // An administrator's policy wins over the user's own switches. Only keys the
-  // policy actually sets are applied — a partial policy leaves the rest alone.
+  // 1. The data budget sets the baseline for this point in the cycle. It can
+  //    only add blocking, never remove it.
+  if (out.budgetEnabled) {
+    const { stage, cycle } = budgetStage({
+      budgetMB: out.budgetMB,
+      budgetResetDay: out.budgetResetDay,
+      budgetEase: out.budgetEase,
+      now
+    });
+    out = applyBudgetStage(out, stage);
+    out.budgetCycle = cycle;
+  }
+
+  // 2. An administrator's policy wins over the user AND over the budget. Only
+  //    keys the policy actually sets are applied — a partial policy leaves the
+  //    rest alone.
   const policy = managed || {};
   for (const k of ['ads', 'images', 'media', 'consent', 'popups']) {
     if (typeof policy[k] === 'boolean') out[k] = policy[k];
@@ -1028,11 +1219,11 @@ function mergeSettings(user, managed, autoState) {
   if (policy.siteProfiles && typeof policy.siteProfiles === 'object') out.siteProfiles = policy.siteProfiles;
   out.managedKeys = Object.keys(policy);
 
-  // Auto-mode relaxes exactly one thing — image blocking on a connection that
-  // is not short of bandwidth. It deliberately cannot tighten anything and
-  // cannot touch ads or video: a mode that silently changed several settings
-  // would be impossible for a user to reason about, and the churn it targets
-  // is broadband desktops seeing a stripped-back page.
+  // 3. Auto-mode relaxes exactly one thing — image blocking on a connection
+  //    that is not short of bandwidth — and it deliberately outranks the
+  //    budget. A fast connection almost certainly is not the metered link, so
+  //    tightening there costs page quality for no saving. It still cannot
+  //    touch ads or video, and it never overrides an enforced policy.
   if (out.autoMode && autoState && autoState.fast && !policy.images) {
     out.images = false;
     out.autoRelaxed = true;
@@ -1044,7 +1235,8 @@ function mergeSettings(user, managed, autoState) {
 const SETTING_DEFAULTS = {
   ads: true, images: true, media: true,
   allowlist: [], siteProfiles: {},
-  autoMode: false, consent: false, popups: false, siteHistory: false
+  autoMode: false, consent: false, popups: false, siteHistory: false,
+  budgetEnabled: false, budgetMB: 0, budgetResetDay: 1, budgetEase: null
 };
 
 function readManagedPolicy() {
@@ -1115,6 +1307,8 @@ chrome.runtime.onStartup.addListener(() => {
     void chrome.runtime.lastError;
     loadAndSetInitialState();
     refreshAllBadges();
+    // A cycle may have rolled over while the browser was closed.
+    ensureBudgetStage().catch((e) => console.warn('⚠️ Could not re-check the data budget:', e));
   });
 });
 
@@ -1122,7 +1316,8 @@ chrome.runtime.onStartup.addListener(() => {
 // 🧠 React to Settings Changes (single source of truth)
 // ----------------------------
 const RECONCILE_KEYS = [
-  'ads', 'images', 'media', 'allowlist', 'siteProfiles', 'autoMode', 'consent', 'popups'
+  'ads', 'images', 'media', 'allowlist', 'siteProfiles', 'autoMode', 'consent', 'popups',
+  'budgetEnabled', 'budgetMB', 'budgetResetDay', 'budgetEase'
 ];
 
 chrome.storage.onChanged.addListener((changes, areaName) => {

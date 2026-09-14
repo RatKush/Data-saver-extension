@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Budget de données",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Bloque plus fort à mesure que votre cycle de facturation avance. Il ne peut pas mesurer la quantité de données réellement consommée — aucune extension ne le peut — et n'avance donc jamais de chiffre. Il se règle uniquement sur votre forfait et la date, et ne fait qu'ajouter du blocage.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Forfait mensuel (Go)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Réinitialisation le jour",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Jour $DAY$ sur $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Souple",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Strict",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Très strict",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Assouplir",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Assoupli",
+    "description": "Dashboard / data budget string."
   }
 }

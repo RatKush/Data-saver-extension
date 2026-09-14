@@ -846,6 +846,128 @@ await test('turning site history ON does not wipe anything', async () => {
   assert.deepEqual(Object.keys(plain(chrome.storage.local._dump().siteStats)), ['a.example']);
 });
 
+console.log('\nbackground.js — data budget');
+
+const GB = 1024;
+
+function stageOn(ctx, over) {
+  return plain(vm.runInContext('budgetStage', ctx)(Object.assign({
+    budgetMB: 5 * GB, budgetResetDay: 1, budgetEase: null,
+    now: new Date(2026, 8, 2).getTime()   // day 2 of a 30-day cycle
+  }, over))).stage;
+}
+
+await test('a cycle is anchored to its reset day, not the 1st', async () => {
+  const { ctx } = loadBackground();
+  const info = plain(vm.runInContext('cycleInfo', ctx)(10, new Date(2026, 8, 12).getTime()));
+  assert.equal(new Date(info.start).getDate(), 10);
+  assert.equal(info.dayIndex, 3, 'the 12th is day 3 of a cycle starting on the 10th');
+});
+
+await test('a reset day past the 28th is clamped so February still works', async () => {
+  const { ctx } = loadBackground();
+  const info = plain(vm.runInContext('cycleInfo', ctx)(31, new Date(2026, 1, 10).getTime()));
+  assert.equal(new Date(info.start).getDate(), 28);
+});
+
+await test('a smaller allowance starts the cycle stricter', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(stageOn(ctx, { budgetMB: 500 }), 'tight');
+  assert.equal(stageOn(ctx, { budgetMB: 2 * GB }), 'normal');
+  assert.equal(stageOn(ctx, { budgetMB: 10 * GB }), 'relaxed');
+});
+
+await test('strictness escalates as the cycle runs down', async () => {
+  const { ctx } = loadBackground();
+  const at = (day) => stageOn(ctx, { budgetMB: 5 * GB, now: new Date(2026, 8, day).getTime() });
+  assert.equal(at(2), 'relaxed');   // early
+  assert.equal(at(17), 'normal');   // past halfway
+  assert.equal(at(27), 'tight');    // past 80%
+});
+
+await test('a generous allowance never reaches the stage that trims the allowlist', async () => {
+  const { ctx } = loadBackground();
+  const late = stageOn(ctx, { budgetMB: 50 * GB, now: new Date(2026, 8, 29).getTime() });
+  assert.equal(late, 'normal', 'a 50 GB plan should not be trimming video sites');
+});
+
+await test('easing off drops one stage, and expires with the cycle', async () => {
+  const { ctx } = loadBackground();
+  const now = new Date(2026, 8, 27).getTime();
+  const cycle = plain(vm.runInContext('cycleInfo', ctx)(1, now));
+  assert.equal(stageOn(ctx, { budgetMB: 5 * GB, now }), 'tight');
+  assert.equal(stageOn(ctx, { budgetMB: 5 * GB, now, budgetEase: { cycleStart: cycle.start } }), 'normal');
+  // An ease stamped for a DIFFERENT cycle must not carry over.
+  assert.equal(stageOn(ctx, { budgetMB: 5 * GB, now, budgetEase: { cycleStart: cycle.start - 999999 } }), 'tight');
+});
+
+await test('the budget can only ever add blocking', async () => {
+  const { ctx } = loadBackground();
+  const apply = vm.runInContext('applyBudgetStage', ctx);
+  const off = { ads: false, images: false, media: false };
+  assert.deepEqual(plain(apply(off, 'relaxed')).ads, true);
+  const tight = plain(apply(off, 'tight'));
+  assert.equal(tight.ads, true); assert.equal(tight.images, true); assert.equal(tight.media, true);
+  // 'relaxed' must not switch images or video on — that is what makes it relaxed.
+  assert.equal(plain(apply(off, 'relaxed')).images, false);
+});
+
+await test('strict trims shipped defaults but keeps the user\'s own choices and calls', async () => {
+  const { ctx } = loadBackground();
+  const out = plain(vm.runInContext('applyBudgetStage', ctx)({
+    ads: true, images: true, media: true,
+    allowlist: ['youtube.com', 'netflix.com', 'zoom.us', 'mysite.example'],
+    userChoices: { 'mysite.example': true }   // the user explicitly allowed this
+  }, 'strict'));
+  assert.deepEqual(out.allowlist.sort(), ['mysite.example', 'zoom.us']);
+});
+
+await test('a call site is never trimmed, even at the strictest stage', async () => {
+  const { ctx } = loadBackground();
+  const calls = plain(vm.runInContext('CALL_SITES', ctx));
+  const out = plain(vm.runInContext('applyBudgetStage', ctx)(
+    { allowlist: calls.slice(), userChoices: {} }, 'strict'));
+  assert.deepEqual(out.allowlist.sort(), calls.slice().sort());
+});
+
+await test('auto-mode outranks the budget on a fast connection', async () => {
+  const { ctx } = loadBackground();
+  const out = plain(vm.runInContext('mergeSettings', ctx)(
+    { ads: true, images: true, media: true, autoMode: true,
+      budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 },
+    {}, { fast: true }, new Date(2026, 8, 27).getTime()));
+  assert.equal(out.images, false, 'a fast connection is almost certainly not the metered link');
+  assert.equal(out.media, true, 'auto-mode still must not touch video');
+});
+
+await test('an enforced policy outranks the budget', async () => {
+  const { ctx } = loadBackground();
+  const out = plain(vm.runInContext('mergeSettings', ctx)(
+    { ads: true, images: true, media: true, budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 },
+    { images: false }, null, new Date(2026, 8, 27).getTime()));
+  assert.equal(out.images, false, 'the budget overrode an administrator policy');
+});
+
+await test('a disabled budget changes nothing', async () => {
+  const { ctx } = loadBackground();
+  const out = plain(vm.runInContext('mergeSettings', ctx)(
+    { ads: false, images: false, media: false, budgetEnabled: false, budgetMB: 500 },
+    {}, null, new Date(2026, 8, 27).getTime()));
+  assert.deepEqual([out.ads, out.images, out.media], [false, false, false]);
+  assert.equal(out.budgetStage, undefined);
+});
+
+await test('the stage is only re-applied when it actually moves', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 });
+  const first = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 2).getTime());
+  assert.equal(first, 'tight');
+  const again = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 3).getTime());
+  assert.equal(again, null, 'reconciled again despite the stage being unchanged');
+  const moved = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 27).getTime());
+  assert.equal(moved, 'strict');
+});
+
 console.log('\nbackground.js — export / import');
 
 await test('a round trip preserves what the user configured', async () => {

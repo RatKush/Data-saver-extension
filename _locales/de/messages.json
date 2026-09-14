@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Datenbudget",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Blockiert stärker, je weiter Ihr Abrechnungszeitraum fortschreitet. Es kann nicht messen, wie viele Daten Sie tatsächlich verbraucht haben — das kann keine Erweiterung — und nennt deshalb nie eine Zahl. Es richtet sich allein nach Ihrem Volumen und dem Datum und verstärkt immer nur die Blockierung.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Monatliches Volumen (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Zurücksetzen am Tag",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Tag $DAY$ von $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Locker",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Streng",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Sehr streng",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Lockern",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Gelockert",
+    "description": "Dashboard / data budget string."
   }
 }

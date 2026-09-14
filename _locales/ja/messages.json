@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "データ予算",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "請求サイクルが進むほどブロックを強めます。実際にどれだけ通信したかを測ることはできません（どの拡張機能にもできません）。そのため数値を示すことは一切ありません。上限と日付だけを手がかりにペースを決め、ブロックを強める方向にしか働きません。",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "月間上限（GB）",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "リセット日",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "$DAYS$ 日中 $DAY$ 日目 · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "ゆるめ",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "標準",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "強め",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "最大",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "ゆるめる",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "ゆるめました",
+    "description": "Dashboard / data budget string."
   }
 }

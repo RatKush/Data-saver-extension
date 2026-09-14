@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "بودجه داده",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "هرچه دوره صورت‌حساب به پایان نزدیک شود، مسدودسازی سخت‌گیرانه‌تر می‌شود. نمی‌تواند اندازه بگیرد شما واقعاً چقدر داده مصرف کرده‌اید — هیچ افزونه‌ای نمی‌تواند — بنابراین هرگز عددی اعلام نمی‌کند. فقط بر پایه سقف مصرف و تاریخ سرعت را تنظیم می‌کند و همیشه تنها مسدودسازی را افزایش می‌دهد.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "سقف ماهانه (گیگابایت)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "روز بازنشانی",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "روز $DAY$ از $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "آسان",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "عادی",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "سخت‌گیرانه",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "بسیار سخت‌گیرانه",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "کمی آسان‌تر",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "آسان‌تر شد",
+    "description": "Dashboard / data budget string."
   }
 }

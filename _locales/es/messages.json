@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Presupuesto de datos",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Bloquea con más fuerza a medida que avanza tu ciclo de facturación. No puede medir cuántos datos has consumido realmente — ninguna extensión puede — así que nunca afirma una cifra. Solo marca el ritmo según tu límite y la fecha, y siempre añade bloqueo, nunca lo quita.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Límite mensual (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Se reinicia el día",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Día $DAY$ de $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Relajado",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Estricto",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Muy estricto",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Aflojar",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Aflojado",
+    "description": "Dashboard / data budget string."
   }
 }

@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "डेटा बजट",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "बिलिंग चक्र जैसे-जैसे बीतता है, ब्लॉकिंग सख्त होती जाती है। आपने असल में कितना डेटा खर्च किया यह यह माप नहीं सकता — कोई एक्सटेंशन नहीं माप सकता — इसलिए यह कभी कोई आँकड़ा नहीं बताता। यह सिर्फ़ आपकी सीमा और तारीख के हिसाब से गति तय करता है, और हमेशा सिर्फ़ ब्लॉकिंग बढ़ाता है।",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "मासिक सीमा (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "रीसेट का दिन",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "दिन $DAY$/$DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "ढीला",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "सामान्य",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "सख्त",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "अत्यधिक सख्त",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "ढील दें",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "ढील दी गई",
+    "description": "Dashboard / data budget string."
   }
 }

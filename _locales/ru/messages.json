@@ -265,5 +265,63 @@
   "dashPremium": {
     "message": "Премиум",
     "description": "Dashboard (options page) string."
+  },
+  "dashBudget": {
+    "message": "Бюджет трафика",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Блокировка становится строже по мере того, как расчётный период подходит к концу. Расширение не может измерить, сколько трафика вы израсходовали на самом деле — этого не может ни одно расширение, — поэтому оно никогда не называет цифру. Оно лишь задаёт темп по лимиту и дате и только добавляет блокировку.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Месячный лимит (ГБ)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "День сброса",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "День $DAY$ из $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Мягкий",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Обычный",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Строгий",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Максимальный",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Ослабить",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Ослаблено",
+    "description": "Dashboard / data budget string."
   }
 }

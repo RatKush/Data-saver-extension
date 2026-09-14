@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Ngân sách dữ liệu",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Chặn mạnh hơn khi chu kỳ thanh toán sắp hết. Tiện ích không thể đo bạn đã dùng thực sự bao nhiêu dữ liệu — không tiện ích nào làm được — nên nó không bao giờ đưa ra con số. Nó chỉ điều chỉnh nhịp theo hạn mức và ngày tháng, và luôn chỉ tăng thêm việc chặn.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Hạn mức hằng tháng (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Đặt lại vào ngày",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Ngày $DAY$/$DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Nhẹ",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Bình thường",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Chặt",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Rất chặt",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Nới lỏng",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Đã nới lỏng",
+    "description": "Dashboard / data budget string."
   }
 }

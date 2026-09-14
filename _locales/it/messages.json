@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Budget dati",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Blocca più a fondo man mano che il ciclo di fatturazione avanza. Non può misurare quanti dati hai davvero consumato — nessuna estensione può — quindi non dichiara mai una cifra. Regola il ritmo solo in base al tuo limite e alla data, e aggiunge sempre e solo blocco.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Limite mensile (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Si azzera il giorno",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Giorno $DAY$ di $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Morbido",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normale",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Rigido",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Molto rigido",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Allenta",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Allentato",
+    "description": "Dashboard / data budget string."
   }
 }

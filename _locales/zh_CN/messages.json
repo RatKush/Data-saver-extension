@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "流量预算",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "随着计费周期推进，拦截会逐步收紧。它无法测量你实际用了多少流量——任何扩展都做不到——所以它从不给出数字。它只根据你的额度和日期把握节奏，并且只会增加拦截。",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "每月额度（GB）",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "重置日",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "第 $DAY$/$DAYS$ 天 · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "宽松",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "普通",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "收紧",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "最严",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "放宽",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "已放宽",
+    "description": "Dashboard / data budget string."
   }
 }

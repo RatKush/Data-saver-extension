@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "డేటా బడ్జెట్",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "బిల్లింగ్ చక్రం ముగింపుకు వస్తున్న కొద్దీ బ్లాకింగ్ కఠినమవుతుంది. మీరు నిజంగా ఎంత డేటా వాడారో ఇది కొలవలేదు — ఏ పొడిగింపూ కొలవలేదు — కాబట్టి ఇది ఎప్పుడూ ఏ సంఖ్యనూ చెప్పదు. మీ పరిమితి, తేదీ ఆధారంగా మాత్రమే వేగాన్ని నిర్ణయిస్తుంది, ఎప్పుడూ బ్లాకింగ్‌ను మాత్రమే పెంచుతుంది.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "నెలవారీ పరిమితి (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "రీసెట్ రోజు",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "రోజు $DAY$/$DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "సడలింపు",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "సాధారణం",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "కఠినం",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "అత్యంత కఠినం",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "సడలించు",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "సడలించబడింది",
+    "description": "Dashboard / data budget string."
   }
 }
