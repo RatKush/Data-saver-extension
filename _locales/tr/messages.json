@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Veri Tasarrufu — Reklam, Görsel ve Video Engelle"
+  },
+  "appDesc": {
+    "message": "Reklamları, görselleri ve otomatik oynatılan videoları engelleyerek veri tasarrufu yapın. Yavaş veya kotalı bağlantılar için."
+  },
+  "cmdToggleSite": {
+    "message": "Bu sitede engellemeyi durdur veya sürdür"
+  },
+  "popupTagline": {
+    "message": "Reklamlar, görseller ve otomatik video engelleniyor"
+  },
+  "savingsCounting": {
+    "message": "Engellenenler sayılıyor…"
+  },
+  "savingsEmpty": {
+    "message": "Biraz gezinin, tasarrufunuz burada görünecek"
+  },
+  "savingsEstimated": {
+    "message": "Engellenen isteklerden tahmini"
+  },
+  "savingsEstimatedSince": {
+    "message": "Tahmini, $DATE$ tarihinden beri",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "reklam"
+  },
+  "savingsImages": {
+    "message": "görsel"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "Sıfırla"
+  },
+  "blockAds": {
+    "message": "Reklamları Engelle"
+  },
+  "blockAdsSub": {
+    "message": "Reklam ağları ve izleyiciler"
+  },
+  "blockImages": {
+    "message": "Görselleri Engelle"
+  },
+  "blockImagesSub": {
+    "message": "Sayfaları yalnızca metin olarak yükler"
+  },
+  "blockVideos": {
+    "message": "Videoları Engelle"
+  },
+  "blockVideosSub": {
+    "message": "Otomatik oynatmayı ve yayını durdurur"
+  },
+  "siteNoHost": {
+    "message": "Bu sayfada site yok"
+  },
+  "siteNothingToDo": {
+    "message": "Burada engeli kaldırılacak bir şey yok"
+  },
+  "siteBlocking": {
+    "message": "Engelleme etkin"
+  },
+  "siteNotBlocking": {
+    "message": "Bu sitede engellenmiyor"
+  },
+  "siteDontBlock": {
+    "message": "Bu sitede engelleme"
+  },
+  "siteResume": {
+    "message": "Burada engellemeyi sürdür"
+  },
+  "shortcutHint": {
+    "message": "veya tuşlayın"
+  },
+  "saved": {
+    "message": "Kaydedildi"
+  },
+  "savingsRequests": {
+    "message": "istek engellendi"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ tasarruf",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Veri Tasarrufu"
+  }
+}

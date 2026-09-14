@@ -1,0 +1,130 @@
+{
+  "appName": {
+    "message": "Data Saver — Block Ads, Images & Video",
+    "description": "Extension name shown in the Chrome Web Store and the browser. Chrome Web Store search is per-locale, so each translation should contain the words a speaker of that language would actually type when looking for a tool that reduces mobile data usage."
+  },
+  "appDesc": {
+    "message": "Cut your data usage by blocking ads, images and autoplay video. Built for slow, capped or metered connections.",
+    "description": "Short description shown under the name in the store listing. Max 132 characters."
+  },
+  "cmdToggleSite": {
+    "message": "Stop or resume blocking on the current site",
+    "description": "Description of the keyboard shortcut, shown on chrome://extensions/shortcuts"
+  },
+  "popupTagline": {
+    "message": "Blocking ads, images & autoplay video",
+    "description": "Subtitle under the extension name at the top of the popup"
+  },
+  "savingsCounting": {
+    "message": "Counting what gets blocked…",
+    "description": "Placeholder in the savings meter before the popup has read its stored totals"
+  },
+  "savingsEmpty": {
+    "message": "Browse a little and your savings will show up here",
+    "description": "Shown in the savings meter when nothing has been blocked yet"
+  },
+  "savingsEstimated": {
+    "message": "Estimated from blocked requests",
+    "description": "Footnote making clear the byte figure is an estimate, not a measurement"
+  },
+  "savingsEstimatedSince": {
+    "message": "Estimated, since $DATE$",
+    "description": "Footnote with the date counting started",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "ads",
+    "description": "Label under the count of blocked ads"
+  },
+  "savingsImages": {
+    "message": "images",
+    "description": "Label under the count of blocked images"
+  },
+  "savingsVideos": {
+    "message": "videos",
+    "description": "Label under the count of blocked videos"
+  },
+  "savingsReset": {
+    "message": "Reset",
+    "description": "Button that clears the savings totals"
+  },
+  "blockAds": {
+    "message": "Block Ads",
+    "description": "Toggle label"
+  },
+  "blockAdsSub": {
+    "message": "Ad networks & trackers",
+    "description": "Toggle sublabel"
+  },
+  "blockImages": {
+    "message": "Block Images",
+    "description": "Toggle label"
+  },
+  "blockImagesSub": {
+    "message": "Loads pages as text-only",
+    "description": "Toggle sublabel"
+  },
+  "blockVideos": {
+    "message": "Block Videos",
+    "description": "Toggle label"
+  },
+  "blockVideosSub": {
+    "message": "Stops autoplay & streaming",
+    "description": "Toggle sublabel"
+  },
+  "siteNoHost": {
+    "message": "No site on this page",
+    "description": "Shown instead of a hostname on browser pages like the new tab"
+  },
+  "siteNothingToDo": {
+    "message": "Nothing to unblock here",
+    "description": "Status line when there is no site to act on"
+  },
+  "siteBlocking": {
+    "message": "Blocking active",
+    "description": "Status line when the current site is being blocked normally"
+  },
+  "siteNotBlocking": {
+    "message": "Not blocking on this site",
+    "description": "Status line when the user has excluded the current site"
+  },
+  "siteDontBlock": {
+    "message": "Don't block on this site",
+    "description": "The main button. Says what pressing it DOES, not what the current state is."
+  },
+  "siteResume": {
+    "message": "Resume blocking here",
+    "description": "The main button when the site is already excluded"
+  },
+  "shortcutHint": {
+    "message": "or press",
+    "description": "Precedes the keyboard shortcut keys under the main button"
+  },
+  "saved": {
+    "message": "Saved",
+    "description": "Brief confirmation after a toggle is changed"
+  },
+  "savingsRequests": {
+    "message": "requests blocked",
+    "description": "Unit beside the big blocked-request count. The count is EXACT; the byte figure below it is an estimate, which is why the count leads."
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ saved",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    },
+    "description": "Byte estimate shown under the request count. Always prefixed with an approximation sign."
+  },
+  "popupTitle": {
+    "message": "Data Saver",
+    "description": "Short product name for the popup header and the toolbar tooltip. appName is deliberately keyword-heavy for store search and is too long here — it wrapped to two lines in Hindi."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Экономия трафика — блокировка рекламы, картинок и видео"
+  },
+  "appDesc": {
+    "message": "Экономьте трафик, блокируя рекламу, изображения и автовоспроизведение видео. Для медленных и лимитных подключений."
+  },
+  "cmdToggleSite": {
+    "message": "Остановить или возобновить блокировку на этом сайте"
+  },
+  "popupTagline": {
+    "message": "Блокируются реклама, изображения и автовидео"
+  },
+  "savingsCounting": {
+    "message": "Подсчёт заблокированного…"
+  },
+  "savingsEmpty": {
+    "message": "Побродите немного — здесь появится ваша экономия"
+  },
+  "savingsEstimated": {
+    "message": "Оценка по заблокированным запросам"
+  },
+  "savingsEstimatedSince": {
+    "message": "Оценка, с $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "реклама"
+  },
+  "savingsImages": {
+    "message": "изображения"
+  },
+  "savingsVideos": {
+    "message": "видео"
+  },
+  "savingsReset": {
+    "message": "Сбросить"
+  },
+  "blockAds": {
+    "message": "Блокировать рекламу"
+  },
+  "blockAdsSub": {
+    "message": "Рекламные сети и трекеры"
+  },
+  "blockImages": {
+    "message": "Блокировать изображения"
+  },
+  "blockImagesSub": {
+    "message": "Страницы загружаются только текстом"
+  },
+  "blockVideos": {
+    "message": "Блокировать видео"
+  },
+  "blockVideosSub": {
+    "message": "Останавливает автовоспроизведение и стриминг"
+  },
+  "siteNoHost": {
+    "message": "На этой странице нет сайта"
+  },
+  "siteNothingToDo": {
+    "message": "Здесь нечего разблокировать"
+  },
+  "siteBlocking": {
+    "message": "Блокировка активна"
+  },
+  "siteNotBlocking": {
+    "message": "На этом сайте не блокируется"
+  },
+  "siteDontBlock": {
+    "message": "Не блокировать на этом сайте"
+  },
+  "siteResume": {
+    "message": "Возобновить блокировку"
+  },
+  "shortcutHint": {
+    "message": "или нажмите"
+  },
+  "saved": {
+    "message": "Сохранено"
+  },
+  "savingsRequests": {
+    "message": "запросов заблокировано"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ сэкономлено",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Экономия трафика"
+  }
+}

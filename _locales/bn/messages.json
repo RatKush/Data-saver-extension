@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "ডেটা সেভার — বিজ্ঞাপন, ছবি ও ভিডিও ব্লক করুন"
+  },
+  "appDesc": {
+    "message": "বিজ্ঞাপন, ছবি ও অটোপ্লে ভিডিও ব্লক করে ডেটা বাঁচান। ধীর বা সীমিত সংযোগের জন্য তৈরি।"
+  },
+  "cmdToggleSite": {
+    "message": "এই সাইটে ব্লকিং বন্ধ বা চালু করুন"
+  },
+  "popupTagline": {
+    "message": "বিজ্ঞাপন, ছবি ও অটোপ্লে ভিডিও ব্লক করা হচ্ছে"
+  },
+  "savingsCounting": {
+    "message": "কী ব্লক হচ্ছে গোনা হচ্ছে…"
+  },
+  "savingsEmpty": {
+    "message": "একটু ব্রাউজ করুন, আপনার সাশ্রয় এখানে দেখা যাবে"
+  },
+  "savingsEstimated": {
+    "message": "ব্লক করা অনুরোধ থেকে আনুমানিক"
+  },
+  "savingsEstimatedSince": {
+    "message": "আনুমানিক, $DATE$ থেকে",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "বিজ্ঞাপন"
+  },
+  "savingsImages": {
+    "message": "ছবি"
+  },
+  "savingsVideos": {
+    "message": "ভিডিও"
+  },
+  "savingsReset": {
+    "message": "রিসেট"
+  },
+  "blockAds": {
+    "message": "বিজ্ঞাপন ব্লক করুন"
+  },
+  "blockAdsSub": {
+    "message": "বিজ্ঞাপন নেটওয়ার্ক ও ট্র্যাকার"
+  },
+  "blockImages": {
+    "message": "ছবি ব্লক করুন"
+  },
+  "blockImagesSub": {
+    "message": "পেজ শুধু টেক্সট হিসেবে লোড হবে"
+  },
+  "blockVideos": {
+    "message": "ভিডিও ব্লক করুন"
+  },
+  "blockVideosSub": {
+    "message": "অটোপ্লে ও স্ট্রিমিং বন্ধ করে"
+  },
+  "siteNoHost": {
+    "message": "এই পেজে কোনো সাইট নেই"
+  },
+  "siteNothingToDo": {
+    "message": "এখানে আনব্লক করার কিছু নেই"
+  },
+  "siteBlocking": {
+    "message": "ব্লকিং চালু আছে"
+  },
+  "siteNotBlocking": {
+    "message": "এই সাইটে ব্লক করা হচ্ছে না"
+  },
+  "siteDontBlock": {
+    "message": "এই সাইটে ব্লক করবেন না"
+  },
+  "siteResume": {
+    "message": "এখানে আবার ব্লক করুন"
+  },
+  "shortcutHint": {
+    "message": "অথবা চাপুন"
+  },
+  "saved": {
+    "message": "সেভ হয়েছে"
+  },
+  "savingsRequests": {
+    "message": "অনুরোধ ব্লক"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ সাশ্রয়",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "ডেটা সেভার"
+  }
+}

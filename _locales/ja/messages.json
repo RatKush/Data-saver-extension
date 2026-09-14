@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "データセーバー — 広告・画像・動画をブロック"
+  },
+  "appDesc": {
+    "message": "広告、画像、自動再生動画をブロックして通信量を節約します。低速・従量制の回線向けに設計。"
+  },
+  "cmdToggleSite": {
+    "message": "このサイトのブロックを停止または再開"
+  },
+  "popupTagline": {
+    "message": "広告・画像・自動再生動画をブロック中"
+  },
+  "savingsCounting": {
+    "message": "ブロックした数を集計中…"
+  },
+  "savingsEmpty": {
+    "message": "少し閲覧すると、節約量がここに表示されます"
+  },
+  "savingsEstimated": {
+    "message": "ブロックしたリクエストからの推定値"
+  },
+  "savingsEstimatedSince": {
+    "message": "推定値、$DATE$ から",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "広告"
+  },
+  "savingsImages": {
+    "message": "画像"
+  },
+  "savingsVideos": {
+    "message": "動画"
+  },
+  "savingsReset": {
+    "message": "リセット"
+  },
+  "blockAds": {
+    "message": "広告をブロック"
+  },
+  "blockAdsSub": {
+    "message": "広告ネットワークとトラッカー"
+  },
+  "blockImages": {
+    "message": "画像をブロック"
+  },
+  "blockImagesSub": {
+    "message": "ページをテキストのみで読み込みます"
+  },
+  "blockVideos": {
+    "message": "動画をブロック"
+  },
+  "blockVideosSub": {
+    "message": "自動再生とストリーミングを停止します"
+  },
+  "siteNoHost": {
+    "message": "このページにサイトはありません"
+  },
+  "siteNothingToDo": {
+    "message": "ここで解除するものはありません"
+  },
+  "siteBlocking": {
+    "message": "ブロック中"
+  },
+  "siteNotBlocking": {
+    "message": "このサイトではブロックしていません"
+  },
+  "siteDontBlock": {
+    "message": "このサイトではブロックしない"
+  },
+  "siteResume": {
+    "message": "ここでブロックを再開"
+  },
+  "shortcutHint": {
+    "message": "または押してください"
+  },
+  "saved": {
+    "message": "保存しました"
+  },
+  "savingsRequests": {
+    "message": "件のリクエストをブロック"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ 節約",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "データセーバー"
+  }
+}

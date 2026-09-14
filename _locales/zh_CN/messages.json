@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "省流量 — 拦截广告、图片和视频"
+  },
+  "appDesc": {
+    "message": "拦截广告、图片和自动播放视频，减少流量消耗。专为网速慢或有流量上限的网络连接设计。"
+  },
+  "cmdToggleSite": {
+    "message": "停止或恢复在此网站的拦截"
+  },
+  "popupTagline": {
+    "message": "正在拦截广告、图片和自动播放视频"
+  },
+  "savingsCounting": {
+    "message": "正在统计已拦截的内容…"
+  },
+  "savingsEmpty": {
+    "message": "浏览一会儿，您节省的流量会显示在这里"
+  },
+  "savingsEstimated": {
+    "message": "根据已拦截的请求估算"
+  },
+  "savingsEstimatedSince": {
+    "message": "估算值，自 $DATE$ 起",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "广告"
+  },
+  "savingsImages": {
+    "message": "图片"
+  },
+  "savingsVideos": {
+    "message": "视频"
+  },
+  "savingsReset": {
+    "message": "重置"
+  },
+  "blockAds": {
+    "message": "拦截广告"
+  },
+  "blockAdsSub": {
+    "message": "广告网络和跟踪器"
+  },
+  "blockImages": {
+    "message": "拦截图片"
+  },
+  "blockImagesSub": {
+    "message": "仅以纯文本加载页面"
+  },
+  "blockVideos": {
+    "message": "拦截视频"
+  },
+  "blockVideosSub": {
+    "message": "停止自动播放和流媒体"
+  },
+  "siteNoHost": {
+    "message": "此页面没有网站"
+  },
+  "siteNothingToDo": {
+    "message": "这里没有可解除拦截的内容"
+  },
+  "siteBlocking": {
+    "message": "拦截已启用"
+  },
+  "siteNotBlocking": {
+    "message": "未在此网站拦截"
+  },
+  "siteDontBlock": {
+    "message": "不在此网站拦截"
+  },
+  "siteResume": {
+    "message": "在此恢复拦截"
+  },
+  "shortcutHint": {
+    "message": "或按"
+  },
+  "saved": {
+    "message": "已保存"
+  },
+  "savingsRequests": {
+    "message": "个请求被拦截"
+  },
+  "savingsBytes": {
+    "message": "≈ 节省 $SIZE$",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "省流量"
+  }
+}

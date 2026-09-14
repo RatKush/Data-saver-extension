@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "डेटा सेवर — विज्ञापन, इमेज और वीडियो ब्लॉक करें"
+  },
+  "appDesc": {
+    "message": "विज्ञापन, इमेज और ऑटोप्ले वीडियो ब्लॉक करके डेटा बचाएँ। धीमे या सीमित कनेक्शन के लिए बनाया गया।"
+  },
+  "cmdToggleSite": {
+    "message": "इस साइट पर ब्लॉकिंग रोकें या फिर शुरू करें"
+  },
+  "popupTagline": {
+    "message": "विज्ञापन, इमेज और ऑटोप्ले वीडियो ब्लॉक हो रहे हैं"
+  },
+  "savingsCounting": {
+    "message": "गिना जा रहा है कि क्या ब्लॉक हुआ…"
+  },
+  "savingsEmpty": {
+    "message": "थोड़ा ब्राउज़ करें, आपकी बचत यहाँ दिखेगी"
+  },
+  "savingsEstimated": {
+    "message": "ब्लॉक हुई रिक्वेस्ट से अनुमानित"
+  },
+  "savingsEstimatedSince": {
+    "message": "अनुमानित, $DATE$ से",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "विज्ञापन"
+  },
+  "savingsImages": {
+    "message": "इमेज"
+  },
+  "savingsVideos": {
+    "message": "वीडियो"
+  },
+  "savingsReset": {
+    "message": "रीसेट"
+  },
+  "blockAds": {
+    "message": "विज्ञापन ब्लॉक करें"
+  },
+  "blockAdsSub": {
+    "message": "विज्ञापन नेटवर्क और ट्रैकर"
+  },
+  "blockImages": {
+    "message": "इमेज ब्लॉक करें"
+  },
+  "blockImagesSub": {
+    "message": "पेज सिर्फ़ टेक्स्ट में खुलेंगे"
+  },
+  "blockVideos": {
+    "message": "वीडियो ब्लॉक करें"
+  },
+  "blockVideosSub": {
+    "message": "ऑटोप्ले और स्ट्रीमिंग रोकता है"
+  },
+  "siteNoHost": {
+    "message": "इस पेज पर कोई साइट नहीं"
+  },
+  "siteNothingToDo": {
+    "message": "यहाँ कुछ अनब्लॉक करने को नहीं"
+  },
+  "siteBlocking": {
+    "message": "ब्लॉकिंग चालू है"
+  },
+  "siteNotBlocking": {
+    "message": "इस साइट पर ब्लॉक नहीं हो रहा"
+  },
+  "siteDontBlock": {
+    "message": "इस साइट पर ब्लॉक न करें"
+  },
+  "siteResume": {
+    "message": "यहाँ फिर ब्लॉक करें"
+  },
+  "shortcutHint": {
+    "message": "या दबाएँ"
+  },
+  "saved": {
+    "message": "सेव हुआ"
+  },
+  "savingsRequests": {
+    "message": "रिक्वेस्ट ब्लॉक"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ बचा",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "डेटा सेवर"
+  }
+}

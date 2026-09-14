@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Економія трафіку — блокування реклами, зображень і відео"
+  },
+  "appDesc": {
+    "message": "Заощаджуйте трафік, блокуючи рекламу, зображення та автовідтворення відео. Для повільних або лімітованих з'єднань."
+  },
+  "cmdToggleSite": {
+    "message": "Зупинити або відновити блокування на цьому сайті"
+  },
+  "popupTagline": {
+    "message": "Блокуються реклама, зображення та автовідео"
+  },
+  "savingsCounting": {
+    "message": "Підраховуємо заблоковане…"
+  },
+  "savingsEmpty": {
+    "message": "Побродіть трохи — тут з'явиться ваша економія"
+  },
+  "savingsEstimated": {
+    "message": "Оцінка за заблокованими запитами"
+  },
+  "savingsEstimatedSince": {
+    "message": "Оцінка, від $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "реклама"
+  },
+  "savingsImages": {
+    "message": "зображення"
+  },
+  "savingsVideos": {
+    "message": "відео"
+  },
+  "savingsReset": {
+    "message": "Скинути"
+  },
+  "blockAds": {
+    "message": "Блокувати рекламу"
+  },
+  "blockAdsSub": {
+    "message": "Рекламні мережі та трекери"
+  },
+  "blockImages": {
+    "message": "Блокувати зображення"
+  },
+  "blockImagesSub": {
+    "message": "Сторінки завантажуються лише текстом"
+  },
+  "blockVideos": {
+    "message": "Блокувати відео"
+  },
+  "blockVideosSub": {
+    "message": "Зупиняє автовідтворення та стрімінг"
+  },
+  "siteNoHost": {
+    "message": "На цій сторінці немає сайту"
+  },
+  "siteNothingToDo": {
+    "message": "Тут нема чого розблоковувати"
+  },
+  "siteBlocking": {
+    "message": "Блокування активне"
+  },
+  "siteNotBlocking": {
+    "message": "На цьому сайті не блокується"
+  },
+  "siteDontBlock": {
+    "message": "Не блокувати на цьому сайті"
+  },
+  "siteResume": {
+    "message": "Відновити блокування тут"
+  },
+  "shortcutHint": {
+    "message": "або натисніть"
+  },
+  "saved": {
+    "message": "Збережено"
+  },
+  "savingsRequests": {
+    "message": "запитів заблоковано"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ заощаджено",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Економія трафіку"
+  }
+}

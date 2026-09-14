@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "موفر البيانات — حظر الإعلانات والصور والفيديو"
+  },
+  "appDesc": {
+    "message": "وفّر بياناتك بحظر الإعلانات والصور والفيديو التلقائي. مصمم للاتصالات البطيئة أو المحدودة."
+  },
+  "cmdToggleSite": {
+    "message": "إيقاف الحظر أو استئنافه في هذا الموقع"
+  },
+  "popupTagline": {
+    "message": "يتم حظر الإعلانات والصور والفيديو التلقائي"
+  },
+  "savingsCounting": {
+    "message": "جارٍ حساب ما تم حظره…"
+  },
+  "savingsEmpty": {
+    "message": "تصفّح قليلاً وسيظهر توفيرك هنا"
+  },
+  "savingsEstimated": {
+    "message": "تقدير من الطلبات المحظورة"
+  },
+  "savingsEstimatedSince": {
+    "message": "تقديري، منذ $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "إعلانات"
+  },
+  "savingsImages": {
+    "message": "صور"
+  },
+  "savingsVideos": {
+    "message": "فيديو"
+  },
+  "savingsReset": {
+    "message": "إعادة تعيين"
+  },
+  "blockAds": {
+    "message": "حظر الإعلانات"
+  },
+  "blockAdsSub": {
+    "message": "شبكات الإعلانات والمتتبعات"
+  },
+  "blockImages": {
+    "message": "حظر الصور"
+  },
+  "blockImagesSub": {
+    "message": "تحميل الصفحات كنص فقط"
+  },
+  "blockVideos": {
+    "message": "حظر الفيديو"
+  },
+  "blockVideosSub": {
+    "message": "يوقف التشغيل التلقائي والبث"
+  },
+  "siteNoHost": {
+    "message": "لا يوجد موقع في هذه الصفحة"
+  },
+  "siteNothingToDo": {
+    "message": "لا شيء لإلغاء حظره هنا"
+  },
+  "siteBlocking": {
+    "message": "الحظر نشط"
+  },
+  "siteNotBlocking": {
+    "message": "لا يتم الحظر في هذا الموقع"
+  },
+  "siteDontBlock": {
+    "message": "لا تحظر في هذا الموقع"
+  },
+  "siteResume": {
+    "message": "استئناف الحظر هنا"
+  },
+  "shortcutHint": {
+    "message": "أو اضغط"
+  },
+  "saved": {
+    "message": "تم الحفظ"
+  },
+  "savingsRequests": {
+    "message": "طلب محظور"
+  },
+  "savingsBytes": {
+    "message": "≈ توفير $SIZE$",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "موفر البيانات"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Penjimat Data — Sekat Iklan, Imej & Video"
+  },
+  "appDesc": {
+    "message": "Jimat data dengan menyekat iklan, imej dan video main automatik. Dibina untuk sambungan perlahan atau terhad."
+  },
+  "cmdToggleSite": {
+    "message": "Hentikan atau sambung semula sekatan di tapak ini"
+  },
+  "popupTagline": {
+    "message": "Menyekat iklan, imej & video main automatik"
+  },
+  "savingsCounting": {
+    "message": "Mengira apa yang disekat…"
+  },
+  "savingsEmpty": {
+    "message": "Layari sebentar, penjimatan anda akan dipaparkan di sini"
+  },
+  "savingsEstimated": {
+    "message": "Anggaran daripada permintaan yang disekat"
+  },
+  "savingsEstimatedSince": {
+    "message": "Anggaran, sejak $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "iklan"
+  },
+  "savingsImages": {
+    "message": "imej"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "Set semula"
+  },
+  "blockAds": {
+    "message": "Sekat Iklan"
+  },
+  "blockAdsSub": {
+    "message": "Rangkaian iklan & penjejak"
+  },
+  "blockImages": {
+    "message": "Sekat Imej"
+  },
+  "blockImagesSub": {
+    "message": "Memuatkan halaman sebagai teks sahaja"
+  },
+  "blockVideos": {
+    "message": "Sekat Video"
+  },
+  "blockVideosSub": {
+    "message": "Menghentikan main automatik & penstriman"
+  },
+  "siteNoHost": {
+    "message": "Tiada tapak pada halaman ini"
+  },
+  "siteNothingToDo": {
+    "message": "Tiada apa untuk dinyahsekat"
+  },
+  "siteBlocking": {
+    "message": "Sekatan aktif"
+  },
+  "siteNotBlocking": {
+    "message": "Tidak menyekat di tapak ini"
+  },
+  "siteDontBlock": {
+    "message": "Jangan sekat di tapak ini"
+  },
+  "siteResume": {
+    "message": "Sambung semula sekatan di sini"
+  },
+  "shortcutHint": {
+    "message": "atau tekan"
+  },
+  "saved": {
+    "message": "Disimpan"
+  },
+  "savingsRequests": {
+    "message": "permintaan disekat"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ dijimatkan",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Penjimat Data"
+  }
+}

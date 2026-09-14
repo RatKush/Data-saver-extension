@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "డేటా సేవర్ — ప్రకటనలు, చిత్రాలు, వీడియోలను బ్లాక్ చేయండి"
+  },
+  "appDesc": {
+    "message": "ప్రకటనలు, చిత్రాలు, ఆటోప్లే వీడియోలను బ్లాక్ చేసి డేటా ఆదా చేయండి. నెమ్మది కనెక్షన్ల కోసం."
+  },
+  "cmdToggleSite": {
+    "message": "ఈ సైట్‌లో బ్లాకింగ్ ఆపండి లేదా తిరిగి ప్రారంభించండి"
+  },
+  "popupTagline": {
+    "message": "ప్రకటనలు, చిత్రాలు, ఆటోప్లే వీడియో బ్లాక్ అవుతున్నాయి"
+  },
+  "savingsCounting": {
+    "message": "ఏమి బ్లాక్ అవుతుందో లెక్కిస్తోంది…"
+  },
+  "savingsEmpty": {
+    "message": "కొంచెం బ్రౌజ్ చేయండి, మీ ఆదా ఇక్కడ కనిపిస్తుంది"
+  },
+  "savingsEstimated": {
+    "message": "బ్లాక్ చేసిన అభ్యర్థనల ఆధారంగా అంచనా"
+  },
+  "savingsEstimatedSince": {
+    "message": "అంచనా, $DATE$ నుండి",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "ప్రకటనలు"
+  },
+  "savingsImages": {
+    "message": "చిత్రాలు"
+  },
+  "savingsVideos": {
+    "message": "వీడియోలు"
+  },
+  "savingsReset": {
+    "message": "రీసెట్"
+  },
+  "blockAds": {
+    "message": "ప్రకటనలను బ్లాక్ చేయండి"
+  },
+  "blockAdsSub": {
+    "message": "ప్రకటన నెట్‌వర్క్‌లు, ట్రాకర్లు"
+  },
+  "blockImages": {
+    "message": "చిత్రాలను బ్లాక్ చేయండి"
+  },
+  "blockImagesSub": {
+    "message": "పేజీలు టెక్స్ట్‌గా మాత్రమే లోడ్ అవుతాయి"
+  },
+  "blockVideos": {
+    "message": "వీడియోలను బ్లాక్ చేయండి"
+  },
+  "blockVideosSub": {
+    "message": "ఆటోప్లే, స్ట్రీమింగ్ ఆపుతుంది"
+  },
+  "siteNoHost": {
+    "message": "ఈ పేజీలో సైట్ లేదు"
+  },
+  "siteNothingToDo": {
+    "message": "ఇక్కడ అన్‌బ్లాక్ చేయడానికి ఏమీ లేదు"
+  },
+  "siteBlocking": {
+    "message": "బ్లాకింగ్ యాక్టివ్"
+  },
+  "siteNotBlocking": {
+    "message": "ఈ సైట్‌లో బ్లాక్ చేయడం లేదు"
+  },
+  "siteDontBlock": {
+    "message": "ఈ సైట్‌లో బ్లాక్ చేయవద్దు"
+  },
+  "siteResume": {
+    "message": "ఇక్కడ మళ్లీ బ్లాక్ చేయండి"
+  },
+  "shortcutHint": {
+    "message": "లేదా నొక్కండి"
+  },
+  "saved": {
+    "message": "సేవ్ అయింది"
+  },
+  "savingsRequests": {
+    "message": "అభ్యర్థనలు బ్లాక్"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ ఆదా",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "డేటా సేవర్"
+  }
+}

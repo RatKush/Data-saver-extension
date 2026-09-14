@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Tiết Kiệm Dữ Liệu — Chặn Quảng Cáo, Ảnh & Video"
+  },
+  "appDesc": {
+    "message": "Tiết kiệm dữ liệu bằng cách chặn quảng cáo, hình ảnh và video tự động phát. Dành cho kết nối chậm hoặc giới hạn."
+  },
+  "cmdToggleSite": {
+    "message": "Dừng hoặc tiếp tục chặn trên trang này"
+  },
+  "popupTagline": {
+    "message": "Đang chặn quảng cáo, hình ảnh và video tự động"
+  },
+  "savingsCounting": {
+    "message": "Đang đếm những gì bị chặn…"
+  },
+  "savingsEmpty": {
+    "message": "Duyệt web một chút, mức tiết kiệm sẽ hiện ở đây"
+  },
+  "savingsEstimated": {
+    "message": "Ước tính từ các yêu cầu bị chặn"
+  },
+  "savingsEstimatedSince": {
+    "message": "Ước tính, từ $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "quảng cáo"
+  },
+  "savingsImages": {
+    "message": "hình ảnh"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "Đặt lại"
+  },
+  "blockAds": {
+    "message": "Chặn Quảng Cáo"
+  },
+  "blockAdsSub": {
+    "message": "Mạng quảng cáo và trình theo dõi"
+  },
+  "blockImages": {
+    "message": "Chặn Hình Ảnh"
+  },
+  "blockImagesSub": {
+    "message": "Tải trang chỉ dạng văn bản"
+  },
+  "blockVideos": {
+    "message": "Chặn Video"
+  },
+  "blockVideosSub": {
+    "message": "Dừng tự động phát và phát trực tuyến"
+  },
+  "siteNoHost": {
+    "message": "Không có trang web nào ở đây"
+  },
+  "siteNothingToDo": {
+    "message": "Không có gì để bỏ chặn"
+  },
+  "siteBlocking": {
+    "message": "Đang chặn"
+  },
+  "siteNotBlocking": {
+    "message": "Không chặn trên trang này"
+  },
+  "siteDontBlock": {
+    "message": "Không chặn trên trang này"
+  },
+  "siteResume": {
+    "message": "Chặn lại tại đây"
+  },
+  "shortcutHint": {
+    "message": "hoặc nhấn"
+  },
+  "saved": {
+    "message": "Đã lưu"
+  },
+  "savingsRequests": {
+    "message": "yêu cầu bị chặn"
+  },
+  "savingsBytes": {
+    "message": "≈ tiết kiệm $SIZE$",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Tiết Kiệm Dữ Liệu"
+  }
+}

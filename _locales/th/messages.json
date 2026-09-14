@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "ประหยัดเน็ต — บล็อกโฆษณา รูปภาพ และวิดีโอ"
+  },
+  "appDesc": {
+    "message": "ประหยัดปริมาณเน็ตด้วยการบล็อกโฆษณา รูปภาพ และวิดีโอเล่นอัตโนมัติ สำหรับเน็ตช้าหรือจำกัด"
+  },
+  "cmdToggleSite": {
+    "message": "หยุดหรือเริ่มบล็อกบนเว็บนี้"
+  },
+  "popupTagline": {
+    "message": "กำลังบล็อกโฆษณา รูปภาพ และวิดีโออัตโนมัติ"
+  },
+  "savingsCounting": {
+    "message": "กำลังนับสิ่งที่ถูกบล็อก…"
+  },
+  "savingsEmpty": {
+    "message": "ลองเล่นเน็ตสักหน่อย แล้วยอดที่ประหยัดได้จะแสดงที่นี่"
+  },
+  "savingsEstimated": {
+    "message": "ประมาณการจากคำขอที่ถูกบล็อก"
+  },
+  "savingsEstimatedSince": {
+    "message": "ประมาณการ ตั้งแต่ $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "โฆษณา"
+  },
+  "savingsImages": {
+    "message": "รูปภาพ"
+  },
+  "savingsVideos": {
+    "message": "วิดีโอ"
+  },
+  "savingsReset": {
+    "message": "รีเซ็ต"
+  },
+  "blockAds": {
+    "message": "บล็อกโฆษณา"
+  },
+  "blockAdsSub": {
+    "message": "เครือข่ายโฆษณาและตัวติดตาม"
+  },
+  "blockImages": {
+    "message": "บล็อกรูปภาพ"
+  },
+  "blockImagesSub": {
+    "message": "โหลดหน้าเว็บเป็นข้อความล้วน"
+  },
+  "blockVideos": {
+    "message": "บล็อกวิดีโอ"
+  },
+  "blockVideosSub": {
+    "message": "หยุดการเล่นอัตโนมัติและสตรีมมิ่ง"
+  },
+  "siteNoHost": {
+    "message": "ไม่มีเว็บไซต์ในหน้านี้"
+  },
+  "siteNothingToDo": {
+    "message": "ไม่มีอะไรให้ปลดบล็อก"
+  },
+  "siteBlocking": {
+    "message": "กำลังบล็อกอยู่"
+  },
+  "siteNotBlocking": {
+    "message": "ไม่ได้บล็อกบนเว็บนี้"
+  },
+  "siteDontBlock": {
+    "message": "ไม่ต้องบล็อกบนเว็บนี้"
+  },
+  "siteResume": {
+    "message": "เริ่มบล็อกที่นี่อีกครั้ง"
+  },
+  "shortcutHint": {
+    "message": "หรือกด"
+  },
+  "saved": {
+    "message": "บันทึกแล้ว"
+  },
+  "savingsRequests": {
+    "message": "คำขอถูกบล็อก"
+  },
+  "savingsBytes": {
+    "message": "≈ ประหยัด $SIZE$",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "ประหยัดเน็ต"
+  }
+}

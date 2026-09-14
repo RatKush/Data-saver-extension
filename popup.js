@@ -1,6 +1,34 @@
 // popup.js
 
+// ----------------------------
+// 🌍 Localisation
+// ----------------------------
+// Chrome Web Store search is per-locale, and the extension's own market is
+// overwhelmingly non-English (India alone is ~24% of installs), so the UI is
+// driven from _locales rather than hardcoded. The English text stays in the
+// HTML as the fallback: if a key is ever missing, chrome.i18n returns an empty
+// string, and replacing good text with nothing would be worse than not
+// translating it at all.
+function applyTranslations(root) {
+  const nodes = (root || document).querySelectorAll('[data-i18n]');
+  for (const el of nodes) {
+    const msg = chrome.i18n.getMessage(el.dataset.i18n);
+    if (msg) el.textContent = msg;
+  }
+}
+
+function t(key, ...subs) {
+  return chrome.i18n.getMessage(key, subs.length ? subs : undefined);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Arabic and Persian together are ~10% of installs (Egypt 5.1%, Iran 5.1%),
+  // so the layout has to mirror rather than just swap the words. @@bidi_dir is
+  // supplied by Chrome from the active locale.
+  const dir = chrome.i18n.getMessage('@@bidi_dir');
+  if (dir === 'rtl') document.body.setAttribute('dir', 'rtl');
+
+  applyTranslations();
   const adsToggle = document.getElementById('adsToggle');
   const imagesToggle = document.getElementById('imagesToggle');
   const mediaToggle = document.getElementById('mediaToggle');
@@ -77,20 +105,28 @@ function renderSavings(stats) {
     // confident "0 MB" (reads as broken) or a placeholder dash (reads as a
     // rendering glitch) — the label carries the whole message instead.
     document.getElementById('savedTop').hidden = true;
-    label.textContent = 'Browse a little and your savings will show up here';
-    since.textContent = 'Estimated from blocked requests';
+    label.textContent = t('savingsEmpty') || 'Browse a little and your savings will show up here';
+    since.textContent = t('savingsEstimated') || 'Estimated from blocked requests';
     return;
   }
 
   document.getElementById('savedTop').hidden = false;
-  const [value, suffix] = formatBytes(stats.bytes || 0);
-  amount.textContent = `~${value}`;
-  unit.textContent = suffix;
-  label.textContent = `Data saved · ${total.toLocaleString()} requests blocked`;
 
-  since.textContent = stats.since
-    ? `Estimated, since ${new Date(stats.since).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`
-    : 'Estimated from blocked requests';
+  // The COUNT leads, not the byte figure. The count is exact; the bytes are an
+  // estimate from AVG_BYTES, so putting the precise number first is both the
+  // more impressive figure and the more honest one.
+  amount.textContent = total.toLocaleString();
+  unit.textContent = t('savingsRequests') || 'requests blocked';
+
+  const [value, suffix] = formatBytes(stats.bytes || 0);
+  label.textContent = t('savingsBytes', `${value} ${suffix}`) || `≈ ${value} ${suffix} saved`;
+
+  if (stats.since) {
+    const date = new Date(stats.since).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+    since.textContent = t('savingsEstimatedSince', date) || `Estimated, since ${date}`;
+  } else {
+    since.textContent = t('savingsEstimated') || 'Estimated from blocked requests';
+  }
 }
 
 function initSavings() {
@@ -132,9 +168,8 @@ function initSiteToggle() {
     const hostname = tab && tab.url ? getHostname(tab.url) : null;
 
     if (!hostname) {
-      siteHost.textContent = 'No site on this page';
-      siteStatus.textContent = 'Nothing to unblock here';
-      siteToggleBtn.textContent = "Don't block on this site";
+      siteHost.textContent = t('siteNoHost') || 'No site on this page';
+      siteStatus.textContent = t('siteNothingToDo') || 'Nothing to unblock here';
       siteToggleBtn.disabled = true;
       if (hint) hint.hidden = true;
       return;
@@ -150,10 +185,14 @@ function initSiteToggle() {
     });
 
     function render(isPaused) {
-      siteStatus.textContent = isPaused ? 'Not blocking on this site' : 'Blocking active';
+      siteStatus.textContent = isPaused
+        ? (t('siteNotBlocking') || 'Not blocking on this site')
+        : (t('siteBlocking') || 'Blocking active');
       siteStatus.classList.toggle('paused', isPaused);
       // Say what the button DOES, not what the state is.
-      siteToggleBtn.textContent = isPaused ? 'Resume blocking here' : "Don't block on this site";
+      siteToggleBtn.textContent = isPaused
+        ? (t('siteResume') || 'Resume blocking here')
+        : (t('siteDontBlock') || "Don't block on this site");
       siteToggleBtn.classList.toggle('is-paused', isPaused);
 
       siteToggleBtn.onclick = () => {
