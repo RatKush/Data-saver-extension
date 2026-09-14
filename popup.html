@@ -239,6 +239,69 @@
 
     #siteToggleBtn:disabled { opacity: 0.45; cursor: default; }
 
+    /* Per-site rules. The three pills say what happens ON THIS SITE, which may
+       differ from the global switches below. Tapping one sets an override for
+       this site only; tapping it back to match the global setting clears it,
+       so the stored set stays a list of real exceptions. */
+    .site-only {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .site-only[hidden] { display: none; }
+
+    .pill {
+      flex: 1;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .pill:hover:not(:disabled) { border-color: var(--border-2); color: var(--text); }
+    .pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .pill:disabled { opacity: 0.45; cursor: default; }
+
+    /* Blocking here — the active, working state. */
+    .pill.on {
+      background: var(--accent-soft);
+      border-color: var(--accent-line);
+      color: var(--accent);
+    }
+
+    /* An explicit per-site exception, so it is visibly different from simply
+       inheriting a global switch that is off. */
+    .pill.override { border-style: dashed; border-color: var(--border-2); color: var(--text); }
+
+    .dash-link {
+      display: block;
+      width: 100%;
+      text-align: center;
+      font: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      padding: 7px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .dash-link:hover { background: var(--surface); color: var(--text); }
+    .dash-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
     .shortcut-hint {
       font-size: 10.5px;
       color: var(--text-muted);
@@ -628,6 +691,11 @@
         </span>
       </div>
       <button id="siteToggleBtn" type="button" data-i18n="siteDontBlock">Don't block on this site</button>
+      <div class="site-only" id="siteOnly" hidden>
+        <button class="pill" id="pillAds" type="button" data-key="ads">ads</button>
+        <button class="pill" id="pillImages" type="button" data-key="images">images</button>
+        <button class="pill" id="pillMedia" type="button" data-key="media">videos</button>
+      </div>
       <div class="shortcut-hint"><span data-i18n="shortcutHint">or press</span> <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
     </div>
 
@@ -736,6 +804,7 @@
     </div>
 
     <div class="footer">
+      <button class="dash-link" id="openDashboard" type="button" data-i18n="dashOpen">Per-site rules &amp; history</button>
       <div class="saved-flash" id="savedFlash" data-i18n="saved">Saved</div>
     </div>
   </div>

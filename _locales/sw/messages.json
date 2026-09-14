@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "Si sasa",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "Kanuni za kila tovuti na historia",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "Imezuiwa hapa — bofya kuruhusu kwenye tovuti hii",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "Imeruhusiwa hapa — bofya kuzuia kwenye tovuti hii",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

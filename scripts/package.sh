@@ -27,6 +27,11 @@ INCLUDE=(
   hide_broken_images.js
   stop_all_media.js
   force_open_shadow_dom.js
+  consent_buster.js
+  popup_blocker.js
+  dashboard.html
+  dashboard.js
+  managed-schema.json
   icons/icon16.png
   icons/icon48.png
   icons/icon128.png

@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "ไว้ก่อน",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "กฎรายเว็บและประวัติ",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "บล็อกอยู่ที่นี่ — คลิกเพื่ออนุญาตในเว็บนี้",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "อนุญาตอยู่ที่นี่ — คลิกเพื่อบล็อกในเว็บนี้",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

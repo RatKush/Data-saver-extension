@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "title": "Data Saver policy",
+  "description": "Settings an administrator can enforce. Anything set here overrides the user's own choice and is shown to them as managed. Keys left out are not enforced, so a policy can lock one setting and leave the rest free.",
+  "type": "object",
+  "properties": {
+    "ads": {
+      "title": "Block ads and trackers",
+      "type": "boolean"
+    },
+    "images": {
+      "title": "Block images",
+      "type": "boolean"
+    },
+    "media": {
+      "title": "Block video and audio",
+      "type": "boolean"
+    },
+    "consent": {
+      "title": "Answer cookie banners with the most private option",
+      "type": "boolean"
+    },
+    "popups": {
+      "title": "Block popups not opened by the user",
+      "type": "boolean"
+    },
+    "allowlist": {
+      "title": "Sites where blocking is switched off entirely",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "siteProfiles": {
+      "title": "Per-site overrides, keyed by domain",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "ads": { "type": "boolean" },
+          "images": { "type": "boolean" },
+          "media": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

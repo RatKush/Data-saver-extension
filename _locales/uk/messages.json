@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "Не зараз",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "Правила для сайтів та історія",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "Тут блокується — натисніть, щоб дозволити на цьому сайті",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "Тут дозволено — натисніть, щоб блокувати на цьому сайті",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

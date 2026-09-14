@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "এখন নয়",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "সাইট-ভিত্তিক নিয়ম ও ইতিহাস",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "এখানে ব্লক করা হচ্ছে — এই সাইটে অনুমতি দিতে ক্লিক করুন",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "এখানে অনুমোদিত — এই সাইটে ব্লক করতে ক্লিক করুন",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

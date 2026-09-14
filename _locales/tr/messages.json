@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "Şimdi değil",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "Site kuralları ve geçmiş",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "Burada engelleniyor — bu sitede izin vermek için tıklayın",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "Burada izinli — bu sitede engellemek için tıklayın",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

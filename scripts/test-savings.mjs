@@ -646,6 +646,208 @@ await test('install stamps a date once and never moves it', async () => {
 });
 
 // ---------------------------------------------------------------------------
+// background.js — premium features
+// ---------------------------------------------------------------------------
+
+console.log('\nbackground.js — per-site profiles');
+
+await test('a profile applies to subdomains, and the longest match wins', async () => {
+  const { ctx } = loadBackground();
+  const entry = vm.runInContext('profileEntryFor', ctx);
+  const profiles = { 'example.com': {}, 'news.example.com': {} };
+  assert.equal(entry('example.com', profiles), 'example.com');
+  assert.equal(entry('www.example.com', profiles), 'example.com');
+  assert.equal(entry('news.example.com', profiles), 'news.example.com');
+  assert.equal(entry('a.news.example.com', profiles), 'news.example.com');
+  // A lookalike must not match, same rule as the allowlist.
+  assert.equal(entry('notexample.com', profiles), null);
+});
+
+await test('a profile overrides only the categories it names', async () => {
+  const { ctx } = loadBackground();
+  const eff = vm.runInContext('effectiveSettings', ctx);
+  const data = { ads: true, images: true, media: true, siteProfiles: { 'example.com': { images: false } } };
+  assert.deepEqual(plain(eff('www.example.com', data)), { ads: true, images: false, media: true });
+  assert.deepEqual(plain(eff('other.test', data)), { ads: true, images: true, media: true });
+});
+
+await test('an allow rule is emitted only where a site opts out', async () => {
+  const { ctx } = loadBackground();
+  const rules = plain(vm.runInContext('siteProfileRules', ctx)(
+    { ads: true, images: true, media: true, siteProfiles: { 'example.com': { images: false, media: true } } }, 1));
+  assert.equal(rules.length, 1, 'media:true needs no rule — the static ruleset already blocks it');
+  assert.equal(rules[0].action.type, 'allow');
+  assert.deepEqual(rules[0].condition.resourceTypes, ['image']);
+  assert.deepEqual(rules[0].condition.initiatorDomains, ['example.com']);
+});
+
+await test('no rule is emitted when the category is globally off anyway', async () => {
+  const { ctx } = loadBackground();
+  const rules = plain(vm.runInContext('siteProfileRules', ctx)(
+    { ads: true, images: false, media: true, siteProfiles: { 'example.com': { images: false } } }, 1));
+  assert.equal(rules.length, 0);
+});
+
+await test('unblocking ads on a site does not also unblock its images', async () => {
+  const { ctx } = loadBackground();
+  const rules = plain(vm.runInContext('siteProfileRules', ctx)(
+    { ads: true, images: true, media: true, siteProfiles: { 'example.com': { ads: false } } }, 1));
+  const types = rules[0].condition.resourceTypes;
+  assert.ok(!types.includes('image'), 'an ads exception leaked into image blocking');
+  assert.ok(!types.includes('media'), 'an ads exception leaked into media blocking');
+  assert.ok(types.includes('script'));
+});
+
+await test('profile rules sit below a full pause but above the statics', async () => {
+  const { ctx } = loadBackground();
+  const pause = vm.runInContext('ALLOWLIST_RULE_PRIORITY', ctx);
+  const profile = vm.runInContext('SITE_PROFILE_RULE_PRIORITY', ctx);
+  assert.ok(profile < pause, 'a profile could override a paused site');
+  assert.ok(profile > 1, 'a profile would lose to the static block rules');
+});
+
+await test('a profile that matches the globals is not stored', async () => {
+  const { chrome, ctx } = loadBackground();
+  const set = vm.runInContext('setSiteProfile', ctx);
+  await set('example.com', { images: false });
+  assert.deepEqual(plain(chrome.storage.sync._dump().siteProfiles), { 'example.com': { images: false } });
+  await set('example.com', {});
+  assert.deepEqual(plain(chrome.storage.sync._dump().siteProfiles), {});
+});
+
+await test('editing from a subdomain updates the covering rule', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ siteProfiles: { 'example.com': { images: false } } });
+  await vm.runInContext('setSiteProfile', ctx)('www.example.com', { images: false, media: false });
+  const stored = plain(chrome.storage.sync._dump().siteProfiles);
+  assert.deepEqual(Object.keys(stored), ['example.com'], 'a narrower duplicate rule was added');
+  assert.deepEqual(stored['example.com'], { images: false, media: false });
+});
+
+console.log('\nbackground.js — managed policy & auto-mode');
+
+await test('an administrator policy overrides the user, key by key', async () => {
+  const { ctx } = loadBackground();
+  const merge = vm.runInContext('mergeSettings', ctx);
+  const out = plain(merge({ ads: false, images: false, media: true }, { ads: true }, null));
+  assert.equal(out.ads, true, 'policy did not win');
+  assert.equal(out.images, false, 'policy touched a key it does not set');
+  assert.deepEqual(out.managedKeys, ['ads']);
+});
+
+await test('auto-mode relaxes images on a fast connection, and nothing else', async () => {
+  const { ctx } = loadBackground();
+  const merge = vm.runInContext('mergeSettings', ctx);
+  const user = { ads: true, images: true, media: true, autoMode: true };
+  const fast = plain(merge(user, {}, { fast: true }));
+  assert.equal(fast.images, false);
+  assert.equal(fast.ads, true, 'auto-mode must not touch ads');
+  assert.equal(fast.media, true, 'auto-mode must not touch video');
+  const slow = plain(merge(user, {}, { fast: false }));
+  assert.equal(slow.images, true);
+});
+
+await test('auto-mode does nothing unless the user switched it on', async () => {
+  const { ctx } = loadBackground();
+  const out = plain(vm.runInContext('mergeSettings', ctx)(
+    { ads: true, images: true, media: true, autoMode: false }, {}, { fast: true }));
+  assert.equal(out.images, true);
+});
+
+await test('a policy that pins images beats auto-mode', async () => {
+  const { ctx } = loadBackground();
+  const out = plain(vm.runInContext('mergeSettings', ctx)(
+    { ads: true, images: true, media: true, autoMode: true }, { images: true }, { fast: true }));
+  assert.equal(out.images, true, 'auto-mode overrode an enforced policy');
+});
+
+console.log('\nbackground.js — history');
+
+await test('history accumulates into the right day', async () => {
+  const { ctx } = loadBackground();
+  const add = vm.runInContext('addToHistory', ctx);
+  const now = Date.UTC(2026, 8, 15, 10);
+  let h = add({}, { ads: 3, images: 4, media: 1 }, 500, now);
+  h = plain(add(h, { ads: 1, images: 0, media: 0 }, 100, now));
+  assert.deepEqual(h['2026-09-15'], { ads: 4, images: 4, media: 1, bytes: 600 });
+});
+
+await test('history keeps a rolling 60 days across a month boundary', async () => {
+  const { ctx } = loadBackground();
+  const add = vm.runInContext('addToHistory', ctx);
+  let h = {};
+  const start = Date.UTC(2026, 6, 1);
+  for (let i = 0; i < 90; i++) h = add(h, { ads: 1 }, 1, start + i * 86400000);
+  h = plain(h);
+  const keys = Object.keys(h).sort();
+  assert.equal(keys.length, 60);
+  assert.equal(keys[keys.length - 1], '2026-09-28');
+});
+
+await test('site stats accumulate and stay capped', async () => {
+  const { ctx } = loadBackground();
+  const add = vm.runInContext('addToSiteStats', ctx);
+  let st = add({}, 'a.test', { ads: 2, images: 3 }, 100);
+  st = plain(add(st, 'a.test', { media: 1 }, 50));
+  assert.deepEqual(st['a.test'], { n: 6, bytes: 150 });
+
+  let big = {};
+  for (let i = 0; i < 60; i++) big = add(big, `s${i}.test`, { ads: i + 1 }, 1);
+  big = plain(big);
+  assert.equal(Object.keys(big).length, 50);
+  assert.ok(big['s59.test'], 'the busiest site was pruned');
+  assert.ok(!big['s0.test'], 'the quietest site was kept');
+});
+
+await test('a page with no host is not recorded against a site', async () => {
+  const { ctx } = loadBackground();
+  const st = plain(vm.runInContext('addToSiteStats', ctx)({}, null, { ads: 5 }, 10));
+  assert.deepEqual(st, {});
+});
+
+console.log('\nbackground.js — export / import');
+
+await test('a round trip preserves what the user configured', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({
+    ads: true, images: false, media: true,
+    allowlist: ['youtube.com'], siteProfiles: { 'example.com': { images: false } }
+  });
+  const policy = plain(await vm.runInContext('exportPolicy', ctx)());
+  assert.equal(policy.images, false);
+  assert.deepEqual(policy.allowlist, ['youtube.com']);
+
+  chrome.storage.sync._reset();
+  await vm.runInContext('importPolicy', ctx)(policy);
+  const back = plain(chrome.storage.sync._dump());
+  assert.equal(back.images, false);
+  assert.deepEqual(back.siteProfiles, { 'example.com': { images: false } });
+});
+
+await test('import drops junk instead of writing it to storage', async () => {
+  const { chrome, ctx } = loadBackground();
+  await vm.runInContext('importPolicy', ctx)({
+    version: 1,
+    images: false,
+    evil: 'rm -rf',
+    allowlist: ['ok.test', 'not a domain', 'javascript:alert(1)', 'http://x.test/path', 42],
+    siteProfiles: { 'good.test': { images: false, nonsense: 1 }, 'bad domain': { images: false } }
+  });
+  const out = plain(chrome.storage.sync._dump());
+  assert.equal(out.evil, undefined, 'an unrecognised key was written to storage');
+  assert.deepEqual(out.allowlist, ['ok.test']);
+  assert.deepEqual(out.siteProfiles, { 'good.test': { images: false } });
+});
+
+await test('import refuses a file it does not understand', async () => {
+  const { ctx } = loadBackground();
+  const imp = vm.runInContext('importPolicy', ctx);
+  await assert.rejects(() => imp({ version: 99, images: false }), /unsupported version/);
+  await assert.rejects(() => imp({ nothing: 'useful' }), /nothing recognisable/);
+  await assert.rejects(() => imp('not an object'), /not an object/);
+});
+
+// ---------------------------------------------------------------------------
 // savings_counter.js — classification
 // ---------------------------------------------------------------------------
 

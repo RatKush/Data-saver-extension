@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "Plus tard",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "Règles par site et historique",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "Bloqué ici — cliquez pour autoriser sur ce site",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "Autorisé ici — cliquez pour bloquer sur ce site",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "ఇప్పుడు కాదు",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "సైట్ నియమాలు & చరిత్ర",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "ఇక్కడ బ్లాక్ చేయబడింది — ఈ సైట్‌లో అనుమతించడానికి క్లిక్ చేయండి",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "ఇక్కడ అనుమతించబడింది — ఈ సైట్‌లో బ్లాక్ చేయడానికి క్లిక్ చేయండి",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }
