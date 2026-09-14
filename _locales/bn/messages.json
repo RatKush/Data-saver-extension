@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "এখানে অনুমোদিত — এই সাইটে ব্লক করতে ক্লিক করুন",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "ডেটা সেভার ড্যাশবোর্ড",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "নিচের সবকিছু কেবল এই ডিভাইসেই সংরক্ষিত। কোনো অ্যাকাউন্ট নেই, পাঠানোর মতো কোনো সার্ভারও নেই।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "কিছু সেটিং আপনার প্রতিষ্ঠান নিয়ন্ত্রণ করে, এখানে বদলানো যাবে না।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "সাশ্রয়ের ইতিহাস",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "ইতিহাস মুছুন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "এখনও কিছু রেকর্ড হয়নি।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "গত ৭ দিন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "গত ৩০ দিন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "সর্বমোট",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "সবচেয়ে বেশি সাশ্রয় কোথায় হয়েছে",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "এখনও কিছু রেকর্ড হয়নি।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "সাইট ইতিহাস বন্ধ, তাই কিছু রেকর্ড হচ্ছে না। সাশ্রয় কোথা থেকে আসছে দেখতে উপরে এটি চালু করুন।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "প্রিমিয়াম",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "কোন সাইটগুলো মনে রাখুন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "যেসব সাইটে কিছু ব্লক হয়েছে তার তালিকা রাখে, যাতে এই পাতা দেখাতে পারে আপনার সাশ্রয় কোথা থেকে আসছে। কেবল এই ডিভাইসে সংরক্ষিত, কোথাও পাঠানো হয় না। ডিফল্টে বন্ধ — আবার বন্ধ করলে রেকর্ড করা তথ্য মুছে যায়।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "সংযোগের গতি অনুযায়ী মানিয়ে নিন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "সংযোগ দ্রুত হলে ছবি ব্লক করা বন্ধ করুন। ব্রাউজারের নিজস্ব গতি অনুমান ব্যবহার করে — কিছুই মাপা বা পাঠানো হয় না।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "কুকি ব্যানারের উত্তর দিন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "ব্যানার বিকল্প দিলে “প্রত্যাখ্যান” বা “কেবল প্রয়োজনীয়” বেছে নেয়। আপনার হয়ে কখনও গ্রহণ করে না — কোনো ব্যক্তিগত বিকল্প না পেলে ব্যানারটি লুকিয়ে দেওয়া হয় এবং কিছুতেই সম্মতি দেওয়া হয় না।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "অবাঞ্ছিত পপআপ ব্লক করুন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "পাতা নিজে থেকে খোলা উইন্ডো ব্লক করে। আপনি ক্লিক করে খুললে সেগুলো কাজ করবে।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "সাইট-ভিত্তিক নিয়ম",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "এখনও কোনো সাইট-ভিত্তিক নিয়ম নেই। যোগ করতে যেকোনো সাইটে পপআপ খুলুন।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "সরান",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "ব্যাকআপ ও স্থাপন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "সেটিং রপ্তানি করুন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "সেটিং আমদানি করুন",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "প্রতিটি সুইচ, থামানো সাইট ও সাইট-ভিত্তিক নিয়ম একটি JSON ফাইল হিসেবে রপ্তানি করে। একই ফাইল নীতি হিসেবে পরিচালিত বহরে পাঠানো যায়।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "সেটিং রপ্তানি করা যায়নি।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "ফাইলটি বৈধ JSON নয়।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "ফাইলটি আমদানি করা যায়নি।",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$টি সেটিং আমদানি হয়েছে।",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

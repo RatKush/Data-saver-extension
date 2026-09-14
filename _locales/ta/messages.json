@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "இங்கே அனுமதிக்கப்படுகிறது — இந்தத் தளத்தில் தடுக்க கிளிக் செய்யவும்",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "டேட்டா சேவர் டாஷ்போர்டு",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "கீழே உள்ள அனைத்தும் இந்தச் சாதனத்தில் மட்டுமே சேமிக்கப்படுகிறது. கணக்கும் இல்லை, அனுப்ப சேவையகமும் இல்லை.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "சில அமைப்புகள் உங்கள் நிறுவனத்தால் நிர்வகிக்கப்படுகின்றன, இங்கே மாற்ற முடியாது.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "சேமிப்பு வரலாறு",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "வரலாற்றை அழி",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "இதுவரை எதுவும் பதிவாகவில்லை.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "கடந்த 7 நாட்கள்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "கடந்த 30 நாட்கள்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "மொத்தம்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "அதிக சேமிப்பு எங்கே",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "இதுவரை எதுவும் பதிவாகவில்லை.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "தள வரலாறு அணைக்கப்பட்டுள்ளது, எனவே எதுவும் பதிவாகவில்லை. சேமிப்பு எங்கிருந்து வருகிறது எனப் பார்க்க மேலே இதை இயக்கவும்.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "பிரீமியம்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "எந்தத் தளங்கள் என நினைவில் வை",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "எங்கே தடுக்கப்பட்டது என்ற தளப் பட்டியலை வைத்திருக்கும், இதனால் உங்கள் சேமிப்பு எங்கிருந்து வருகிறது என இந்தப் பக்கம் காட்ட முடியும். இந்தச் சாதனத்தில் மட்டுமே சேமிக்கப்படும், எங்கும் அனுப்பப்படாது. இயல்பாக அணைக்கப்பட்டுள்ளது — மீண்டும் அணைத்தால் பதிவானவை நீக்கப்படும்.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "இணைப்பு வேகத்திற்கு ஏற்ப மாறு",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "இணைப்பு வேகமாக இருக்கும்போது படங்களைத் தடுப்பதை நிறுத்து. உலாவியின் சொந்த வேக மதிப்பீட்டைப் பயன்படுத்துகிறது — எதுவும் அளக்கப்படவோ அனுப்பப்படவோ இல்லை.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "குக்கீ பேனர்களுக்குப் பதிலளி",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "பேனர் வழங்கும் இடத்தில் “நிராகரி” அல்லது “அவசியமானவை மட்டும்” தேர்ந்தெடுக்கும். உங்கள் சார்பாக ஒருபோதும் ஏற்காது — தனிப்பட்ட விருப்பம் கிடைக்கவில்லை எனில் பேனர் மறைக்கப்படும், எதற்கும் ஒப்புதல் அளிக்கப்படாது.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "தேவையற்ற பாப்அப்களைத் தடு",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "பக்கம் தானாகத் திறக்கும் சாளரங்களைத் தடுக்கும். நீங்கள் கிளிக் செய்து திறப்பவை வேலை செய்யும்.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "தள விதிகள்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "இதுவரை தள விதிகள் இல்லை. சேர்க்க எந்தத் தளத்திலும் பாப்அப்பைத் திறக்கவும்.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "நீக்கு",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "காப்புப்பிரதி & பயன்படுத்தல்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "அமைப்புகளை ஏற்றுமதி செய்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "அமைப்புகளை இறக்குமதி செய்",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "ஒவ்வொரு சுவிட்ச், இடைநிறுத்தப்பட்ட தளம் மற்றும் தள விதியையும் JSON கோப்பாக ஏற்றுமதி செய்யும். அதே கோப்பை நிர்வகிக்கப்பட்ட சாதனங்களுக்குக் கொள்கையாக அனுப்பலாம்.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "அமைப்புகளை ஏற்றுமதி செய்ய முடியவில்லை.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "அந்தக் கோப்பு சரியான JSON அல்ல.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "அந்தக் கோப்பை இறக்குமதி செய்ய முடியவில்லை.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ அமைப்புகள் இறக்குமதி செய்யப்பட்டன.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

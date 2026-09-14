@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Здесь разрешено — нажмите, чтобы блокировать на этом сайте",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Панель «Экономия трафика»",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Всё, что ниже, хранится только на этом устройстве. Нет ни аккаунта, ни сервера, куда это можно было бы отправить.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Некоторые настройки управляются вашей организацией и не могут быть изменены здесь.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "История экономии",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Очистить историю",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Пока ничего не записано.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Последние 7 дней",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Последние 30 дней",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "За всё время",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Где сэкономлено больше всего",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Пока ничего не записано.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "История сайтов выключена, поэтому ничего не записывается. Включите её выше, чтобы увидеть, откуда берётся экономия.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Запоминать, какие сайты",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Хранит список сайтов, где что-то было заблокировано, чтобы эта страница могла показать, откуда берётся экономия. Хранится только на этом устройстве и никуда не отправляется. По умолчанию выключено — повторное выключение удаляет записанное.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Подстраиваться под скорость соединения",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Не блокировать изображения при быстром соединении. Использует собственную оценку скорости браузера — ничего не измеряется и не отправляется.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Отвечать на баннеры о файлах cookie",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Выбирает «отклонить» или «только необходимые», если баннер это предлагает. Никогда не соглашается за вас — если приватного варианта нет, баннер просто скрывается и согласие не даётся.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Блокировать нежелательные всплывающие окна",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Блокирует окна, которые страница открывает сама. Окна, открытые вашим щелчком, работают.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Правила для сайтов",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Правил пока нет. Откройте окно расширения на любом сайте, чтобы добавить.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Удалить",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Резервная копия и развёртывание",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Экспорт настроек",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Импорт настроек",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Экспортирует все переключатели, приостановленные сайты и правила в файл JSON. Тот же файл можно применить как политику на управляемых устройствах.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Не удалось экспортировать настройки.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Этот файл не является корректным JSON.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Не удалось импортировать этот файл.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "Импортировано настроек: $N$.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "dashPremium": {
+    "message": "Премиум",
+    "description": "Dashboard (options page) string."
   }
 }

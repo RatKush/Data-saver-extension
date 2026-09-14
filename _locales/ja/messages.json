@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "このサイトでは許可中 — クリックでブロック",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "データセーバー ダッシュボード",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "以下のデータはこの端末にのみ保存されます。アカウントも、送信先のサーバーもありません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "一部の設定は組織によって管理されており、ここでは変更できません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "節約の履歴",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "履歴を消去",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "まだ記録はありません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "過去7日間",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "過去30日間",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "累計",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "最も節約できたサイト",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "まだ記録はありません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "サイト履歴がオフのため、何も記録されていません。節約の内訳を見るには上でオンにしてください。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "プレミアム",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "どのサイトかを記録する",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "ブロックが発生したサイトの一覧を保持し、節約がどこから生じたかをこのページで表示できるようにします。この端末にのみ保存され、どこにも送信されません。既定ではオフで、オフに戻すと記録は削除されます。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "通信速度に合わせる",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "接続が高速なときは画像のブロックを止めます。ブラウザ自身の速度推定を使い、計測も送信も行いません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Cookie バナーに応答する",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "バナーに選択肢がある場合は「拒否」または「必要なもののみ」を選びます。あなたに代わって同意することは決してありません。プライバシーを守る選択肢が見つからない場合は、バナーを非表示にするだけで何にも同意しません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "不要なポップアップをブロック",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "ページが自動的に開くウィンドウをブロックします。クリックして開いたウィンドウはそのまま動作します。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "サイトごとの設定",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "サイトごとの設定はまだありません。追加するには任意のサイトで拡張機能を開いてください。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "削除",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "バックアップと配布",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "設定を書き出す",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "設定を読み込む",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "すべてのスイッチ、一時停止中のサイト、サイトごとの設定を JSON ファイルとして書き出します。同じファイルを管理対象の端末にポリシーとして配布できます。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "設定を書き出せませんでした。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "そのファイルは有効な JSON ではありません。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "そのファイルを読み込めませんでした。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ 件の設定を読み込みました。",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

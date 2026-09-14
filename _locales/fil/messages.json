@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Pinapayagan dito — i-click para i-block sa site na ito",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Dashboard ng Data Saver",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Lahat ng nasa ibaba ay nakaimbak sa device na ito lamang. Walang account at walang server na padadalhan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "May ilang setting na pinamamahalaan ng iyong organisasyon at hindi mababago rito.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Kasaysayan ng natipid",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "I-clear ang history",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Wala pang naitala.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Huling 7 araw",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Huling 30 araw",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Kabuuan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Saan pinakamalaki ang natipid",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Wala pang naitala.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Naka-off ang site history, kaya walang naitatala. I-on ito sa itaas para makita kung saan nanggagaling ang natitipid.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Premium",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Tandaan kung aling mga site",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Nagtatago ng listahan ng mga site kung saan may na-block, para maipakita ng pahinang ito kung saan nanggagaling ang natitipid mo. Nakaimbak sa device na ito lamang at hindi kailanman ipinapadala kahit saan. Naka-off bilang default — kapag na-off itong muli, buburahin ang naitala.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Umangkop sa bilis ng koneksyon",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Itigil ang pag-block ng mga larawan kapag mabilis ang koneksyon. Ginagamit ang sariling tantiya ng bilis ng browser — walang sinusukat o ipinapadala.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Sagutin ang mga cookie banner",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Pinipili ang “tanggihan” o “kinakailangan lamang” kung inaalok ng banner. Hindi kailanman tumatanggap para sa iyo — kung walang mahanap na pribadong opsyon, itinatago ang banner at walang pinapayagan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "I-block ang hindi gustong popup",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Bina-block ang mga window na kusang binubuksan ng pahina. Gumagana pa rin ang binubuksan mo sa pag-click.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Mga panuntunan bawat site",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Wala pang panuntunan. Buksan ang extension sa kahit anong site para magdagdag.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Alisin",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Backup at deployment",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "I-export ang mga setting",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "I-import ang mga setting",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Ine-export ang bawat switch, naka-pause na site at panuntunan bilang JSON file. Puwedeng ipadala ang parehong file bilang patakaran sa mga pinamamahalaang device.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Hindi na-export ang mga setting.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Hindi valid na JSON ang file na iyon.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Hindi na-import ang file na iyon.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "Na-import ang $N$ na setting.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

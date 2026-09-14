@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "여기서 허용 중 — 클릭하면 이 사이트에서 차단",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "데이터 세이버 대시보드",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "아래 내용은 이 기기에만 저장됩니다. 계정도 없고, 보낼 서버도 없습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "일부 설정은 조직에서 관리하며 여기서 변경할 수 없습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "절약 기록",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "기록 지우기",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "아직 기록된 내용이 없습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "최근 7일",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "최근 30일",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "전체 기간",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "어디에서 가장 많이 절약했나",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "아직 기록된 내용이 없습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "사이트 기록이 꺼져 있어 아무것도 기록되지 않습니다. 절약이 어디에서 오는지 보려면 위에서 켜세요.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "프리미엄",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "어떤 사이트인지 기억하기",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "차단이 발생한 사이트 목록을 보관해, 절약이 어디에서 오는지 이 페이지가 보여줄 수 있게 합니다. 이 기기에만 저장되며 어디에도 전송되지 않습니다. 기본값은 꺼짐이며, 다시 끄면 기록된 내용이 삭제됩니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "연결 속도에 맞추기",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "연결이 빠를 때는 이미지 차단을 중단합니다. 브라우저 자체의 속도 추정치를 사용하며, 측정하거나 전송하는 것은 없습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "쿠키 배너에 응답하기",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "배너가 제공하는 경우 “거부” 또는 “필수 항목만”을 선택합니다. 사용자를 대신해 절대 동의하지 않습니다 — 개인정보를 지키는 선택지를 찾지 못하면 배너를 숨길 뿐 어떤 것에도 동의하지 않습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "원치 않는 팝업 차단",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "페이지가 스스로 여는 창을 차단합니다. 직접 클릭해서 여는 창은 그대로 작동합니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "사이트별 규칙",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "아직 사이트별 규칙이 없습니다. 추가하려면 아무 사이트에서 확장 프로그램을 여세요.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "제거",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "백업 및 배포",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "설정 내보내기",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "설정 가져오기",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "모든 스위치, 일시중지된 사이트, 사이트별 규칙을 JSON 파일로 내보냅니다. 같은 파일을 관리 기기에 정책으로 배포할 수 있습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "설정을 내보내지 못했습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "올바른 JSON 파일이 아닙니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "파일을 가져오지 못했습니다.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$개의 설정을 가져왔습니다.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

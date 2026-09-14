@@ -74,7 +74,7 @@ function renderHistory(history, stats) {
 // ---------------------------------------------------------------------------
 // Top sites
 // ---------------------------------------------------------------------------
-function renderTopSites(siteStats) {
+function renderTopSites(siteStats, enabled) {
   const box = document.getElementById('topSites');
   box.textContent = '';
 
@@ -83,6 +83,15 @@ function renderTopSites(siteStats) {
     .filter((r) => r.n > 0)
     .sort((a, b) => b.n - a.n)
     .slice(0, 8);
+
+  if (!enabled) {
+    const p = document.createElement('p');
+    p.className = 'empty';
+    p.textContent = t('dashTopSitesOff')
+      || 'Site history is off, so nothing is recorded. Turn it on above to see where the savings come from.';
+    box.appendChild(p);
+    return;
+  }
 
   if (!rows.length) {
     const p = document.createElement('p');
@@ -181,7 +190,7 @@ function renderProfiles(siteProfiles) {
 // Premium switches
 // ---------------------------------------------------------------------------
 function bindSwitches(settings, managedKeys) {
-  for (const key of ['autoMode', 'consent', 'popups']) {
+  for (const key of ['siteHistory', 'autoMode', 'consent', 'popups']) {
     const el = document.getElementById(key);
     el.checked = Boolean(settings[key]);
     // A managed setting is shown at its enforced value and locked, rather
@@ -190,7 +199,11 @@ function bindSwitches(settings, managedKeys) {
       el.disabled = true;
       continue;
     }
-    el.onchange = () => chrome.storage.sync.set({ [key]: el.checked });
+    el.onchange = () => chrome.storage.sync.set({ [key]: el.checked }, () => {
+      // background.js clears the recorded sites when this goes off; re-read
+      // so the page shows that straight away rather than stale rows.
+      if (key === 'siteHistory') load();
+    });
   }
   document.getElementById('managedNotice').classList.toggle('visible', managedKeys.length > 0);
 }
@@ -255,15 +268,18 @@ function initBackup() {
 
 // ---------------------------------------------------------------------------
 function load() {
-  chrome.storage.local.get({ stats: {}, history: {}, siteStats: {} }, (local) => {
-    renderHistory(local.history || {}, local.stats || {});
-    renderTopSites(local.siteStats || {});
-  });
-
   chrome.storage.sync.get(
-    { siteProfiles: {}, autoMode: false, consent: false, popups: false },
+    { siteProfiles: {}, autoMode: false, consent: false, popups: false, siteHistory: false },
     (settings) => {
       renderProfiles(settings.siteProfiles || {});
+
+      chrome.storage.local.get({ stats: {}, history: {}, siteStats: {} }, (local) => {
+        renderHistory(local.history || {}, local.stats || {});
+        // Read together, because whether the list should appear at all is a
+        // sync setting while the list itself is local.
+        renderTopSites(local.siteStats || {}, Boolean(settings.siteHistory));
+      });
+
       const managed = chrome.storage.managed;
       if (!managed) { bindSwitches(settings, []); return; }
       managed.get(null, (policy) => {

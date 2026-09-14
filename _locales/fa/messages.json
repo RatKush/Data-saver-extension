@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "در اینجا مجاز است — برای مسدودسازی کلیک کنید",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "داشبورد ذخیره داده",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "همه موارد زیر فقط روی همین دستگاه ذخیره می‌شود. نه حسابی وجود دارد و نه سروری که به آن ارسال شود.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "برخی تنظیمات توسط سازمان شما مدیریت می‌شود و اینجا قابل تغییر نیست.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "تاریخچه صرفه‌جویی",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "پاک کردن تاریخچه",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "هنوز چیزی ثبت نشده است.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "۷ روز گذشته",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "۳۰ روز گذشته",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "کل",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "بیشترین صرفه‌جویی کجا بوده",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "هنوز چیزی ثبت نشده است.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "تاریخچه سایت‌ها خاموش است، پس چیزی ثبت نمی‌شود. برای دیدن منشأ صرفه‌جویی، آن را در بالا روشن کنید.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "ویژه",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "به خاطر سپردن سایت‌ها",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "فهرستی از سایت‌هایی که در آن‌ها چیزی مسدود شده نگه می‌دارد تا این صفحه بتواند منشأ صرفه‌جویی شما را نشان دهد. فقط روی همین دستگاه ذخیره می‌شود و به هیچ‌جا ارسال نمی‌شود. به‌طور پیش‌فرض خاموش — خاموش کردن دوباره، موارد ثبت‌شده را حذف می‌کند.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "تطبیق با سرعت اتصال",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "وقتی اتصال سریع است مسدودسازی تصاویر را متوقف کن. از تخمین سرعت خود مرورگر استفاده می‌کند — چیزی اندازه‌گیری یا ارسال نمی‌شود.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "پاسخ به بنرهای کوکی",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "هرجا بنر امکانش را بدهد “رد” یا “فقط ضروری” را انتخاب می‌کند. هرگز به‌جای شما نمی‌پذیرد — اگر گزینه‌ای خصوصی پیدا نشود، بنر پنهان می‌شود و با چیزی موافقت نمی‌شود.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "مسدودسازی پنجره‌های ناخواسته",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "پنجره‌هایی را که صفحه خودش باز می‌کند مسدود می‌کند. پنجره‌هایی که با کلیک باز می‌کنید کار می‌کنند.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "قوانین هر سایت",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "هنوز قانونی برای سایتی وجود ندارد. برای افزودن، پنجره افزونه را در هر سایتی باز کنید.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "حذف",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "پشتیبان‌گیری و استقرار",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "خروجی گرفتن از تنظیمات",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "وارد کردن تنظیمات",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "هر کلید، سایت متوقف‌شده و قانون هر سایت را در یک فایل JSON خروجی می‌گیرد. همان فایل را می‌توان به‌عنوان سیاست به دستگاه‌های مدیریت‌شده فرستاد.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "خروجی گرفتن از تنظیمات ممکن نشد.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "آن فایل JSON معتبر نیست.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "وارد کردن آن فایل ممکن نشد.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ تنظیم وارد شد.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

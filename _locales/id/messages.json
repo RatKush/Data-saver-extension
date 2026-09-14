@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Diizinkan di sini — klik untuk memblokir di situs ini",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Dasbor Penghemat Data",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Semua di bawah ini disimpan hanya di perangkat ini. Tidak ada akun dan tidak ada server tujuan pengiriman.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Beberapa pengaturan dikelola oleh organisasi Anda dan tidak dapat diubah di sini.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Riwayat penghematan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Hapus riwayat",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Belum ada yang tercatat.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "7 hari terakhir",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "30 hari terakhir",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Sepanjang waktu",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Di mana paling banyak dihemat",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Belum ada yang tercatat.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Riwayat situs nonaktif, jadi tidak ada yang dicatat. Aktifkan di atas untuk melihat dari mana penghematan berasal.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Premium",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Ingat situs mana saja",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Menyimpan daftar situs tempat sesuatu diblokir, agar halaman ini bisa menunjukkan dari mana penghematan Anda berasal. Disimpan hanya di perangkat ini dan tidak pernah dikirim ke mana pun. Nonaktif secara bawaan — menonaktifkannya lagi akan menghapus yang sudah tercatat.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Menyesuaikan dengan kecepatan koneksi",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Berhenti memblokir gambar saat koneksi cepat. Menggunakan perkiraan kecepatan dari peramban — tidak ada yang diukur atau dikirim.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Menjawab banner cookie",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Memilih “tolak” atau “hanya yang diperlukan” jika banner menyediakannya. Tidak pernah menyetujui atas nama Anda — jika tidak ada opsi privat, banner disembunyikan dan tidak ada yang disetujui.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Blokir popup yang tidak diinginkan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Memblokir jendela yang dibuka halaman dengan sendirinya. Jendela yang Anda buka dengan mengeklik tetap berfungsi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Aturan per situs",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Belum ada aturan per situs. Buka ekstensi di situs mana pun untuk menambahkannya.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Hapus",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Cadangan & penerapan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Ekspor pengaturan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Impor pengaturan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Mengekspor setiap sakelar, situs yang dijeda, dan aturan per situs sebagai berkas JSON. Berkas yang sama dapat diterapkan sebagai kebijakan pada perangkat terkelola.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Tidak dapat mengekspor pengaturan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Berkas itu bukan JSON yang valid.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Tidak dapat mengimpor berkas itu.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ pengaturan diimpor.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

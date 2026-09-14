@@ -282,5 +282,17 @@
         "example": "4"
       }
     }
+  },
+  "dashTopSitesOff": {
+    "message": "Site history is off, so nothing is recorded. Turn it on above to see where the savings come from.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Remember which sites",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Keeps a list of the sites where things were blocked, so this page can show where your savings come from. Stored on this device only and never sent anywhere. Off by default — switching it off again deletes what was recorded.",
+    "description": "Dashboard (options page) string."
   }
 }
