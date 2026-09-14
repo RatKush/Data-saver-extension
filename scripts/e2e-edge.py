@@ -282,7 +282,8 @@ def main():
 
         total = stats["ads"] + stats["images"] + stats["media"]
         mb = stats["bytes"] / (1024 * 1024)
-        print(f"counted        : {total} requests, ~{mb:.1f} MB estimated")
+        print(f"counted        : {total} requests, ~{mb:.1f} MB estimated "
+              f"(ads={stats['ads']}, images={stats['images']})")
 
         if real_url:
             print("\n(--url run: reporting only, fixture assertions skipped)")
@@ -309,7 +310,16 @@ def main():
         paused_total = after["ads"] + after["images"] + after["media"]
         print(f"blocked while paused: {paused_total} (expected 0)")
 
+        # Frames: the fixture loads 3 googlesyndication iframes, which fire
+        # 'load' rather than 'error' and so can only be counted via the
+        # background blocklist lookup. Before that existed this was always 0.
+        frames_counted = stats["ads"] >= 3
+
         ok = True
+        if not frames_counted:
+            print(f"FAIL: blocked iframes were not counted (ads={stats['ads']}, "
+                  f"expected >=3 from the fixture's ad frames)", file=sys.stderr)
+            ok = False
         if not yt_ok:
             print(f"FAIL: allowlist not seeded correctly on install -> {seeded_list}", file=sys.stderr)
             ok = False

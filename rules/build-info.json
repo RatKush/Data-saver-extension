@@ -1,6 +1,5 @@
 {
-  "built": "2026-08-27",
-  "source": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml&showintro=0&mimetype=plaintext",
-  "rules": 3519,
-  "note": "Seeded from the 2026-08-27 build; regenerated on every update-ad-domains.py run."
+  "built": "2026-09-14",
+  "source": "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext",
+  "rules": 3559
 }
