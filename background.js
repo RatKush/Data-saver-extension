@@ -106,7 +106,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg) return;
 
   if (msg.type === 'ds-blocked' && msg.counts) {
-    recordBlocked(msg.counts);
+    // Frames need a blocklist lookup before they can be counted, so fold the
+    // result into the same stats write rather than doing two.
+    countBlockedFrames(msg.frames)
+      .catch(() => 0)
+      .then((frames) => {
+        const counts = Object.assign({}, msg.counts);
+        counts.ads = (counts.ads || 0) + frames;
+        return recordBlocked(counts);
+      });
     sendResponse({ ok: true });
     return false;
   }
@@ -226,16 +234,36 @@ function isAllowlisted(hostname, allowlist) {
   return allowlistEntryFor(hostname, allowlist) !== null;
 }
 
+// Every manual press of the popup button or the keyboard shortcut is recorded
+// in `userChoices` as an explicit decision, separately from the effective
+// allowlist. The allowlist alone cannot distinguish "the user chose this" from
+// "we shipped this as a default", and that difference decides who wins when the
+// two disagree: a person's deliberate choice must survive any future change to
+// DEFAULT_ALLOWLIST, in either direction. Without this, adding a site to the
+// defaults would silently unblock it for someone who had chosen to block it,
+// and dropping one would re-block a site someone had chosen to allow.
+//   userChoices[host] === true   -> the user chose NOT to block this site
+//   userChoices[host] === false  -> the user chose TO block it
 function toggleSite(hostname) {
-  return chrome.storage.sync.get({ allowlist: [] }).then(({ allowlist }) => {
-    // Resuming on www.youtube.com has to drop the `youtube.com` entry that is
-    // actually covering it, not add a narrower one that changes nothing.
-    const covering = allowlistEntryFor(hostname, allowlist);
-    const next = covering
-      ? allowlist.filter((d) => d !== covering)
-      : [...allowlist, hostname];
-    return chrome.storage.sync.set({ allowlist: next }).then(() => !covering);
-  });
+  return chrome.storage.sync
+    .get({ allowlist: [], userChoices: {} })
+    .then(({ allowlist, userChoices }) => {
+      // Resuming on www.youtube.com has to drop the `youtube.com` entry that is
+      // actually covering it, not add a narrower one that changes nothing.
+      const covering = allowlistEntryFor(hostname, allowlist);
+      const key = covering || hostname;
+
+      const next = covering
+        ? allowlist.filter((d) => d !== covering)
+        : [...allowlist, hostname];
+
+      const choices = Object.assign({}, userChoices);
+      choices[key] = !covering; // pressing while covered means "block here again"
+
+      return chrome.storage.sync
+        .set({ allowlist: next, userChoices: choices })
+        .then(() => !covering);
+    });
 }
 
 // Applied once per entry, not as a read-time default: a `get` default only
@@ -249,11 +277,18 @@ function toggleSite(hostname) {
 // exactly once means a user's removal sticks permanently.
 function seedDefaultAllowlist() {
   return chrome.storage.sync
-    .get({ allowlist: [], seededDefaults: null, defaultsSeeded: false })
-    .then(({ allowlist, seededDefaults, defaultsSeeded }) => {
+    .get({ allowlist: [], seededDefaults: null, defaultsSeeded: false, userChoices: {} })
+    .then(({ allowlist, seededDefaults, defaultsSeeded, userChoices }) => {
       // Migrate v2.2's boolean flag, which only ever covered youtube.com.
       const offered = seededDefaults || (defaultsSeeded ? ['youtube.com'] : []);
-      const toAdd = DEFAULT_ALLOWLIST.filter((d) => !offered.includes(d));
+
+      const toAdd = DEFAULT_ALLOWLIST.filter((d) =>
+        // Never offered before, AND the user has not explicitly said they want
+        // this one blocked. The second half is what makes a deliberate choice
+        // permanent even if this site is added to the defaults later.
+        !offered.includes(d) && userChoices[d] !== false
+      );
+
       if (!toAdd.length && seededDefaults) return;
 
       return chrome.storage.sync.set({
@@ -261,6 +296,82 @@ function seedDefaultAllowlist() {
         seededDefaults: [...new Set([...offered, ...DEFAULT_ALLOWLIST])]
       });
     });
+}
+
+// ----------------------------
+// 🖼️ Blocked-frame lookup
+// ----------------------------
+// A blocked iframe fires 'load', not 'error' (measured — see
+// scripts/probe-events.py), so the content script cannot tell a blocked frame
+// from a real cross-origin one. It sends the hostname here instead, where the
+// actual blocklist lives and the answer is definitive rather than a guess.
+//
+// The domain set is built lazily and cached: parsing the ~1MB ruleset costs
+// nothing until a page actually has a cross-origin frame, and most do not.
+let blockedDomains = null;
+let blockedDomainsLoading = null;
+
+function loadBlockedDomains() {
+  if (blockedDomains) return Promise.resolve(blockedDomains);
+  if (blockedDomainsLoading) return blockedDomainsLoading;
+
+  blockedDomainsLoading = fetch(chrome.runtime.getURL('rules/ad-domains.json'))
+    .then((r) => r.json())
+    .then((rules) => {
+      const set = new Set();
+      for (const rule of rules) {
+        // Rules are generated as `||domain^`; recover the bare domain.
+        const filter = rule.condition && rule.condition.urlFilter;
+        if (!filter) continue;
+        const domain = filter.replace(/^\|\|/, '').replace(/\^$/, '');
+        if (domain) set.add(domain);
+      }
+      blockedDomains = set;
+      blockedDomainsLoading = null;
+      return set;
+    })
+    .catch((e) => {
+      console.warn('⚠️ Could not load the blocklist for frame counting:', e);
+      blockedDomainsLoading = null;
+      // An empty set means frames simply go uncounted, which is the same
+      // behaviour as before this existed — never a wrong count.
+      blockedDomains = new Set();
+      return blockedDomains;
+    });
+
+  return blockedDomainsLoading;
+}
+
+function countBlockedFrames(hosts) {
+  if (!hosts || !hosts.length) return Promise.resolve(0);
+
+  return Promise.all([
+    loadBlockedDomains(),
+    chrome.storage.sync.get({ allowlist: [], ads: true })
+  ]).then(([domains, { allowlist, ads }]) => {
+    // If ad blocking is off, or this whole site is allowlisted, nothing was
+    // blocked and counting any of it would be a lie.
+    if (!ads) return 0;
+
+    let n = 0;
+    for (const host of hosts) {
+      if (isAllowlisted(host, allowlist)) continue;
+      if (domainInSet(host, domains)) n++;
+    }
+    return n;
+  });
+}
+
+// `||domain^` covers subdomains, so walk up the labels rather than scanning the
+// whole set — this runs per frame and the set has thousands of entries.
+function domainInSet(host, set) {
+  if (set.has(host)) return true;
+  let i = host.indexOf('.');
+  while (i !== -1) {
+    if (set.has(host.slice(i + 1))) return true;
+    i = host.indexOf('.', i + 1);
+  }
+  return false;
 }
 
 function updateBadge(tabId, url) {

@@ -115,8 +115,17 @@ function loadBackground() {
   // URL is a web/Node global, not an ECMAScript built-in, so a bare VM context
   // does not have it. Without it hostnameOf() silently returns null for every
   // page and the pause/badge paths look dead — a harness artifact, not a bug.
+  // The frame lookup fetches the packaged ruleset; serve a small stand-in.
+  const fakeRules = [
+    { condition: { urlFilter: '||doubleclick.net^' } },
+    { condition: { urlFilter: '||googlesyndication.com^' } },
+    { condition: { urlFilter: '||scorecardresearch.com^' } }
+  ];
+  const fetchStub = () => Promise.resolve({ json: () => Promise.resolve(fakeRules) });
+
   const ctx = vm.createContext({
-    chrome, console: { log() {}, warn() {} }, setTimeout, clearTimeout, Date, URL
+    chrome, console: { log() {}, warn() {} }, setTimeout, clearTimeout, Date, URL,
+    fetch: fetchStub, Promise, Set, Object, JSON
   });
   vm.runInContext(readFileSync(join(ROOT, 'background.js'), 'utf8'), ctx);
   return { chrome, ctx };
@@ -450,6 +459,85 @@ await test('badge reads OFF on a YouTube subdomain', async () => {
 });
 
 // ---------------------------------------------------------------------------
+// background.js — blocked frames & remembered choices
+// ---------------------------------------------------------------------------
+
+console.log('\nbackground.js — blocked frames');
+
+await test('frames on blocklisted domains count as ads', async () => {
+  const { chrome } = loadBackground();
+  chrome._listeners.message[0](
+    { type: 'ds-blocked', counts: { ads: 0, images: 3, media: 0 },
+      frames: ['doubleclick.net', 'tpc.googlesyndication.com',
+               'tpc.googlesyndication.com', 'cdn.example.com'] },
+    {}, () => {});
+  await settle(14);
+
+  const { stats } = chrome._local._dump();
+  // Three of the four are on the blocklist. The repeated googlesyndication
+  // host counts twice — ad networks place several frames from one host.
+  assert.equal(stats.ads, 3, `expected 3 ad frames, got ${stats.ads}`);
+  assert.equal(stats.images, 3);
+});
+
+await test('frames on an allowlisted site are not counted', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync.set({ allowlist: ['news.example'] });
+  chrome._listeners.message[0](
+    { type: 'ds-blocked', counts: { ads: 0, images: 0, media: 0 },
+      frames: ['ads.news.example'] }, {}, () => {});
+  await settle(14);
+  assert.equal((chrome._local._dump().stats || {}).ads || 0, 0,
+               'nothing is blocked on an allowlisted site, so nothing may be counted');
+});
+
+await test('frames are not counted while ad blocking is switched off', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync.set({ ads: false });
+  chrome._listeners.message[0](
+    { type: 'ds-blocked', counts: { ads: 0, images: 0, media: 0 },
+      frames: ['doubleclick.net'] }, {}, () => {});
+  await settle(14);
+  assert.equal((chrome._local._dump().stats || {}).ads || 0, 0);
+});
+
+console.log('\nbackground.js — remembered user choices');
+
+await test('every manual toggle is recorded as an explicit choice', async () => {
+  const { chrome, ctx } = loadBackground();
+  const toggle = vm.runInContext('toggleSite', ctx);
+
+  await toggle('shop.example');           // user chose NOT to block
+  assert.equal(plain(chrome.storage.sync._dump().userChoices)['shop.example'], true);
+
+  await toggle('shop.example');           // user chose TO block
+  assert.equal(plain(chrome.storage.sync._dump().userChoices)['shop.example'], false);
+});
+
+await test('a choice to block is recorded against the covering entry', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ allowlist: ['youtube.com'] });
+  await vm.runInContext('toggleSite', ctx)('www.youtube.com');
+  // Recorded against youtube.com, which is what any future default would add.
+  assert.equal(plain(chrome.storage.sync._dump().userChoices)['youtube.com'], false);
+});
+
+await test('a site the user chose to block is never re-added as a new default', async () => {
+  const { chrome, ctx } = loadBackground();
+  // User blocks a site that is not yet a default.
+  chrome.storage.sync.set({ allowlist: ['later.example'] });
+  await vm.runInContext('toggleSite', ctx)('later.example');
+  assert.ok(!plain(chrome.storage.sync._dump().allowlist).includes('later.example'));
+
+  // A later release adds it to DEFAULT_ALLOWLIST.
+  vm.runInContext("DEFAULT_ALLOWLIST.push('later.example')", ctx);
+  await vm.runInContext('seedDefaultAllowlist', ctx)();
+
+  assert.ok(!plain(chrome.storage.sync._dump().allowlist).includes('later.example'),
+            "a shipped default overrode the user's own decision");
+});
+
+// ---------------------------------------------------------------------------
 // savings_counter.js — classification
 // ---------------------------------------------------------------------------
 
@@ -487,16 +575,28 @@ function loadCounter() {
 await test('classifies elements into ads / images / media', async () => {
   const c = loadCounter();
   c.fire('IMG'); c.fire('IMG');
-  c.fire('SCRIPT'); c.fire('IFRAME');
+  // SCRIPT and OBJECT both fire 'error' when blocked; IFRAME does not and is
+  // handled by the background lookup instead.
+  c.fire('SCRIPT'); c.fire('OBJECT');
   c.fire('VIDEO'); c.fire('AUDIO'); c.fire('SOURCE');
   c.flush();
   assert.equal(c.sent.length, 1, 'should batch into a single message');
   assert.deepEqual(plain(c.sent[0].counts), { ads: 2, images: 2, media: 3 });
 });
 
+await test('an error on an IFRAME is ignored — frames go through the lookup', async () => {
+  const c = loadCounter();
+  c.fire('IFRAME');
+  c.flush();
+  assert.equal(c.sent.length, 0,
+               'counting an iframe error here would double-count it');
+});
+
 await test('ignores element types we do not block', async () => {
   const c = loadCounter();
-  c.fire('LINK'); c.fire('DIV'); c.fire('OBJECT');
+  // EMBED fires nothing at all when blocked (measured), so it is not in the map
+  // even though it can carry an ad.
+  c.fire('LINK'); c.fire('DIV'); c.fire('EMBED');
   c.flush();
   assert.equal(c.sent.length, 0, 'nothing should be sent');
 });

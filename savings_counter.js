@@ -5,12 +5,12 @@
 // script never blocks anything itself and never changes the page.
 //
 // HOW IT COUNTS
-// A subresource that Chrome refuses to load fires an 'error' event on the
-// element that requested it. That event does not bubble, but it IS visible
-// in the capture phase on document, which is the same mechanism
-// hide_broken_images.js already relies on. One listener therefore sees
-// every blocked <img>, <script>, <iframe>, <video>, <audio> and <source>
-// regardless of when it was inserted.
+// Most blocked subresources fire an 'error' event on the element that
+// requested them. That event does not bubble, but it IS visible in the capture
+// phase on document, which is the same mechanism hide_broken_images.js already
+// relies on. One listener therefore sees every blocked <img>, <object>,
+// <script>, <video>, <audio> and <source> regardless of when it was inserted.
+// Frames are the exception and are handled separately at the bottom.
 //
 // WHAT THIS DELIBERATELY DOES NOT DO
 // Chrome offers no production API for "how many bytes did declarativeNetRequest
@@ -24,16 +24,16 @@
 // dead image on a site, a flaky CDN) land in these counts too. That is why the
 // byte constants in background.js are deliberately conservative and the popup
 // labels the total as an estimate rather than a measurement.
-// IFRAME is listed for completeness but rarely fires: Chromium renders a
-// blocked frame as an error document inside the frame instead of firing
-// 'error' on the element, so blocked ad iframes mostly go uncounted. Verified
-// against Edge in scripts/e2e-edge.py — 3 blocked iframes produced 0 events.
-// The meter therefore UNDERCOUNTS ad blocking, which is the right direction to
-// be wrong in.
+//
+// WHAT FIRES WHAT, measured against Edge with this extension loaded rather
+// than assumed (see scripts/probe-events.py):
+//   IMG, OBJECT, SCRIPT   fire 'error'  -> counted here
+//   IFRAME                fires 'load'  -> handled separately below
+//   EMBED                 fires NOTHING -> cannot be counted at all
 const BUCKET_BY_TAG = {
   IMG: 'images',
   SCRIPT: 'ads',
-  IFRAME: 'ads',
+  OBJECT: 'ads',
   VIDEO: 'media',
   AUDIO: 'media',
   SOURCE: 'media',
@@ -41,11 +41,12 @@ const BUCKET_BY_TAG = {
 };
 
 let pending = { ads: 0, images: 0, media: 0 };
+let pendingFrames = [];
 let flushTimer = null;
 let dead = false;
 
 function hasCounts() {
-  return pending.ads > 0 || pending.images > 0 || pending.media > 0;
+  return pending.ads > 0 || pending.images > 0 || pending.media > 0 || pendingFrames.length > 0;
 }
 
 function flush() {
@@ -53,10 +54,12 @@ function flush() {
   if (dead || !hasCounts()) return;
 
   const payload = pending;
+  const frames = pendingFrames;
   pending = { ads: 0, images: 0, media: 0 };
+  pendingFrames = [];
 
   try {
-    chrome.runtime.sendMessage({ type: 'ds-blocked', counts: payload }, () => {
+    chrome.runtime.sendMessage({ type: 'ds-blocked', counts: payload, frames }, () => {
       // The service worker may be asleep or the extension may have been
       // reloaded/updated underneath us. Reading lastError marks it handled so
       // Chrome doesn't log "Unchecked runtime.lastError" on every page.
@@ -90,6 +93,45 @@ document.addEventListener('error', (e) => {
   if (!target.src && !target.getAttribute?.('src')) return;
 
   pending[bucket]++;
+  scheduleFlush();
+}, true);
+
+// --- Frames ---------------------------------------------------------------
+// A blocked frame fires 'load', not 'error': Chromium replaces it with an error
+// document rather than failing the element. From in here a blocked frame and a
+// real cross-origin frame are indistinguishable — contentDocument is null and
+// location throws for both — so guessing would mean inflating the meter, which
+// is worse than undercounting it.
+//
+// Instead the frame's hostname goes to background.js, which holds the actual
+// blocklist and the allowlist and can answer definitively. Frames are orders of
+// magnitude rarer than images, so one lookup per frame is cheap.
+// Ad networks routinely place several frames from the SAME host on one page, so
+// these are counted per frame rather than per hostname — deduping by host here
+// undercounted a fixture with three googlesyndication frames as one. Capped so
+// a pathological page cannot grow the batch without bound.
+const MAX_FRAMES_PER_BATCH = 200;
+
+document.addEventListener('load', (e) => {
+  const el = e.target;
+  if (!el || el.tagName !== 'IFRAME') return;
+
+  const src = el.src || el.getAttribute('src');
+  if (!src) return;
+
+  let host;
+  try {
+    host = new URL(src, location.href).hostname;
+  } catch (err) {
+    return;
+  }
+  // Same-origin frames are never ad frames, and we would only be asking about
+  // the page the user is already on.
+  if (!host || host === location.hostname) return;
+
+  if (pendingFrames.length >= MAX_FRAMES_PER_BATCH) return;
+
+  pendingFrames.push(host);
   scheduleFlush();
 }, true);
 
