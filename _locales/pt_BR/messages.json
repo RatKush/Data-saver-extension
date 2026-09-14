@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Orçamento de dados",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Bloqueia com mais força conforme seu ciclo de cobrança avança. Não consegue medir quantos dados você realmente usou — nenhuma extensão consegue — então nunca afirma um número. Apenas ajusta o ritmo pela sua franquia e pela data, e só acrescenta bloqueio.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Franquia mensal (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Reinicia no dia",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Dia $DAY$ de $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Relaxado",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Rígido",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Muito rígido",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Afrouxar",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Afrouxado",
+    "description": "Dashboard / data budget string."
   }
 }

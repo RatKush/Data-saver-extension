@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "ميزانية البيانات",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "يزداد الحظر صرامةً كلما اقتربت دورة الفوترة من نهايتها. لا يمكنه قياس حجم البيانات التي استهلكتها فعليًا — ولا يمكن ذلك لأي إضافة — لذا فهو لا يذكر أي رقم أبدًا. يضبط وتيرته من حد الاستهلاك والتاريخ فقط، ولا يزيد سوى الحظر.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "الحد الشهري (غيغابايت)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "يوم إعادة التعيين",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "اليوم $DAY$ من $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "متساهل",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "عادي",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "مشدَّد",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "صارم",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "تخفيف",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "تم التخفيف",
+    "description": "Dashboard / data budget string."
   }
 }

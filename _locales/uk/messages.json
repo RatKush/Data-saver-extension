@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Бюджет трафіку",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Блокування стає суворішим у міру наближення кінця розрахункового періоду. Розширення не може виміряти, скільки трафіку ви витратили насправді — цього не може жодне розширення, — тож воно ніколи не називає цифру. Воно лише задає темп за лімітом і датою та тільки додає блокування.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Місячний ліміт (ГБ)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "День скидання",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "День $DAY$ з $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "М’який",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Звичайний",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Суворий",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Максимальний",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Послабити",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Послаблено",
+    "description": "Dashboard / data budget string."
   }
 }

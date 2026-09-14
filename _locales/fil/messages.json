@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Badyet ng data",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Mas mahigpit na nagba-block habang lumalapit sa katapusan ang iyong billing cycle. Hindi nito masusukat kung gaano karaming data ang talagang nagamit mo — walang extension na kaya — kaya hindi ito kailanman nagsasabi ng numero. Batay lang ito sa iyong limitasyon at petsa, at palaging nagdaragdag lang ng pag-block.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Buwanang limitasyon (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Nagre-reset sa araw",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Araw $DAY$ ng $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Maluwag",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Mahigpit",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Napakahigpit",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Luwagan",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Niluwagan",
+    "description": "Dashboard / data budget string."
   }
 }

@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "งบข้อมูล",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "บล็อกเข้มขึ้นเมื่อรอบบิลใกล้หมด ส่วนขยายไม่สามารถวัดได้ว่าคุณใช้ข้อมูลไปจริงเท่าไร — ไม่มีส่วนขยายใดทำได้ — จึงไม่เคยระบุตัวเลขใด ๆ มันกำหนดจังหวะจากโควตาและวันที่เท่านั้น และเพิ่มการบล็อกเพียงอย่างเดียวเสมอ",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "โควตารายเดือน (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "รีเซ็ตวันที่",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "วันที่ $DAY$ จาก $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "ผ่อนคลาย",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "ปกติ",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "เข้มงวด",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "เข้มงวดมาก",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "ผ่อนลง",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "ผ่อนแล้ว",
+    "description": "Dashboard / data budget string."
   }
 }

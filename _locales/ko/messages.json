@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "데이터 예산",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "청구 주기가 진행될수록 더 강하게 차단합니다. 실제로 데이터를 얼마나 썼는지는 측정할 수 없으며, 어떤 확장 프로그램도 할 수 없습니다. 그래서 수치를 제시하지 않습니다. 한도와 날짜만으로 속도를 조절하고, 차단을 더하기만 합니다.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "월 한도 (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "초기화 날짜",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "$DAYS$일 중 $DAY$일차 · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "느슨함",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "보통",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "엄격",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "매우 엄격",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "완화",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "완화됨",
+    "description": "Dashboard / data budget string."
   }
 }

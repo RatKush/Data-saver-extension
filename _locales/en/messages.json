@@ -294,5 +294,63 @@
   "dashSiteHistorySub": {
     "message": "Keeps a list of the sites where things were blocked, so this page can show where your savings come from. Stored on this device only and never sent anywhere. Off by default — switching it off again deletes what was recorded.",
     "description": "Dashboard (options page) string."
+  },
+  "dashBudget": {
+    "message": "Data budget",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Blocks harder as your billing cycle runs down. It cannot measure how much data you have actually used — no extension can — so it never claims a figure. It paces from the allowance and the date, and only ever adds blocking.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Monthly allowance (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Resets on day",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Day $DAY$ of $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Relaxed",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Normal",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Tight",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Strict",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Ease off",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Eased off",
+    "description": "Dashboard / data budget string."
   }
 }

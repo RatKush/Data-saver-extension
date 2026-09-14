@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSiteToggle();
   initSavings();
   initReview();
+  initBudget();
 
   document.getElementById('openDashboard').addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
@@ -355,4 +356,55 @@ function initReview() {
   });
 
   later.addEventListener('click', () => close('later'));
+}
+
+// ----------------------------
+// 🪫 Data budget
+// ----------------------------
+// The budget tightens on its own as the cycle runs down, so the popup has to
+// say so plainly and offer a way out in one tap. Silent escalation is the
+// exact failure this whole release is aimed at: the page looks broken, and
+// the fastest visible fix is to uninstall.
+const BUDGET_STAGE_LABEL = {
+  relaxed: 'budgetRelaxed', normal: 'budgetNormal',
+  tight: 'budgetTight', strict: 'budgetStrict'
+};
+
+function initBudget() {
+  const bar = document.getElementById('budgetBar');
+  const text = document.getElementById('budgetText');
+  const ease = document.getElementById('budgetEase');
+  if (!bar || !ease) return;
+
+  chrome.runtime.sendMessage({ type: 'ds-budget-state' }, (res) => {
+    void chrome.runtime.lastError;
+    if (!res || !res.enabled) return; // stays hidden, which is the resting state
+
+    const stage = t(BUDGET_STAGE_LABEL[res.stage]) || res.stage;
+    text.textContent = t('dashBudgetNow', String(res.day), String(res.days), stage)
+      || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
+
+    // Already eased this cycle — show the state, but there is nothing left to
+    // press. Easing twice would just be a second stage down by another name.
+    if (res.eased) {
+      ease.disabled = true;
+      ease.textContent = t('budgetEased') || 'Eased off';
+    }
+
+    bar.hidden = false;
+  });
+
+  ease.addEventListener('click', () => {
+    ease.disabled = true;
+    chrome.runtime.sendMessage({ type: 'ds-budget-ease' }, () => {
+      void chrome.runtime.lastError;
+      // Rules only apply to future requests, so the page needs a reload for
+      // the eased stage to actually show — same as pausing a site.
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs && tabs[0];
+        if (tab && tab.id != null) chrome.tabs.reload(tab.id);
+        window.close();
+      });
+    });
+  });
 }

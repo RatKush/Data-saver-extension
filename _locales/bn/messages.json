@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "ডেটা বাজেট",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "বিলিং চক্র যত ফুরিয়ে আসে, ব্লকিং তত কঠোর হয়। আপনি আসলে কত ডেটা খরচ করেছেন তা এটি মাপতে পারে না — কোনো এক্সটেনশনই পারে না — তাই এটি কখনও কোনো সংখ্যা দাবি করে না। এটি কেবল আপনার সীমা ও তারিখ অনুযায়ী গতি ঠিক করে, এবং সর্বদা কেবল ব্লকিং বাড়ায়।",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "মাসিক সীমা (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "রিসেটের দিন",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "দিন $DAY$/$DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "শিথিল",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "সাধারণ",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "কঠোর",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "অতি কঠোর",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "শিথিল করুন",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "শিথিল করা হয়েছে",
+    "description": "Dashboard / data budget string."
   }
 }

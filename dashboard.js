@@ -190,7 +190,7 @@ function renderProfiles(siteProfiles) {
 // Premium switches
 // ---------------------------------------------------------------------------
 function bindSwitches(settings, managedKeys) {
-  for (const key of ['siteHistory', 'autoMode', 'consent', 'popups']) {
+  for (const key of ['siteHistory', 'autoMode', 'consent', 'popups', 'budgetEnabled']) {
     const el = document.getElementById(key);
     el.checked = Boolean(settings[key]);
     // A managed setting is shown at its enforced value and locked, rather
@@ -202,10 +202,54 @@ function bindSwitches(settings, managedKeys) {
     el.onchange = () => chrome.storage.sync.set({ [key]: el.checked }, () => {
       // background.js clears the recorded sites when this goes off; re-read
       // so the page shows that straight away rather than stale rows.
-      if (key === 'siteHistory') load();
+      if (key === 'siteHistory' || key === 'budgetEnabled') load();
     });
   }
   document.getElementById('managedNotice').classList.toggle('visible', managedKeys.length > 0);
+}
+
+// ---------------------------------------------------------------------------
+// Data budget
+// ---------------------------------------------------------------------------
+const STAGE_LABEL = {
+  relaxed: 'budgetRelaxed', normal: 'budgetNormal',
+  tight: 'budgetTight', strict: 'budgetStrict'
+};
+
+function renderBudget(settings) {
+  const gb = document.getElementById('budgetGB');
+  const day = document.getElementById('budgetResetDay');
+  const badge = document.getElementById('budgetStage');
+  const on = Boolean(settings.budgetEnabled);
+
+  // Stored in MB so the pacing maths has no fractions; shown in GB because
+  // that is the unit every carrier quotes.
+  gb.value = settings.budgetMB ? (settings.budgetMB / 1024) : '';
+  day.value = settings.budgetResetDay || 1;
+  gb.disabled = day.disabled = !on;
+
+  gb.onchange = () => {
+    const value = Math.max(0, parseFloat(gb.value) || 0);
+    chrome.storage.sync.set({ budgetMB: Math.round(value * 1024) }, load);
+  };
+  day.onchange = () => {
+    // Clamped to 28 for the same reason cycleInfo clamps it: the anchor has
+    // to exist in February.
+    const value = Math.min(Math.max(parseInt(day.value, 10) || 1, 1), 28);
+    day.value = value;
+    chrome.storage.sync.set({ budgetResetDay: value }, load);
+  };
+
+  if (!on) { badge.hidden = true; return; }
+
+  chrome.runtime.sendMessage({ type: 'ds-budget-state' }, (res) => {
+    void chrome.runtime.lastError;
+    if (!res || !res.enabled) { badge.hidden = true; return; }
+    const stage = t(STAGE_LABEL[res.stage]) || res.stage;
+    badge.textContent = t('dashBudgetNow', String(res.day), String(res.days), stage)
+      || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
+    badge.hidden = false;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -269,9 +313,11 @@ function initBackup() {
 // ---------------------------------------------------------------------------
 function load() {
   chrome.storage.sync.get(
-    { siteProfiles: {}, autoMode: false, consent: false, popups: false, siteHistory: false },
+    { siteProfiles: {}, autoMode: false, consent: false, popups: false, siteHistory: false,
+      budgetEnabled: false, budgetMB: 0, budgetResetDay: 1 },
     (settings) => {
       renderProfiles(settings.siteProfiles || {});
+      renderBudget(settings);
 
       chrome.storage.local.get({ stats: {}, history: {}, siteStats: {} }, (local) => {
         renderHistory(local.history || {}, local.stats || {});

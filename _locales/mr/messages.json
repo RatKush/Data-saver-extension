@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "डेटा बजेट",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "बिलिंग चक्र संपत आल्यावर ब्लॉकिंग अधिक कडक होते. तुम्ही प्रत्यक्षात किती डेटा वापरला हे हे मोजू शकत नाही — कोणतेही विस्तार मोजू शकत नाही — म्हणून ते कधीही आकडा सांगत नाही. ते फक्त तुमची मर्यादा आणि तारखेनुसार वेग ठरवते, आणि नेहमी फक्त ब्लॉकिंग वाढवते.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "मासिक मर्यादा (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "रीसेटचा दिवस",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "दिवस $DAY$/$DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "सैल",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "सामान्य",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "कडक",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "अतिकडक",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "सैल करा",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "सैल केले",
+    "description": "Dashboard / data budget string."
   }
 }

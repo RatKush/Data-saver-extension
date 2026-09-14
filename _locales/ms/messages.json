@@ -265,5 +265,63 @@
         "example": "4"
       }
     }
+  },
+  "dashBudget": {
+    "message": "Bajet data",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetSub": {
+    "message": "Menyekat dengan lebih ketat apabila kitaran bil anda semakin hampir tamat. Ia tidak boleh mengukur berapa banyak data yang anda benar-benar guna — tiada sambungan yang boleh — jadi ia tidak pernah menyebut angka. Ia hanya menetapkan rentak daripada kuota dan tarikh, dan sentiasa hanya menambah sekatan.",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetAllowance": {
+    "message": "Kuota bulanan (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetReset": {
+    "message": "Ditetapkan semula pada hari",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetNow": {
+    "message": "Hari $DAY$ daripada $DAYS$ · $STAGE$",
+    "description": "Dashboard / data budget string.",
+    "placeholders": {
+      "day": {
+        "content": "$1",
+        "example": "1"
+      },
+      "days": {
+        "content": "$2",
+        "example": "1"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "1"
+      }
+    }
+  },
+  "budgetRelaxed": {
+    "message": "Longgar",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetNormal": {
+    "message": "Biasa",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetTight": {
+    "message": "Ketat",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetStrict": {
+    "message": "Sangat ketat",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEase": {
+    "message": "Longgarkan",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetEased": {
+    "message": "Dilonggarkan",
+    "description": "Dashboard / data budget string."
   }
 }
