@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Penjimat Data"
+  },
+  "reviewTitle": {
+    "message": "Suka dengan Penjimat Data?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Anda telah menyekat $COUNT$ permintaan setakat ini. Penilaian ringkas membantu orang lain yang mempunyai data terhad menemuinya.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Beri penilaian",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Bukan sekarang",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

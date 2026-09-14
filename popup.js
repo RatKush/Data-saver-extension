@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initSiteToggle();
   initSavings();
+  initReview();
 });
 
 // ----------------------------
@@ -107,6 +108,7 @@ function renderSavings(stats) {
     document.getElementById('savedTop').hidden = true;
     label.textContent = t('savingsEmpty') || 'Browse a little and your savings will show up here';
     since.textContent = t('savingsEstimated') || 'Estimated from blocked requests';
+    renderBar(stats, 0);
     return;
   }
 
@@ -126,6 +128,28 @@ function renderSavings(stats) {
     since.textContent = t('savingsEstimatedSince', date) || `Estimated, since ${date}`;
   } else {
     since.textContent = t('savingsEstimated') || 'Estimated from blocked requests';
+  }
+
+  renderBar(stats, total);
+}
+
+// The three counts are parts of one total, so they are drawn as one bar in a
+// single hue rather than three competing colours. Each segment is also direct-
+// labelled underneath, so the split never rests on colour alone.
+function renderBar(stats, total) {
+  const segments = [
+    ['barAds', stats.ads || 0],
+    ['barImages', stats.images || 0],
+    ['barMedia', stats.media || 0],
+  ];
+
+  for (const [id, value] of segments) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    // A category with a real count always gets a visible sliver rather than a
+    // sub-pixel one, so "some videos were blocked" never renders as nothing.
+    const pct = total > 0 && value > 0 ? Math.max((value / total) * 100, 3) : 0;
+    el.style.width = `${pct}%`;
   }
 }
 
@@ -209,4 +233,53 @@ function initSiteToggle() {
       };
     }
   });
+}
+
+// ----------------------------
+// ⭐ Review prompt
+// ----------------------------
+// Shown in the popup rather than injected into the page. That means it only
+// appears when the user has deliberately opened the panel to look at their own
+// savings — the least intrusive moment available, and the one where the number
+// the prompt refers to is already on screen.
+//
+// background.js owns the decision (shouldAskForReview) for the same reason it
+// owns toggleSite: one implementation, and it is the half that can be tested
+// without a browser. The popup only renders the answer.
+function initReview() {
+  const card = document.getElementById('reviewCard');
+  const body = document.getElementById('reviewBody');
+  const rate = document.getElementById('reviewRate');
+  const later = document.getElementById('reviewLater');
+  if (!card || !rate || !later) return;
+
+  chrome.runtime.sendMessage({ type: 'ds-review-state' }, (res) => {
+    void chrome.runtime.lastError;
+    if (!res || !res.show) return; // stays hidden, which is the resting state
+
+    if (body && res.total) {
+      const msg = t('reviewBody', res.total.toLocaleString());
+      if (msg) body.textContent = msg;
+    }
+    card.hidden = false;
+  });
+
+  function close(action) {
+    card.hidden = true;
+    chrome.runtime.sendMessage({ type: 'ds-review-action', action }, () => {
+      void chrome.runtime.lastError;
+    });
+  }
+
+  rate.addEventListener('click', () => {
+    // runtime.id rather than a hardcoded extension id, so this still points
+    // somewhere sane when the extension is loaded unpacked for testing.
+    chrome.tabs.create({
+      url: `https://chromewebstore.google.com/detail/${chrome.runtime.id}/reviews`
+    });
+    close('rated');
+    window.close();
+  });
+
+  later.addEventListener('click', () => close('later'));
 }

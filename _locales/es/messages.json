@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Ahorro de Datos"
+  },
+  "reviewTitle": {
+    "message": "¿Te gusta Ahorro de Datos?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Has bloqueado $COUNT$ solicitudes hasta ahora. Una valoración rápida ayuda a otras personas con datos limitados a encontrarla.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Valorar",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Ahora no",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

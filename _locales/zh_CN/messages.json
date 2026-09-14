@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "省流量"
+  },
+  "reviewTitle": {
+    "message": "觉得省流量好用吗？",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "你已拦截 $COUNT$ 个请求。简单评分可以帮助流量有限的其他人找到它。",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "去评分",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "以后再说",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

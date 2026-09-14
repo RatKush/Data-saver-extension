@@ -538,6 +538,114 @@ await test('a site the user chose to block is never re-added as a new default', 
 });
 
 // ---------------------------------------------------------------------------
+// background.js — review prompt gate
+// ---------------------------------------------------------------------------
+
+console.log('\nbackground.js — review prompt');
+
+const DAY = 24 * 60 * 60 * 1000;
+const NOW = Date.UTC(2026, 8, 15);
+// Comfortably over both thresholds, so each test below fails for exactly the
+// one reason it is testing rather than incidentally.
+const RICH = { ads: 9000, images: 7000, media: 500, bytes: 1, since: null };
+
+function gate(ctx, over) {
+  return vm.runInContext('shouldAskForReview', ctx)(
+    Object.assign({ stats: RICH, review: null, installedAt: NOW - 40 * DAY, now: NOW }, over)
+  );
+}
+
+await test('asks once the user is past both the count and the age threshold', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(gate(ctx), true);
+});
+
+await test('does not ask below the blocked-request threshold', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(gate(ctx, { stats: { ads: 100, images: 200, media: 3 } }), false);
+});
+
+await test('counts ads, images and media together toward the threshold', async () => {
+  const { ctx } = loadBackground();
+  // None of the three is individually large; the total is what matters.
+  assert.equal(gate(ctx, { stats: { ads: 5000, images: 5000, media: 5000 } }), true);
+  assert.equal(gate(ctx, { stats: { ads: 4999, images: 4999, media: 4999 } }), false);
+});
+
+await test('does not ask before 15 days, however much was blocked', async () => {
+  const { ctx } = loadBackground();
+  // The whole point of the age gate: churn is front-loaded, so a heavy user on
+  // day 14 is exactly the person who should not be prompted yet.
+  assert.equal(gate(ctx, { installedAt: NOW - 14 * DAY }), false);
+  assert.equal(gate(ctx, { installedAt: NOW - 15 * DAY }), true);
+});
+
+await test('falls back to stats.since when there is no install date', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(gate(ctx, { installedAt: null, stats: { ...RICH, since: NOW - 40 * DAY } }), true);
+  assert.equal(gate(ctx, { installedAt: null, stats: { ...RICH, since: NOW - 3 * DAY } }), false);
+});
+
+await test('never asks when there is no date to count from', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(gate(ctx, { installedAt: null, stats: { ...RICH, since: null } }), false);
+});
+
+await test('never asks again once the user has rated', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(gate(ctx, { review: { asks: 0, snoozeUntil: null, done: true } }), false);
+});
+
+await test('stays quiet during the snooze window, then asks again', async () => {
+  const { ctx } = loadBackground();
+  const snoozed = { asks: 1, snoozeUntil: NOW + 5 * DAY, done: false };
+  assert.equal(gate(ctx, { review: snoozed }), false);
+  assert.equal(gate(ctx, { review: { ...snoozed, snoozeUntil: NOW - 1 } }), true);
+});
+
+await test('gives up permanently after two dismissals', async () => {
+  const { ctx } = loadBackground();
+  // Budget spent and the snooze long expired — still silent.
+  assert.equal(gate(ctx, { review: { asks: 2, snoozeUntil: NOW - 100 * DAY, done: false } }), false);
+});
+
+await test('dismissing spends one ask and pushes the next one out', async () => {
+  const { chrome, ctx } = loadBackground();
+  const record = vm.runInContext('recordReviewAction', ctx);
+  await record('later', NOW);
+  const r = plain(chrome.storage.local._dump().review);
+  assert.equal(r.asks, 1);
+  assert.equal(r.done, false);
+  assert.equal(r.snoozeUntil, NOW + 20 * DAY);
+});
+
+await test('rating closes the prompt for good', async () => {
+  const { chrome, ctx } = loadBackground();
+  await vm.runInContext('recordReviewAction', ctx)('rated', NOW);
+  assert.equal(plain(chrome.storage.local._dump().review).done, true);
+});
+
+await test('review state reports the exact blocked total the prompt quotes', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.local.set({ stats: RICH, installedAt: NOW - 40 * DAY });
+  const state = plain(await vm.runInContext('getReviewState', ctx)(NOW));
+  assert.equal(state.show, true);
+  assert.equal(state.total, 16500);
+});
+
+await test('install stamps a date once and never moves it', async () => {
+  const { chrome, ctx } = loadBackground();
+  // Deliberately not Date.now(): a re-stamp would land in the same millisecond
+  // and compare equal, so the test would pass whether or not the guard exists.
+  const first = NOW - 40 * DAY;
+  chrome.storage.local.set({ installedAt: first });
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await Promise.resolve();
+  assert.equal(plain(chrome.storage.local._dump().installedAt), first,
+               'an update re-stamped the install date and pushed the prompt out');
+});
+
+// ---------------------------------------------------------------------------
 // savings_counter.js — classification
 // ---------------------------------------------------------------------------
 

@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Economizar Dados"
+  },
+  "reviewTitle": {
+    "message": "Está gostando do Economizar Dados?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Você já bloqueou $COUNT$ solicitações. Uma avaliação rápida ajuda outras pessoas com dados limitados a encontrar a extensão.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Avaliar",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Agora não",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

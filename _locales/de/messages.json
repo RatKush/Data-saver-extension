@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Datensparmodus"
+  },
+  "reviewTitle": {
+    "message": "Gefällt dir Datensparmodus?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Du hast bisher $COUNT$ Anfragen blockiert. Eine kurze Bewertung hilft anderen mit begrenztem Datenvolumen, sie zu finden.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Bewerten",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Jetzt nicht",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

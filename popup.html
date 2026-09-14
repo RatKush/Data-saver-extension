@@ -4,17 +4,68 @@
   <meta charset="UTF-8">
   <title>Data Saver Controls</title>
   <style>
+    /* ------------------------------------------------------------------
+       PALETTE
+       Built around the extension's own mark — a white download-cloud on
+       charcoal — rather than the neon purple this panel used to carry,
+       which appeared nowhere else in the product. Teal reads as network
+       throughput, holds up against charcoal, and stays legible on white.
+
+       Light mode is not decoration: a Chrome popup renders inside the
+       browser's own chrome, so a dark-only panel looks bolted on for the
+       roughly half of users not running a dark system theme.
+       ------------------------------------------------------------------ */
     :root {
-      --bg: #1e1e20;
-      --surface: #29292c;
-      --surface-2: #323235;
-      --border: #3a3a3e;
-      --text: #f2f2f3;
-      --text-muted: #9a9aa0;
-      --accent: #9b3bff;
-      --accent-hover: #8425f0;
-      --accent-soft: rgba(155, 59, 255, 0.16);
-      --off: #55555b;
+      color-scheme: light dark;
+
+      --bg: #FBFCFC;
+      --surface: #FFFFFF;
+      --surface-2: #F0F4F4;
+      --border: #E0E5E5;
+      --border-2: #CCD4D4;
+      --text: #14181B;
+      --text-muted: #5F6B6B;
+      --accent: #12897A;
+      --accent-hover: #0D6E62;
+      --accent-soft: rgba(18, 137, 122, 0.11);
+      --on-accent: #FFFFFF;
+      --accent-line: rgba(18, 137, 122, 0.34);
+      --off: #C6CECE;
+
+      /* Sequential ramp, one hue in three steps. The breakdown is parts of
+         one total, not three unrelated categories, so a single hue is the
+         correct encoding — and three saturated hues in a 360px panel would
+         read as noise. Segments are separated by a 2px surface gap. */
+      --ramp-1: #77D6C4;
+      --ramp-2: #12897A;
+      --ramp-3: #05433B;
+
+      --shadow: 0 1px 2px rgba(15, 32, 30, 0.06), 0 4px 14px rgba(15, 32, 30, 0.05);
+      --radius: 13px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1B1C1E;
+        --surface: #232629;
+        --surface-2: #2C3034;
+        --border: #34383D;
+        --border-2: #434850;
+        --text: #F1F3F4;
+        --text-muted: #98A0A6;
+        --accent: #35C2AC;
+        --accent-hover: #4AD3BD;
+        --accent-soft: rgba(53, 194, 172, 0.15);
+        --on-accent: #08221F;
+        --accent-line: rgba(53, 194, 172, 0.40);
+        --off: #4A5057;
+
+        --ramp-1: #93EADA;
+        --ramp-2: #2FB9A3;
+        --ramp-3: #2E8A7C;
+
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.28), 0 4px 14px rgba(0, 0, 0, 0.22);
+      }
     }
 
     * { box-sizing: border-box; }
@@ -24,55 +75,196 @@
     html { width: 360px; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+                   Roboto, "Helvetica Neue", Arial, sans-serif;
       margin: 0;
       width: 360px;
       background: var(--bg);
       color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "cv11", "ss01";
     }
+
+    .panel { display: flex; flex-direction: column; }
 
     /* ---------- Header ---------- */
     .header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 18px 20px 15px;
-      border-bottom: 1px solid var(--border);
+      gap: 11px;
+      padding: 16px 18px 14px;
     }
 
     .header img {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
       flex-shrink: 0;
     }
 
+    .header-text { min-width: 0; }
+
     .header-text h1 {
       margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
+      font-size: 14.5px;
+      font-weight: 650;
+      letter-spacing: -0.15px;
+      line-height: 1.25;
     }
 
     .header-text p {
       margin: 2px 0 0;
       font-size: 11.5px;
+      line-height: 1.35;
+      color: var(--text-muted);
+    }
+
+    /* ---------- Shared card ---------- */
+    .card {
+      margin: 0 14px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* ---------- Site control (primary action) ---------- */
+    /* Blocking is aggressive everywhere, so "make this one site work" is the
+       most important control in the popup and sits first, above the meter and
+       the toggles. It used to be a small button at the bottom, below three
+       switches — which meant the fastest visible fix for a broken page was to
+       uninstall. */
+    .site-primary { padding: 12px 13px 13px; }
+
+    .site-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 1px 11px;
+    }
+
+    .site-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .site-dot svg { width: 17px; height: 17px; }
+
+    .site-body { flex: 1; min-width: 0; }
+
+    #siteHost {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #siteStatus {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* The state pip carries the status as shape+colour, so it does not rely on
+       reading the sentence. */
+    #siteStatus::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+    }
+
+    #siteStatus.paused { color: var(--text-muted); }
+    #siteStatus.paused::before { background: var(--off); }
+
+    #siteToggleBtn {
+      width: 100%;
+      border: 1px solid var(--accent-line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.1px;
+      cursor: pointer;
+      background: var(--accent-soft);
+      color: var(--accent);
+      transition: background 0.16s ease, border-color 0.16s ease,
+                  transform 0.12s ease, box-shadow 0.16s ease;
+    }
+
+    #siteToggleBtn:hover:not(:disabled) {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
+      box-shadow: 0 2px 10px var(--accent-soft);
+    }
+
+    #siteToggleBtn:active:not(:disabled) { transform: translateY(1px); }
+
+    #siteToggleBtn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Resumed-here is the changed, noteworthy state — flip the emphasis so it
+       reads at a glance that this site is an exception. */
+    #siteToggleBtn.is-paused {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+      color: var(--text);
+    }
+
+    #siteToggleBtn.is-paused:hover:not(:disabled) {
+      background: var(--off);
+      border-color: var(--off);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    #siteToggleBtn:disabled { opacity: 0.45; cursor: default; }
+
+    .shortcut-hint {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 9px;
+    }
+
+    .shortcut-hint kbd {
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 500;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 1px 5px;
       color: var(--text-muted);
     }
 
     /* ---------- Savings meter ---------- */
-    .savings {
-      margin: 14px 14px 4px;
-      padding: 16px 16px 13px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
+    .savings { padding: 15px 15px 13px; }
 
     .savings-top {
       display: flex;
       align-items: baseline;
       gap: 7px;
-      margin-bottom: 3px;
     }
 
     /* The big number is hidden until there is something to show — a lone
@@ -81,64 +273,97 @@
     .savings-top[hidden] { display: none; }
 
     #savedAmount {
-      font-size: 30px;
+      font-size: 33px;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--accent);
+      letter-spacing: -1.2px;
+      color: var(--text);
       font-variant-numeric: tabular-nums;
-      line-height: 1.1;
+      line-height: 1.05;
     }
 
     #savedUnit {
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
+      letter-spacing: -0.1px;
     }
 
     .savings-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 3px;
+      font-size: 12.5px;
+      font-weight: 550;
+      color: var(--accent);
+      margin-top: 4px;
     }
+
+    /* ---------- Composition bar ---------- */
+    /* Sequential, because these three are parts of one total. Segments carry
+       a 2px surface gap so adjacent steps stay separable, and each is direct-
+       labelled below, so identity never rests on colour alone. */
+    .bar {
+      display: flex;
+      gap: 2px;
+      height: 7px;
+      margin-top: 13px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .bar span:nth-child(1) { background: var(--ramp-1); }
+    .bar span:nth-child(2) { background: var(--ramp-2); }
+    .bar span:nth-child(3) { background: var(--ramp-3); }
 
     .savings-breakdown {
       display: flex;
-      gap: 14px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
+      gap: 10px;
+      margin-top: 11px;
     }
 
-    .savings-stat {
-      flex: 1;
-      min-width: 0;
-    }
+    .savings-stat { flex: 1; min-width: 0; }
 
     .savings-stat b {
       display: block;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 14.5px;
+      font-weight: 650;
       font-variant-numeric: tabular-nums;
+      letter-spacing: -0.3px;
     }
 
     .savings-stat span {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 5px;
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: 1px;
+      margin-top: 2px;
     }
 
-    /* RTL: the few places where physical direction was assumed. Everything else
-       is flexbox, which mirrors on its own. */
-    [dir="rtl"] .savings-foot,
-    [dir="rtl"] .savings-breakdown { direction: rtl; }
-    [dir="rtl"] .savings-stat { text-align: right; }
-    [dir="rtl"] .shortcut-hint kbd { direction: ltr; display: inline-block; }
+    .savings-stat span::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .savings-stat:nth-child(1) span::before { background: var(--ramp-1); }
+    .savings-stat:nth-child(2) span::before { background: var(--ramp-2); }
+    .savings-stat:nth-child(3) span::before { background: var(--ramp-3); }
 
     .savings-foot {
-      font-size: 10px;
+      font-size: 10.5px;
       color: var(--text-muted);
-      margin-top: 9px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -149,60 +374,137 @@
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 10px;
+      font: inherit;
+      font-size: 10.5px;
       cursor: pointer;
-      padding: 2px 4px;
-      border-radius: 4px;
+      padding: 3px 6px;
+      border-radius: 5px;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    #resetStats:hover { color: var(--text); background: var(--surface-2); }
+    #resetStats:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    /* ---------- Review prompt ---------- */
+    /* Asked in the popup rather than injected into the page: it appears only
+       when the user has chosen to look at their own savings, which is both the
+       least intrusive moment and the one where the number is on screen. */
+    .review { padding: 14px 15px 13px; border-color: var(--accent-line); }
+    .review[hidden] { display: none; }
+
+    .review-top { display: flex; align-items: flex-start; gap: 10px; }
+
+    .review-star {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
     }
 
-    #resetStats:hover {
-      color: var(--text);
-      background: var(--surface-2);
+    .review-star svg { width: 16px; height: 16px; }
+
+    .review h2 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: -0.15px;
+      line-height: 1.3;
     }
+
+    #reviewBody {
+      margin: 3px 0 0;
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    .review-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+    .review-actions button {
+      flex: 1;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 9px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+    }
+
+    #reviewRate {
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: var(--on-accent);
+      flex: 1.4;
+    }
+
+    #reviewRate:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+    #reviewLater {
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--text-muted);
+    }
+
+    #reviewLater:hover { background: var(--surface-2); color: var(--text); }
+
+    .review-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     /* ---------- Toggle rows ---------- */
     .rules {
-      padding: 10px 14px;
+      padding: 2px 14px 0;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 2px;
     }
 
     .rule-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 10px;
+      gap: 11px;
+      padding: 9px 10px;
       border-radius: 10px;
+      cursor: pointer;
       transition: background 0.15s ease;
     }
 
-    .rule-row:hover {
-      background: var(--surface);
-    }
+    .rule-row:hover { background: var(--surface); }
 
     .rule-icon {
       width: 32px;
       height: 32px;
-      border-radius: 8px;
+      border-radius: 9px;
       background: var(--surface-2);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
       flex-shrink: 0;
+      transition: background 0.18s ease, color 0.18s ease;
     }
 
-    .rule-body {
-      flex: 1;
-      min-width: 0;
+    .rule-icon svg { width: 17px; height: 17px; }
+
+    /* The icon picks up the accent when its rule is on, so the row's state is
+       legible from the left edge as well as the switch on the right. */
+    .rule-row:has(input:checked) .rule-icon {
+      background: var(--accent-soft);
+      color: var(--accent);
     }
+
+    .rule-body { flex: 1; min-width: 0; }
 
     .rule-title {
       display: block;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
+      letter-spacing: -0.1px;
     }
 
     .rule-subtitle {
@@ -221,11 +523,7 @@
       flex-shrink: 0;
     }
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+    .switch input { opacity: 0; width: 0; height: 0; }
 
     .slider {
       position: absolute;
@@ -243,239 +541,203 @@
       width: 18px;
       left: 2px;
       top: 2px;
-      background-color: white;
-      transition: transform 0.2s ease;
+      background-color: #FFFFFF;
+      /* Overshoots slightly and settles — the difference between a control
+         that moves and one that feels physical. */
+      transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
       border-radius: 50%;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
-    input:checked + .slider {
-      background-color: var(--accent);
-    }
-
-    input:checked + .slider::before {
-      transform: translateX(16px);
-    }
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider::before { transform: translateX(16px); }
 
     input:focus-visible + .slider {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
 
-    /* ---------- Site control (primary action) ---------- */
-    /* Blocking is aggressive everywhere, so "make this one site work" is the
-       most important control in the popup and sits first, above the meter and
-       the toggles. It used to be a small button at the bottom, below three
-       switches — which meant the fastest visible fix for a broken page was to
-       uninstall. */
-    .site-primary {
-      margin: 14px 14px 0;
-      padding: 13px 14px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-
-    .site-line {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-
-    .site-dot {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      background: var(--surface-2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-
-    .site-body {
-      flex: 1;
-      min-width: 0;
-    }
-
-    #siteHost {
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #siteStatus {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      margin-top: 1px;
-    }
-
-    #siteStatus.paused {
-      color: var(--accent);
-    }
-
-    #siteToggleBtn {
-      width: 100%;
-      margin-top: 11px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 10px 12px;
-      font: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      background: var(--surface-2);
-      color: var(--text);
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-
-    #siteToggleBtn:hover:not(:disabled) {
-      background: var(--off);
-    }
-
-    #siteToggleBtn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    /* Paused is the changed, noteworthy state — give it the accent so it reads
-       at a glance that this site is an exception. */
-    #siteToggleBtn.is-paused {
-      background: var(--accent-soft);
-      border-color: rgba(155, 59, 255, 0.42);
-      color: var(--accent);
-    }
-
-    #siteToggleBtn:disabled {
-      opacity: 0.45;
-      cursor: default;
-    }
-
-    .shortcut-hint {
-      font-size: 10.5px;
-      color: var(--text-muted);
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    .shortcut-hint kbd {
-      font-family: inherit;
-      font-size: 10px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1px 5px;
-    }
-
     /* ---------- Footer ---------- */
-    .footer {
-      padding: 10px 18px 14px;
-      text-align: center;
-    }
+    .footer { padding: 8px 18px 13px; text-align: center; }
 
     .saved-flash {
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--accent);
+      font-weight: 550;
       opacity: 0;
       transition: opacity 0.25s ease;
       height: 14px;
     }
 
-    .saved-flash.visible {
-      opacity: 1;
+    .saved-flash.visible { opacity: 1; }
+
+    /* ---------- RTL ---------- */
+    /* Only the places where physical direction was assumed. Everything else is
+       flexbox, which mirrors on its own. */
+    [dir="rtl"] .savings-foot,
+    [dir="rtl"] .savings-breakdown { direction: rtl; }
+    [dir="rtl"] .savings-stat { text-align: right; }
+    [dir="rtl"] .shortcut-hint kbd { direction: ltr; display: inline-block; }
+    [dir="rtl"] #savedAmount { direction: ltr; display: inline-block; }
+
+    /* ---------- Motion ---------- */
+    /* The panel settles in on open. The resting state below is the finished
+       state, so if the animation never runs the popup is still correct. */
+    @media (prefers-reduced-motion: no-preference) {
+      .panel > * {
+        animation: rise 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .panel > *:nth-child(2) { animation-delay: 0.03s; }
+      .panel > *:nth-child(3) { animation-delay: 0.06s; }
+      .panel > *:nth-child(4) { animation-delay: 0.09s; }
+      .panel > *:nth-child(5) { animation-delay: 0.12s; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="icons/icon48.png" alt="">
-    <div class="header-text">
-      <h1 data-i18n="popupTitle">Data Saver</h1>
-      <p data-i18n="popupTagline">Blocking ads, images &amp; autoplay video</p>
-    </div>
-  </div>
-
-  <div class="site-primary">
-    <div class="site-line">
-      <span class="site-dot">🌐</span>
-      <span class="site-body">
-        <div id="siteHost">&nbsp;</div>
-        <div id="siteStatus">&nbsp;</div>
-      </span>
-    </div>
-    <button id="siteToggleBtn" type="button" data-i18n="siteDontBlock">Don't block on this site</button>
-    <div class="shortcut-hint"><span data-i18n="shortcutHint">or press</span> <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
-  </div>
-
-  <div class="savings">
-    <div class="savings-top" id="savedTop" hidden>
-      <span id="savedAmount"></span>
-      <span id="savedUnit" data-i18n="savingsRequests">requests blocked</span>
-    </div>
-    <div class="savings-label" id="savedLabel" data-i18n="savingsCounting">Counting what gets blocked…</div>
-    <div class="savings-breakdown">
-      <div class="savings-stat">
-        <b id="statAds">0</b>
-        <span data-i18n="savingsAds">ads</span>
-      </div>
-      <div class="savings-stat">
-        <b id="statImages">0</b>
-        <span data-i18n="savingsImages">images</span>
-      </div>
-      <div class="savings-stat">
-        <b id="statMedia">0</b>
-        <span data-i18n="savingsVideos">videos</span>
+  <div class="panel">
+    <div class="header">
+      <img src="icons/icon48.png" alt="">
+      <div class="header-text">
+        <h1 data-i18n="popupTitle">Data Saver</h1>
+        <p data-i18n="popupTagline">Blocking ads, images &amp; autoplay video</p>
       </div>
     </div>
-    <div class="savings-foot">
-      <span id="savedSince" data-i18n="savingsEstimated">Estimated from blocked requests</span>
-      <button id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
+
+    <div class="card site-primary">
+      <div class="site-line">
+        <span class="site-dot" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M3 12h18"></path>
+            <path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"></path>
+          </svg>
+        </span>
+        <span class="site-body">
+          <div id="siteHost">&nbsp;</div>
+          <div id="siteStatus">&nbsp;</div>
+        </span>
+      </div>
+      <button id="siteToggleBtn" type="button" data-i18n="siteDontBlock">Don't block on this site</button>
+      <div class="shortcut-hint"><span data-i18n="shortcutHint">or press</span> <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
     </div>
-  </div>
 
-  <div class="rules">
-    <label class="rule-row">
-      <span class="rule-icon">🚫</span>
-      <span class="rule-body">
-        <span class="rule-title" data-i18n="blockAds">Block Ads</span>
-        <span class="rule-subtitle" data-i18n="blockAdsSub">Ad networks &amp; trackers</span>
-      </span>
-      <span class="switch">
-        <input type="checkbox" id="adsToggle">
-        <span class="slider"></span>
-      </span>
-    </label>
+    <div class="card savings">
+      <div class="savings-top" id="savedTop" hidden>
+        <span id="savedAmount"></span>
+        <span id="savedUnit" data-i18n="savingsRequests">requests blocked</span>
+      </div>
+      <div class="savings-label" id="savedLabel" data-i18n="savingsCounting">Counting what gets blocked…</div>
+      <div class="bar" id="savedBar" aria-hidden="true">
+        <span id="barAds"></span>
+        <span id="barImages"></span>
+        <span id="barMedia"></span>
+      </div>
+      <div class="savings-breakdown">
+        <div class="savings-stat">
+          <b id="statAds">0</b>
+          <span data-i18n="savingsAds">ads</span>
+        </div>
+        <div class="savings-stat">
+          <b id="statImages">0</b>
+          <span data-i18n="savingsImages">images</span>
+        </div>
+        <div class="savings-stat">
+          <b id="statMedia">0</b>
+          <span data-i18n="savingsVideos">videos</span>
+        </div>
+      </div>
+      <div class="savings-foot">
+        <span id="savedSince" data-i18n="savingsEstimated">Estimated from blocked requests</span>
+        <button id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
+      </div>
+    </div>
 
-    <label class="rule-row">
-      <span class="rule-icon">🖼️</span>
-      <span class="rule-body">
-        <span class="rule-title" data-i18n="blockImages">Block Images</span>
-        <span class="rule-subtitle" data-i18n="blockImagesSub">Loads pages as text-only</span>
-      </span>
-      <span class="switch">
-        <input type="checkbox" id="imagesToggle">
-        <span class="slider"></span>
-      </span>
-    </label>
+    <div class="card review" id="reviewCard" hidden>
+      <div class="review-top">
+        <span class="review-star" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.14 1 5.86L12 16.94l-5.25 2.76 1-5.86L3.5 9.7l5.9-.9z"></path>
+          </svg>
+        </span>
+        <div>
+          <h2 id="reviewTitle" data-i18n="reviewTitle">Enjoying Data Saver?</h2>
+          <p id="reviewBody">A quick rating helps other people on limited data find it.</p>
+        </div>
+      </div>
+      <div class="review-actions">
+        <button id="reviewRate" type="button" data-i18n="reviewRate">Rate it</button>
+        <button id="reviewLater" type="button" data-i18n="reviewLater">Not now</button>
+      </div>
+    </div>
 
-    <label class="rule-row">
-      <span class="rule-icon">🎬</span>
-      <span class="rule-body">
-        <span class="rule-title" data-i18n="blockVideos">Block Videos</span>
-        <span class="rule-subtitle" data-i18n="blockVideosSub">Stops autoplay &amp; streaming</span>
-      </span>
-      <span class="switch">
-        <input type="checkbox" id="mediaToggle">
-        <span class="slider"></span>
-      </span>
-    </label>
-  </div>
+    <div class="rules">
+      <label class="rule-row">
+        <span class="rule-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M5.6 5.6l12.8 12.8"></path>
+          </svg>
+        </span>
+        <span class="rule-body">
+          <span class="rule-title" data-i18n="blockAds">Block Ads</span>
+          <span class="rule-subtitle" data-i18n="blockAdsSub">Ad networks &amp; trackers</span>
+        </span>
+        <span class="switch">
+          <input type="checkbox" id="adsToggle">
+          <span class="slider"></span>
+        </span>
+      </label>
 
-  <div class="footer">
-    <div class="saved-flash" id="savedFlash" data-i18n="saved">Saved</div>
+      <label class="rule-row">
+        <span class="rule-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4.5" width="18" height="15" rx="2.5"></rect>
+            <circle cx="8.5" cy="10" r="1.6"></circle>
+            <path d="M3.5 16.5l4.7-4.2a2 2 0 0 1 2.7.05L15 16.5"></path>
+            <path d="M14 14.2l1.9-1.7a2 2 0 0 1 2.7.06l1.9 1.8"></path>
+          </svg>
+        </span>
+        <span class="rule-body">
+          <span class="rule-title" data-i18n="blockImages">Block Images</span>
+          <span class="rule-subtitle" data-i18n="blockImagesSub">Loads pages as text-only</span>
+        </span>
+        <span class="switch">
+          <input type="checkbox" id="imagesToggle">
+          <span class="slider"></span>
+        </span>
+      </label>
+
+      <label class="rule-row">
+        <span class="rule-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2.5" y="5" width="19" height="14" rx="2.5"></rect>
+            <path d="M10 9.5l4.5 2.5-4.5 2.5z"></path>
+          </svg>
+        </span>
+        <span class="rule-body">
+          <span class="rule-title" data-i18n="blockVideos">Block Videos</span>
+          <span class="rule-subtitle" data-i18n="blockVideosSub">Stops autoplay &amp; streaming</span>
+        </span>
+        <span class="switch">
+          <input type="checkbox" id="mediaToggle">
+          <span class="slider"></span>
+        </span>
+      </label>
+    </div>
+
+    <div class="footer">
+      <div class="saved-flash" id="savedFlash" data-i18n="saved">Saved</div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

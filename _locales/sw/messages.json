@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "Kihifadhi Data"
+  },
+  "reviewTitle": {
+    "message": "Unafurahia Kihifadhi Data?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "Umezuia maombi $COUNT$ hadi sasa. Ukadiriaji mfupi husaidia wengine wenye data finyu kuipata.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Kadiria",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Si sasa",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

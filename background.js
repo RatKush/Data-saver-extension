@@ -102,6 +102,95 @@ function recordBlocked(counts) {
   return statsQueue;
 }
 
+// ----------------------------
+// ⭐ Review prompt
+// ----------------------------
+// The listing has no ratings at all, which suppresses both search ranking and
+// click-through. Asking is worth doing — but asking the WRONG user is not, and
+// a rating is permanent and public. Hence two conditions, both required.
+//
+// WHY A COUNT AND NOT MEGABYTES
+// The obvious threshold is "500 MB saved", but stats.bytes is a weighted guess
+// built from AVG_BYTES (ads 30 KB / images 35 KB / media 300 KB), so a
+// media-heavy user reaches any MB figure roughly nine times faster than an
+// image-heavy one for the same amount of blocking. That would fire the prompt
+// on our own weighting rather than on the user's experience. The blocked count
+// is exact, it is the figure the meter leads with, and it is the number on
+// screen when the prompt appears. 15,000 is calibrated to the bar 500 MB set:
+// real page mixes measured ~34-35 KB per blocked request (see scripts/e2e-edge.py),
+// which puts 500 MB at ~14,800.
+//
+// WHY 15 DAYS AND NOT 7
+// Cohort churn is front-loaded — the install, see-a-stripped-page, uninstall
+// reaction happens in the first few days. A 7-day prompt catches people
+// mid-wobble. At 15 days the user has survived the risky window and has a real
+// number to point at, which is who should be supplying the listing's first
+// ratings.
+const REVIEW_MIN_BLOCKED = 15000;
+const REVIEW_MIN_DAYS = 15;
+const REVIEW_SNOOZE_DAYS = 20;
+const REVIEW_MAX_ASKS = 2;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+const EMPTY_REVIEW = { asks: 0, snoozeUntil: null, done: false };
+
+// Pure so it can be tested without a browser. Every rejection is explicit:
+// a missing or unparseable input means DON'T ask, never "ask anyway".
+function shouldAskForReview({ stats, review, installedAt, now }) {
+  const r = review || EMPTY_REVIEW;
+
+  // Already rated, or already asked as often as we are willing to. Two asks is
+  // the whole budget — a third would be nagging, and nagging earns one star.
+  if (r.done) return false;
+  if ((r.asks || 0) >= REVIEW_MAX_ASKS) return false;
+  if (r.snoozeUntil && now < r.snoozeUntil) return false;
+
+  const s = stats || {};
+  const total = (s.ads || 0) + (s.images || 0) + (s.media || 0);
+  if (total < REVIEW_MIN_BLOCKED) return false;
+
+  // installedAt is stamped in onInstalled. stats.since is the fallback for
+  // anyone who was already running the extension when that was added; it is
+  // stamped on the first blocked request, so it is never later than the real
+  // install and can only make us wait longer, which is the safe direction.
+  const start = installedAt || s.since;
+  if (!start) return false;
+  if (now - start < REVIEW_MIN_DAYS * DAY_MS) return false;
+
+  return true;
+}
+
+async function getReviewState(now = Date.now()) {
+  const { stats, review, installedAt } = await chrome.storage.local.get({
+    stats: EMPTY_STATS,
+    review: EMPTY_REVIEW,
+    installedAt: null
+  });
+  const s = stats || EMPTY_STATS;
+  return {
+    show: shouldAskForReview({ stats: s, review, installedAt, now }),
+    total: (s.ads || 0) + (s.images || 0) + (s.media || 0)
+  };
+}
+
+// 'rated' closes the prompt permanently. 'later' spends one of the two asks
+// and pushes the next one out; once the budget is gone shouldAskForReview
+// stops returning true on its own, so there is no separate opt-out to store.
+async function recordReviewAction(action, now = Date.now()) {
+  const { review } = await chrome.storage.local.get({ review: EMPTY_REVIEW });
+  const r = Object.assign({}, EMPTY_REVIEW, review);
+
+  if (action === 'rated') {
+    r.done = true;
+  } else {
+    r.asks = (r.asks || 0) + 1;
+    r.snoozeUntil = now + REVIEW_SNOOZE_DAYS * DAY_MS;
+  }
+
+  await chrome.storage.local.set({ review: r });
+  return r;
+}
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg) return;
 
@@ -117,6 +206,29 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       });
     sendResponse({ ok: true });
     return false;
+  }
+
+  if (msg.type === 'ds-review-state') {
+    getReviewState()
+      // Same rule as every other handler here: always answer. The popup keeps
+      // the card hidden until this replies, so a silent rejection is safe, but
+      // a hung channel is not.
+      .then((state) => sendResponse(state))
+      .catch((e) => {
+        console.warn('⚠️ Could not read review state:', e);
+        sendResponse({ show: false, total: 0 });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-review-action') {
+    recordReviewAction(msg.action === 'rated' ? 'rated' : 'later')
+      .then(() => sendResponse({ ok: true }))
+      .catch((e) => {
+        console.warn('⚠️ Could not record review action:', e);
+        sendResponse({ ok: false });
+      });
+    return true;
   }
 
   if (msg.type === 'ds-toggle-site' && msg.hostname) {
@@ -549,6 +661,15 @@ chrome.runtime.onInstalled.addListener((details) => {
       loadAndSetInitialState();
       refreshAllBadges();
     });
+
+  // The review prompt waits on "installed >= 15 days", which needs a date to
+  // count from. stats.since is stamped on the first blocked request rather
+  // than at install, and an upgrading user has no install date at all, so
+  // stamp one here. Written only when absent: re-stamping on every update
+  // would push the prompt out forever for the users most entitled to it.
+  chrome.storage.local.get({ installedAt: null }, ({ installedAt }) => {
+    if (!installedAt) chrome.storage.local.set({ installedAt: Date.now() });
+  });
 
   // Blocking starts the moment this runs, so a brand-new user's next page load
   // looks broken with no explanation. The welcome tab is the explanation — it

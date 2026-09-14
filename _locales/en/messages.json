@@ -126,5 +126,27 @@
   "popupTitle": {
     "message": "Data Saver",
     "description": "Short product name for the popup header and the toolbar tooltip. appName is deliberately keyword-heavy for store search and is too long here — it wrapped to two lines in Hindi."
+  },
+  "reviewTitle": {
+    "message": "Enjoying Data Saver?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "You've blocked $COUNT$ requests so far. A quick rating helps other people on limited data find it.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "Rate it",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "Not now",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }

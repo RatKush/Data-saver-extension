@@ -97,5 +97,27 @@
   },
   "popupTitle": {
     "message": "डेटा सेव्हर"
+  },
+  "reviewTitle": {
+    "message": "डेटा सेव्हर आवडलं का?",
+    "description": "Heading of the in-popup review prompt. Uses the same product name as popupTitle."
+  },
+  "reviewBody": {
+    "message": "आतापर्यंत $COUNT$ विनंत्या ब्लॉक केल्या आहेत. एक छोटी रेटिंग मर्यादित डेटा असलेल्या इतरांना हे शोधण्यात मदत करते.",
+    "description": "Body of the review prompt. $COUNT$ is the exact number of blocked requests, already formatted for the locale.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "17,175"
+      }
+    }
+  },
+  "reviewRate": {
+    "message": "रेटिंग द्या",
+    "description": "Button that opens the Chrome Web Store review page."
+  },
+  "reviewLater": {
+    "message": "आता नको",
+    "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
   }
 }
