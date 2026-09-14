@@ -38,18 +38,36 @@ actually does (reviewers do check).
 ## Permission: storage
 
 > Stores the user's own on/off preference for each blocking category
-> (ads/images/video) and the list of sites they've chosen to pause
-> blocking on. Used only to persist the user's own settings between
-> sessions; nothing here is transmitted anywhere.
+> (ads/images/video), the list of sites they've chosen not to block on,
+> and a local tally of how many requests have been blocked so the
+> extension can show the user their own savings total. Used only to
+> persist the user's own settings and counts between sessions on their
+> own device; nothing here is transmitted anywhere, and there is no
+> server to transmit it to.
 
 ## Permission: scripting
 
 > Registers the small on-page scripts that (a) pause/stop autoplaying
 > video and audio elements, (b) hide the broken-image placeholder boxes
-> left behind when an image is blocked, and (c) — only while "Block
-> Videos" is on — ensure video hidden inside closed shadow DOM can still
-> be detected and paused. None of these scripts collect or transmit
-> data; they only modify the DOM of the current page.
+> left behind when an image is blocked, (c) — only while "Block Videos"
+> is on — ensure video hidden inside closed shadow DOM can still be
+> detected and paused, and (d) count how many blocked requests occurred
+> on the page so the extension can show the user a running savings
+> total. Script (d) observes only load-failure events on the page's own
+> images, scripts and media elements; it reads no page content, and
+> reports nothing but three integers to the extension's own background
+> script. None of these scripts collect or transmit data off the device.
+
+## Note on the savings counter (new in v2.2)
+
+> The popup shows how many ads, images and videos have been blocked and
+> an estimate of the data saved. Those counts are produced on the user's
+> own device, stored on the user's own device, and shown only to that
+> user. They are never sent anywhere — the extension has no server, no
+> analytics and no network calls of its own. The byte figure is an
+> ESTIMATE derived from the number of blocked requests, and the UI
+> labels it as such, because Chrome exposes no per-request transfer size
+> to extensions in a production build.
 
 ---
 
@@ -61,6 +79,12 @@ that's accurate for all of: personally identifiable info, health info,
 financial info, authentication info, personal communications, location,
 web history, user activity, website content. Data Saver collects none of
 these; see the privacy policy for the full explanation.
+
+This stays accurate with the v2.2 savings counter. Chrome's disclosure
+asks whether data is COLLECTED, which it defines as transmitted off the
+user's device. The counter's three integers never leave the machine and
+the extension makes no network requests of its own, so "No" remains the
+correct answer for every row — including "user activity".
 
 If the dashboard asks you to certify compliance with the Developer
 Program Policies re: not selling user data — that's also accurate to
