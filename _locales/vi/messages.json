@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "Để sau",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "Quy tắc theo trang & lịch sử",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "Đang chặn tại đây — nhấp để cho phép trên trang này",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "Đang cho phép — nhấp để chặn trên trang này",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

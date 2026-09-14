@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "以后再说",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "站点规则与历史",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "在此拦截 — 点击以在本站允许",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "在此允许 — 点击以在本站拦截",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

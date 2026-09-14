@@ -148,5 +148,139 @@
   "reviewLater": {
     "message": "Not now",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "Per-site rules & history",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "Blocking here — click to allow on this site",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "Allowed here — click to block on this site",
+    "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Data Saver dashboard",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Everything below is stored on this device only. There is no account and no server to send it to.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Some settings are managed by your organisation and cannot be changed here.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Savings history",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Clear history",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Nothing recorded yet.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Last 7 days",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Last 30 days",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "All time",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Where it saved the most",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Nothing recorded yet.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Premium",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Adapt to connection speed",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Stop blocking images when the connection is fast. Uses the browser's own speed estimate — nothing is measured or sent.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Answer cookie banners",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Chooses “reject” or “necessary only” where a banner offers it. Never accepts on your behalf — if no private option can be found, the banner is hidden and nothing is agreed to.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Block unwanted popups",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Blocks windows a page opens on its own. Windows you open by clicking still work.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Per-site rules",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "No per-site rules yet. Open the popup on any site to add one.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Remove",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Backup & deploy",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Export settings",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Import settings",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Exports every switch, paused site and per-site rule as a JSON file. The same file can be pushed to a managed fleet as policy.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Could not export settings.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "That file is not valid JSON.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Could not import that file.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "Imported $N$ settings.",
+    "description": "Dashboard confirmation after importing a policy file.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "나중에",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "사이트별 규칙 및 기록",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "여기서 차단 중 — 클릭하면 이 사이트에서 허용",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "여기서 허용 중 — 클릭하면 이 사이트에서 차단",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

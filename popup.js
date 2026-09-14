@@ -67,6 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initSiteToggle();
   initSavings();
   initReview();
+
+  document.getElementById('openDashboard').addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+    window.close();
+  });
 });
 
 // ----------------------------
@@ -181,6 +186,21 @@ function getHostname(url) {
   }
 }
 
+const PILL_LABEL = { ads: 'savingsAds', images: 'savingsImages', media: 'savingsVideos' };
+
+// Mirrors profileEntryFor in background.js: longest match wins, so a rule on
+// news.example.com beats one on example.com. The popup only reads with this —
+// every write goes through background.js, which owns the canonical version.
+function coveringProfile(hostname, siteProfiles) {
+  let best = null;
+  for (const d of Object.keys(siteProfiles || {})) {
+    if (hostname === d || hostname.endsWith('.' + d)) {
+      if (!best || d.length > best.length) best = d;
+    }
+  }
+  return best;
+}
+
 function initSiteToggle() {
   const siteHost = document.getElementById('siteHost');
   const siteStatus = document.getElementById('siteStatus');
@@ -208,7 +228,60 @@ function initSiteToggle() {
       render(Boolean(res && res.paused));
     });
 
+    // The three pills show what happens ON THIS SITE. They are hidden while the
+    // whole site is paused, because a per-category rule cannot mean anything
+    // when nothing is being blocked here at all.
+    function renderPills(isPaused) {
+      const box = document.getElementById('siteOnly');
+      if (!box) return;
+      if (isPaused) { box.hidden = true; return; }
+
+      chrome.storage.sync.get(
+        { ads: true, images: true, media: true, siteProfiles: {} },
+        (data) => {
+          const key = coveringProfile(hostname, data.siteProfiles);
+          const profile = (key && data.siteProfiles[key]) || {};
+          box.hidden = false;
+
+          for (const el of box.querySelectorAll('.pill')) {
+            const k = el.dataset.key;
+            const isOverride = typeof profile[k] === 'boolean';
+            const blocking = isOverride ? profile[k] : data[k];
+
+            el.textContent = t(PILL_LABEL[k]) || el.dataset.key;
+            el.classList.toggle('on', blocking);
+            el.classList.toggle('override', isOverride);
+            el.title = blocking
+              ? (t('pillBlocking') || 'Blocking here — click to allow on this site')
+              : (t('pillAllowing') || 'Allowed here — click to block on this site');
+
+            el.onclick = () => {
+              const next = Object.assign({}, profile);
+              const flipped = !blocking;
+              // Back in line with the global switch? Drop the override rather
+              // than storing a rule that says the same thing.
+              if (flipped === data[k]) delete next[k];
+              else next[k] = flipped;
+
+              for (const p of box.querySelectorAll('.pill')) p.disabled = true;
+              chrome.runtime.sendMessage(
+                { type: 'ds-site-profile', hostname, profile: next },
+                () => {
+                  void chrome.runtime.lastError;
+                  // Rules only apply to future requests, so the page has to
+                  // reload for this to be visible — same as pausing a site.
+                  if (tab.id != null) chrome.tabs.reload(tab.id);
+                  window.close();
+                }
+              );
+            };
+          }
+        }
+      );
+    }
+
     function render(isPaused) {
+      renderPills(isPaused);
       siteStatus.textContent = isPaused
         ? (t('siteNotBlocking') || 'Not blocking on this site')
         : (t('siteBlocking') || 'Blocking active');

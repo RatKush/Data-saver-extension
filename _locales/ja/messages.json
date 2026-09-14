@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "後で",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "サイトごとの設定と履歴",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "このサイトではブロック中 — クリックで許可",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "このサイトでは許可中 — クリックでブロック",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

@@ -46,10 +46,45 @@ const COUNTER_SCRIPT = {
   allFrames: true
 };
 
+// Premium layers. Both are off by default and gated on isPro(): consent
+// answering touches what a site records about the user, and popup blocking
+// changes page behaviour, so neither should switch itself on.
+const CONSENT_SCRIPT = {
+  id: 'data-saver-consent',
+  matches: ['<all_urls>'],
+  js: ['consent_buster.js'],
+  runAt: 'document_idle',
+  allFrames: false
+};
+
+const POPUP_SCRIPT = {
+  id: 'data-saver-popups',
+  matches: ['<all_urls>'],
+  js: ['popup_blocker.js'],
+  runAt: 'document_start',
+  allFrames: true,
+  // window.open has to be replaced on the page's own window object, which is
+  // only reachable from the MAIN world — the same reason
+  // force_open_shadow_dom.js runs there.
+  world: 'MAIN'
+};
+
 // Reserved id range for the per-site "pause on this site" dynamic rules
 // (see syncAllowlistDynamicRules), kept distinct from anything else that
 // might one day also use chrome.declarativeNetRequest.updateDynamicRules.
 const ALLOWLIST_RULE_PRIORITY = 1000; // above every static block rule
+const SITE_PROFILE_RULE_PRIORITY = 900;  // above the statics, below a full pause
+
+// ----------------------------
+// 🔑 Entitlement
+// ----------------------------
+// The premium features below are built and fully working; pricing is not
+// decided yet. This is the ONE place a paywall would attach, so adding it
+// later is a change to this function rather than a refactor of every caller.
+// Returning true means everything is unlocked, which is the current state.
+function isPro() {
+  return true;
+}
 
 // ----------------------------
 // 📊 Savings estimation
@@ -73,14 +108,73 @@ function estimateBytes(counts) {
     + (counts.media || 0) * AVG_BYTES.media;
 }
 
+// ----------------------------
+// 📈 Savings history
+// ----------------------------
+// The meter shows one lifetime total, which tells a user nothing about whether
+// last week was better than this one. These two structures are what turn that
+// number into a trend and a "worst offenders" list.
+//
+// PRIVACY. siteStats records HOSTNAMES the user visited where something was
+// blocked. That never leaves the device — there is no server to send it to —
+// so the store's data-use answers are unchanged, but it is still a real record
+// of browsing and is treated as one: capped, prunable, and cleared by its own
+// control separately from the rest of the stats.
+const HISTORY_DAYS = 60;
+const SITE_STATS_MAX = 50;
+
+function dayKey(now) {
+  return new Date(now).toISOString().slice(0, 10); // YYYY-MM-DD, UTC
+}
+
+// Pure, so the pruning rules can be tested without a browser.
+function addToHistory(history, counts, bytes, now) {
+  const out = Object.assign({}, history);
+  const key = dayKey(now);
+  const day = Object.assign({ ads: 0, images: 0, media: 0, bytes: 0 }, out[key]);
+
+  day.ads += counts.ads || 0;
+  day.images += counts.images || 0;
+  day.media += counts.media || 0;
+  day.bytes += bytes || 0;
+  out[key] = day;
+
+  // Keep a rolling window. Sorting the keys rather than comparing dates keeps
+  // this correct across month and year boundaries for free.
+  const keys = Object.keys(out).sort();
+  for (const k of keys.slice(0, Math.max(0, keys.length - HISTORY_DAYS))) delete out[k];
+  return out;
+}
+
+function addToSiteStats(siteStats, host, counts, bytes) {
+  if (!host) return siteStats || {};
+  const out = Object.assign({}, siteStats);
+  const total = (counts.ads || 0) + (counts.images || 0) + (counts.media || 0);
+  const entry = Object.assign({ n: 0, bytes: 0 }, out[host]);
+  entry.n += total;
+  entry.bytes += bytes || 0;
+  out[host] = entry;
+
+  // Cap the list rather than letting it grow with every site ever visited.
+  // Dropping the smallest keeps the "worst offenders" the feature is for.
+  const hosts = Object.keys(out);
+  if (hosts.length > SITE_STATS_MAX) {
+    hosts.sort((a, b) => out[b].n - out[a].n);
+    for (const h of hosts.slice(SITE_STATS_MAX)) delete out[h];
+  }
+  return out;
+}
+
 // chrome.storage is read-modify-write, and several tabs can report blocked
 // requests in the same tick. Chaining every update onto a single promise keeps
 // those increments from overwriting one another.
 let statsQueue = Promise.resolve();
 
-function recordBlocked(counts) {
+function recordBlocked(counts, host, now = Date.now()) {
   statsQueue = statsQueue.then(async () => {
-    const { stats } = await chrome.storage.local.get({ stats: EMPTY_STATS });
+    const { stats, history, siteStats } = await chrome.storage.local.get({
+      stats: EMPTY_STATS, history: {}, siteStats: {}
+    });
 
     const next = {
       ads: (stats.ads || 0) + (counts.ads || 0),
@@ -94,7 +188,12 @@ function recordBlocked(counts) {
       since: stats.since || Date.now()
     };
 
-    await chrome.storage.local.set({ stats: next });
+    const bytes = estimateBytes(counts);
+    await chrome.storage.local.set({
+      stats: next,
+      history: addToHistory(history, counts, bytes, now),
+      siteStats: addToSiteStats(siteStats, host, counts, bytes)
+    });
   }).catch((e) => {
     console.warn('⚠️ Could not record blocked requests:', e);
   });
@@ -197,15 +296,64 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'ds-blocked' && msg.counts) {
     // Frames need a blocklist lookup before they can be counted, so fold the
     // result into the same stats write rather than doing two.
+    const host = hostnameOf(sender && sender.tab && sender.tab.url);
     countBlockedFrames(msg.frames)
       .catch(() => 0)
       .then((frames) => {
         const counts = Object.assign({}, msg.counts);
         counts.ads = (counts.ads || 0) + frames;
-        return recordBlocked(counts);
+        return recordBlocked(counts, host);
       });
     sendResponse({ ok: true });
     return false;
+  }
+
+  // Auto-mode's input. The page reports what navigator.connection says; the
+  // service worker cannot read it meaningfully for the active tab itself.
+  // Worth being precise about what this is: effectiveType is a SPEED ESTIMATE
+  // and saveData is the user's own browser flag. Chrome exposes no "is this
+  // connection metered" signal on desktop, so this is a good heuristic and is
+  // never treated as more than one.
+  if (msg.type === 'ds-connection') {
+    const fast = msg.effectiveType === '4g' && !msg.saveData;
+    chrome.storage.local.get({ autoState: null }, ({ autoState }) => {
+      // Only write when the verdict actually flips, or every page load would
+      // rewrite storage and re-run the whole reconcile.
+      if (autoState && autoState.fast === fast) return;
+      chrome.storage.local.set({ autoState: { fast, at: Date.now() } });
+    });
+    sendResponse({ ok: true });
+    return false;
+  }
+
+  if (msg.type === 'ds-site-profile' && msg.hostname) {
+    setSiteProfile(msg.hostname, msg.profile)
+      .then((profile) => sendResponse({ ok: true, profile }))
+      .catch((e) => {
+        console.warn('⚠️ Could not save site profile:', e);
+        sendResponse({ ok: false });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-export') {
+    exportPolicy()
+      .then((policy) => sendResponse({ ok: true, policy }))
+      .catch((e) => {
+        console.warn('⚠️ Could not export settings:', e);
+        sendResponse({ ok: false });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-import' && msg.policy) {
+    importPolicy(msg.policy)
+      .then((applied) => sendResponse({ ok: true, applied }))
+      .catch((e) => {
+        console.warn('⚠️ Could not import settings:', e);
+        sendResponse({ ok: false, error: String(e && e.message || e) });
+      });
+    return true;
   }
 
   if (msg.type === 'ds-review-state') {
@@ -276,6 +424,205 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 //
 // Every entry is an ordinary allowlist entry, so "Resume blocking here" removes
 // it like any other, and subdomains are covered (see allowlistEntryFor).
+// ----------------------------
+// 🎛️ Per-site profiles
+// ----------------------------
+// The allowlist is all-or-nothing: blocking is either on for a site or off.
+// A profile is the middle ground — "block ads here but let the images
+// through" — stored as a partial override of the three global switches.
+//
+//   siteProfiles = { "example.com": { images: false } }
+//
+// Only keys that DIFFER from the user's global setting are stored, so a
+// profile stays correct when the global switch is later flipped. A site with
+// no profile, or an empty one, behaves exactly as before.
+//
+// Matching is subdomain-aware for the same reason the allowlist is: the DNR
+// condition below uses initiatorDomains, which already covers subdomains, so
+// the stored key must too or the popup and the rules would disagree.
+const PROFILE_KEYS = ['ads', 'images', 'media'];
+
+function profileEntryFor(hostname, siteProfiles) {
+  if (!hostname || !siteProfiles) return null;
+  const keys = Object.keys(siteProfiles);
+  // Longest match wins, so a profile on news.example.com beats one on
+  // example.com rather than depending on object key order.
+  let best = null;
+  for (const d of keys) {
+    if (hostname === d || hostname.endsWith('.' + d)) {
+      if (!best || d.length > best.length) best = d;
+    }
+  }
+  return best;
+}
+
+// What actually applies on this host, after the site's overrides are laid
+// over the global switches. Used by the rules, the content scripts and the
+// popup, so all three cannot drift.
+function effectiveSettings(hostname, data) {
+  const base = { ads: data.ads, images: data.images, media: data.media };
+  const key = profileEntryFor(hostname, data.siteProfiles);
+  if (!key) return base;
+  const profile = data.siteProfiles[key] || {};
+  for (const k of PROFILE_KEYS) {
+    if (typeof profile[k] === 'boolean') base[k] = profile[k];
+  }
+  return base;
+}
+
+// Ad rules match by DESTINATION domain, not by resource type, so "stop
+// blocking ads here" cannot be expressed as a type filter the way images and
+// media can. These are the types ad rules realistically hit, deliberately
+// EXCLUDING image and media so that turning ads back on for a site does not
+// quietly also turn images and video back on — those stay under their own
+// overrides.
+const AD_RESOURCE_TYPES = [
+  'script', 'xmlhttprequest', 'sub_frame', 'ping',
+  'websocket', 'font', 'stylesheet', 'other'
+];
+
+const PROFILE_RESOURCE_TYPES = {
+  ads: AD_RESOURCE_TYPES,
+  images: ['image'],
+  media: ['media']
+};
+
+// One allow rule per (site, category the site wants unblocked). initiatorDomains
+// matches the page making the request and covers subdomains on its own.
+function siteProfileRules(data, startId) {
+  const rules = [];
+  let id = startId;
+  const profiles = data.siteProfiles || {};
+
+  for (const domain of Object.keys(profiles)) {
+    const profile = profiles[domain] || {};
+    for (const key of PROFILE_KEYS) {
+      // Only an explicit "false" (don't block this here) needs a rule. An
+      // explicit "true" needs none — the static ruleset already blocks it.
+      if (profile[key] !== false) continue;
+      // Nothing to override if the category is globally off anyway.
+      if (!data[key]) continue;
+      rules.push({
+        id: id++,
+        priority: SITE_PROFILE_RULE_PRIORITY,
+        action: { type: 'allow' },
+        condition: {
+          initiatorDomains: [domain],
+          resourceTypes: PROFILE_RESOURCE_TYPES[key]
+        }
+      });
+    }
+  }
+  return rules;
+}
+
+// Writing a profile from the popup or the dashboard. Passing an empty object
+// (or one that matches the globals) removes the entry rather than storing a
+// no-op, so the stored set stays a list of real exceptions.
+function setSiteProfile(hostname, profile) {
+  return chrome.storage.sync
+    .get({ siteProfiles: {} })
+    .then(({ siteProfiles }) => {
+      const next = Object.assign({}, siteProfiles);
+      // Edit the entry that already covers this host rather than adding a
+      // narrower one that would never take effect — the same rule the
+      // allowlist follows for subdomains.
+      const key = profileEntryFor(hostname, siteProfiles) || hostname;
+
+      const clean = {};
+      for (const k of PROFILE_KEYS) {
+        if (profile && typeof profile[k] === 'boolean') clean[k] = profile[k];
+      }
+
+      if (Object.keys(clean).length === 0) delete next[key];
+      else next[key] = clean;
+
+      return chrome.storage.sync.set({ siteProfiles: next }).then(() => clean);
+    });
+}
+
+// ----------------------------
+// 📤 Export / import
+// ----------------------------
+// The same shape an administrator would push through managed storage, so a
+// configuration worked out by hand on one machine can be handed to a fleet
+// without being retyped.
+const POLICY_VERSION = 1;
+
+function exportPolicy() {
+  return chrome.storage.sync.get(SETTING_DEFAULTS).then((data) => ({
+    version: POLICY_VERSION,
+    exportedAt: new Date().toISOString(),
+    ads: data.ads,
+    images: data.images,
+    media: data.media,
+    autoMode: data.autoMode,
+    consent: data.consent,
+    popups: data.popups,
+    allowlist: data.allowlist,
+    siteProfiles: data.siteProfiles
+  }));
+}
+
+// Imported JSON is untrusted input — a file the user was handed. Every field
+// is checked and anything unrecognised is dropped rather than merged, so a
+// malformed or hostile file cannot write arbitrary keys into storage.
+function sanitisePolicy(policy) {
+  if (!policy || typeof policy !== 'object') throw new Error('not an object');
+  if (policy.version != null && policy.version !== POLICY_VERSION) {
+    throw new Error(`unsupported version ${policy.version}`);
+  }
+
+  const out = {};
+  for (const k of ['ads', 'images', 'media', 'autoMode', 'consent', 'popups']) {
+    if (typeof policy[k] === 'boolean') out[k] = policy[k];
+  }
+
+  if (Array.isArray(policy.allowlist)) {
+    out.allowlist = policy.allowlist
+      .filter((d) => typeof d === 'string')
+      .map((d) => d.trim().toLowerCase())
+      // A bare hostname only. Anything with a scheme, path, space or wildcard
+      // would not match the way allowlistEntryFor expects and is discarded.
+      .filter((d) => /^[a-z0-9.-]+\.[a-z]{2,}$/.test(d));
+  }
+
+  if (policy.siteProfiles && typeof policy.siteProfiles === 'object' && !Array.isArray(policy.siteProfiles)) {
+    const profiles = {};
+    for (const [domain, profile] of Object.entries(policy.siteProfiles)) {
+      if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(String(domain).toLowerCase())) continue;
+      if (!profile || typeof profile !== 'object') continue;
+      const clean = {};
+      for (const k of PROFILE_KEYS) {
+        if (typeof profile[k] === 'boolean') clean[k] = profile[k];
+      }
+      if (Object.keys(clean).length) profiles[String(domain).toLowerCase()] = clean;
+    }
+    out.siteProfiles = profiles;
+  }
+
+  if (Object.keys(out).length === 0) throw new Error('nothing recognisable to import');
+  return out;
+}
+
+// async, not a plain function that throws: the message handler chains
+// .then().catch() onto this, and a SYNCHRONOUS throw would skip the catch
+// entirely — so sendResponse would never fire and the dashboard would sit
+// waiting for a reply that never comes. Same rule as the toggle handler.
+async function importPolicy(policy) {
+  const clean = sanitisePolicy(policy);
+  await chrome.storage.sync.set(clean);
+  return Object.keys(clean);
+}
+
+// Sites whose profile switches a category OFF also need the matching content
+// script to skip them — the DNR rule stops the request, but the DOM-level
+// scripts would still hide or stop what did load.
+function profileExclusions(data, key) {
+  const profiles = data.siteProfiles || {};
+  return Object.keys(profiles).filter((d) => (profiles[d] || {})[key] === false);
+}
+
 const DEFAULT_ALLOWLIST = [
   // --- Video-on-demand: people arrive here to watch, and know it costs data
   'youtube.com',
@@ -556,9 +903,14 @@ function allowlistMatchPatterns(allowlist) {
   return patterns;
 }
 
-function syncAllowlistDynamicRules(allowlist) {
+// Every dynamic rule the extension owns is rebuilt in one call. Allowlist and
+// profile rules used to be able to collide on ids if they were written
+// separately; generating both from one counter makes that impossible.
+function syncDynamicRules(data) {
+  const allowlist = data.allowlist || [];
   chrome.declarativeNetRequest.getDynamicRules((existingRules) => {
-    const removeRuleIds = existingRules.map((r) => r.id);
+    const removeRuleIds = (existingRules || []).map((r) => r.id);
+
     const addRules = allowlist.map((domain, i) => ({
       id: i + 1,
       priority: ALLOWLIST_RULE_PRIORITY,
@@ -568,12 +920,17 @@ function syncAllowlistDynamicRules(allowlist) {
         resourceTypes: ['main_frame']
       }
     }));
+
+    // Profile rules sit below a full pause but above every static block rule,
+    // so a paused site still wins over its own profile.
+    for (const rule of siteProfileRules(data, addRules.length + 1)) addRules.push(rule);
+
     chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds, addRules }, () => {
       if (chrome.runtime.lastError) {
-        console.warn('⚠️ Error syncing allowlist dynamic rules:', chrome.runtime.lastError.message);
+        console.warn('⚠️ Error syncing dynamic rules:', chrome.runtime.lastError.message);
         return;
       }
-      console.log('🟢 Allowlist synced:', allowlist);
+      console.log(`🟢 Dynamic rules synced: ${allowlist.length} paused, ${addRules.length - allowlist.length} profile`);
     });
   });
 }
@@ -600,8 +957,8 @@ function registerScripts(scripts, isEnabled, allowlist) {
   });
 }
 
-function updateContentScript(key, isEnabled, allowlist) {
-  registerScripts(CONTENT_SCRIPTS[key], isEnabled, allowlist);
+function updateContentScript(key, isEnabled, excluded) {
+  registerScripts(CONTENT_SCRIPTS[key], isEnabled, excluded);
 }
 
 // ----------------------------
@@ -631,16 +988,79 @@ function applyRulesetState(ads, images, media) {
 // 🔄 Reconcile all state from storage
 // ----------------------------
 function refreshAll(data) {
-  const { ads, images, media, allowlist } = data;
+  const { ads, images, media } = data;
+  const allowlist = data.allowlist || [];
+
   applyRulesetState(ads, images, media);
-  updateContentScript('media', media, allowlist);
-  updateContentScript('images', images, allowlist);
+
+  // A site whose profile turns a category off has to be skipped by that
+  // category's content script too: the DNR rule stops the request, but the
+  // DOM-level script would still hide or stop whatever did load.
+  updateContentScript('media', media, allowlist.concat(profileExclusions(data, 'media')));
+  updateContentScript('images', images, allowlist.concat(profileExclusions(data, 'images')));
+
   registerScripts([COUNTER_SCRIPT], ads || images || media, allowlist);
-  syncAllowlistDynamicRules(allowlist);
+  registerScripts([CONSENT_SCRIPT], Boolean(data.consent) && isPro(), allowlist);
+  registerScripts([POPUP_SCRIPT], Boolean(data.popups) && isPro(), allowlist);
+
+  syncDynamicRules(data);
+}
+
+// Managed policy and auto-mode are layered on top of what the user chose, in
+// that order, and the result is what everything downstream sees. Pure so the
+// precedence can be tested without a browser.
+function mergeSettings(user, managed, autoState) {
+  const out = Object.assign({}, user);
+
+  // An administrator's policy wins over the user's own switches. Only keys the
+  // policy actually sets are applied — a partial policy leaves the rest alone.
+  const policy = managed || {};
+  for (const k of ['ads', 'images', 'media', 'consent', 'popups']) {
+    if (typeof policy[k] === 'boolean') out[k] = policy[k];
+  }
+  if (Array.isArray(policy.allowlist)) out.allowlist = policy.allowlist;
+  if (policy.siteProfiles && typeof policy.siteProfiles === 'object') out.siteProfiles = policy.siteProfiles;
+  out.managedKeys = Object.keys(policy);
+
+  // Auto-mode relaxes exactly one thing — image blocking on a connection that
+  // is not short of bandwidth. It deliberately cannot tighten anything and
+  // cannot touch ads or video: a mode that silently changed several settings
+  // would be impossible for a user to reason about, and the churn it targets
+  // is broadband desktops seeing a stripped-back page.
+  if (out.autoMode && autoState && autoState.fast && !policy.images) {
+    out.images = false;
+    out.autoRelaxed = true;
+  }
+
+  return out;
+}
+
+const SETTING_DEFAULTS = {
+  ads: true, images: true, media: true,
+  allowlist: [], siteProfiles: {},
+  autoMode: false, consent: false, popups: false
+};
+
+function readManagedPolicy() {
+  return new Promise((resolve) => {
+    // storage.managed throws rather than resolving empty when no policy is
+    // installed, which is the normal case for every consumer install.
+    if (!chrome.storage.managed) { resolve({}); return; }
+    chrome.storage.managed.get(null, (policy) => {
+      void chrome.runtime.lastError;
+      resolve(policy || {});
+    });
+  });
 }
 
 function loadAndSetInitialState() {
-  chrome.storage.sync.get({ ads: true, images: true, media: true, allowlist: [] }, refreshAll);
+  chrome.storage.sync.get(SETTING_DEFAULTS, (user) => {
+    chrome.storage.local.get({ autoState: null }, ({ autoState }) => {
+      readManagedPolicy().then((managed) => {
+        refreshAll(mergeSettings(user, managed, autoState));
+      });
+    });
+  });
 }
 
 // ----------------------------
@@ -684,7 +1104,7 @@ chrome.runtime.onStartup.addListener(() => {
   console.log('🔁 Browser restarted — ensuring clean rules & scripts');
   // Clean stale scripts before re-registering
   const ids = Object.values(CONTENT_SCRIPTS).flat().map((s) => s.id);
-  ids.push(COUNTER_SCRIPT.id);
+  ids.push(COUNTER_SCRIPT.id, CONSENT_SCRIPT.id, POPUP_SCRIPT.id);
   chrome.scripting.unregisterContentScripts({ ids }, () => {
     void chrome.runtime.lastError;
     loadAndSetInitialState();
@@ -695,12 +1115,20 @@ chrome.runtime.onStartup.addListener(() => {
 // ----------------------------
 // 🧠 React to Settings Changes (single source of truth)
 // ----------------------------
+const RECONCILE_KEYS = [
+  'ads', 'images', 'media', 'allowlist', 'siteProfiles', 'autoMode', 'consent', 'popups'
+];
+
 chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName !== 'sync') return;
-  if (changes.ads || changes.images || changes.media || changes.allowlist) {
-    chrome.storage.sync.get({ ads: true, images: true, media: true, allowlist: [] }, refreshAll);
+  if (areaName === 'sync' && RECONCILE_KEYS.some((k) => changes[k])) {
+    loadAndSetInitialState();
+  }
+  // Auto-mode lives in local storage because it is an observation, not a
+  // preference, and syncing it across devices would be wrong.
+  if (areaName === 'local' && changes.autoState) {
+    loadAndSetInitialState();
   }
   // The allowlist can change from the popup, the keyboard shortcut, or a sync
   // from another device — repaint every tab's badge rather than just the one.
-  if (changes.allowlist) refreshAllBadges();
+  if (areaName === 'sync' && changes.allowlist) refreshAllBadges();
 });

@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "الان نه",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "قوانین هر سایت و تاریخچه",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "در اینجا مسدود است — برای اجازه در این سایت کلیک کنید",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "در اینجا مجاز است — برای مسدودسازی کلیک کنید",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Saver Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+
+      --bg: #FBFCFC;
+      --surface: #FFFFFF;
+      --surface-2: #F0F4F4;
+      --border: #E0E5E5;
+      --border-2: #CCD4D4;
+      --text: #14181B;
+      --text-muted: #5F6B6B;
+      --accent: #12897A;
+      --accent-hover: #0D6E62;
+      --accent-soft: rgba(18, 137, 122, 0.11);
+      --on-accent: #FFFFFF;
+      --accent-line: rgba(18, 137, 122, 0.34);
+      --off: #C6CECE;
+
+      /* Sequential ramp, one hue in three steps. The breakdown is parts of
+         one total, not three unrelated categories, so a single hue is the
+         correct encoding — and three saturated hues in a 360px panel would
+         read as noise. Segments are separated by a 2px surface gap. */
+      --ramp-1: #77D6C4;
+      --ramp-2: #12897A;
+      --ramp-3: #05433B;
+
+      --shadow: 0 1px 2px rgba(15, 32, 30, 0.06), 0 4px 14px rgba(15, 32, 30, 0.05);
+      --radius: 13px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1B1C1E;
+        --surface: #232629;
+        --surface-2: #2C3034;
+        --border: #34383D;
+        --border-2: #434850;
+        --text: #F1F3F4;
+        --text-muted: #98A0A6;
+        --accent: #35C2AC;
+        --accent-hover: #4AD3BD;
+        --accent-soft: rgba(53, 194, 172, 0.15);
+        --on-accent: #08221F;
+        --accent-line: rgba(53, 194, 172, 0.40);
+        --off: #4A5057;
+
+        --ramp-1: #93EADA;
+        --ramp-2: #2FB9A3;
+        --ramp-3: #2E8A7C;
+
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.28), 0 4px 14px rgba(0, 0, 0, 0.22);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    .wrap { max-width: 780px; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; }
+
+    header { display: flex; align-items: center; gap: 13px; margin-bottom: 8px; }
+    header img { width: 34px; height: 34px; border-radius: 9px; }
+    h1 { margin: 0; font-size: 21px; font-weight: 700; letter-spacing: -0.4px; }
+    .lede { color: var(--text-muted); font-size: 13.5px; margin: 0 0 30px 47px; }
+
+    section { margin-bottom: 26px; }
+
+    h2 {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--text-muted); margin: 0 0 11px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 20px;
+    }
+
+    .empty { color: var(--text-muted); font-size: 13px; }
+
+    /* headline figures */
+    .totals { display: flex; flex-wrap: wrap; gap: 28px; margin-bottom: 22px; }
+    .total-n { font-size: 27px; font-weight: 700; letter-spacing: -0.8px; font-variant-numeric: tabular-nums; }
+    .total-l { font-size: 11.5px; color: var(--text-muted); }
+
+    /* 14-day trend — one series, so one colour and no legend */
+    .trend { display: flex; align-items: flex-end; gap: 3px; height: 84px; }
+    .trend div {
+      flex: 1; min-width: 0; background: var(--accent); border-radius: 3px 3px 0 0;
+      min-height: 2px; opacity: 0.85; transition: opacity 0.15s ease;
+    }
+    .trend div:hover { opacity: 1; }
+    .trend-ax {
+      display: flex; justify-content: space-between;
+      font-size: 10.5px; color: var(--text-muted); margin-top: 7px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* top sites */
+    .site-row { display: grid; grid-template-columns: 1fr 74px; gap: 14px; align-items: center; padding: 7px 0; }
+    .site-row + .site-row { border-top: 1px solid var(--border); }
+    .site-name { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .site-bar { height: 5px; background: var(--surface-2); border-radius: 999px; margin-top: 5px; overflow: hidden; }
+    .site-bar i { display: block; height: 100%; background: var(--ramp-2); border-radius: 999px; }
+    .site-n { font-size: 12.5px; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* toggle rows */
+    .row { display: flex; align-items: flex-start; gap: 14px; padding: 13px 0; }
+    .row + .row { border-top: 1px solid var(--border); }
+    .row-body { flex: 1; min-width: 0; }
+    .row-title { font-size: 14px; font-weight: 600; }
+    .row-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+
+    .switch { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; margin-top: 2px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--off);
+              transition: background-color 0.2s ease; border-radius: 999px; }
+    .slider::before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; top: 2px;
+                      background-color: #fff; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+                      transition: transform 0.26s cubic-bezier(0.34,1.56,0.64,1); }
+    input:checked + .slider { background-color: var(--accent); }
+    input:checked + .slider::before { transform: translateX(16px); }
+    input:focus-visible + .slider { outline: 2px solid var(--accent); outline-offset: 2px; }
+    input:disabled + .slider { opacity: 0.5; cursor: not-allowed; }
+
+    /* per-site profiles */
+    .prof { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 11px 0; }
+    .prof + .prof { border-top: 1px solid var(--border); }
+    .prof-host { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+    .chip {
+      font-size: 10.5px; padding: 2px 7px; border-radius: 999px;
+      background: var(--surface-2); color: var(--text-muted); white-space: nowrap;
+    }
+    .chip.on { background: var(--accent-soft); color: var(--accent); }
+
+    button {
+      font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+      padding: 8px 14px; border-radius: 9px;
+      border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text);
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    button:hover { background: var(--off); }
+    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    button.quiet { background: none; border-color: transparent; color: var(--text-muted); padding: 6px 8px; }
+    button.quiet:hover { background: var(--surface-2); color: var(--text); }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .note { font-size: 12px; color: var(--text-muted); margin-top: 12px; }
+
+    .managed {
+      display: none; align-items: center; gap: 9px;
+      background: var(--accent-soft); border: 1px solid var(--accent-line);
+      color: var(--accent); border-radius: 10px; padding: 10px 14px;
+      font-size: 12.5px; font-weight: 600; margin-bottom: 20px;
+    }
+    .managed.visible { display: flex; }
+
+    .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+
+    @media (max-width: 560px) {
+      .prof { grid-template-columns: 1fr auto; }
+      .totals { gap: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="icons/icon48.png" alt="">
+      <h1 data-i18n="dashTitle">Data Saver dashboard</h1>
+    </header>
+    <p class="lede" data-i18n="dashLede">Everything below is stored on this device only. There is no account and no server to send it to.</p>
+
+    <div class="managed" id="managedNotice">
+      <span data-i18n="dashManaged">Some settings are managed by your organisation and cannot be changed here.</span>
+    </div>
+
+    <section>
+      <div class="sec-head">
+        <h2 data-i18n="dashHistory">Savings history</h2>
+        <button class="quiet" id="clearHistory" type="button" data-i18n="dashClearHistory">Clear history</button>
+      </div>
+      <div class="card">
+        <div class="totals">
+          <div><div class="total-n" id="t7">0</div><div class="total-l" data-i18n="dashLast7">Last 7 days</div></div>
+          <div><div class="total-n" id="t30">0</div><div class="total-l" data-i18n="dashLast30">Last 30 days</div></div>
+          <div><div class="total-n" id="tAll">0</div><div class="total-l" data-i18n="dashAllTime">All time</div></div>
+        </div>
+        <div class="trend" id="trend"></div>
+        <div class="trend-ax"><span id="trendFrom"></span><span id="trendTo"></span></div>
+        <p class="empty" id="historyEmpty" data-i18n="dashHistoryEmpty" hidden>Nothing recorded yet.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="dashTopSites">Where it saved the most</h2>
+      <div class="card" id="topSites"></div>
+    </section>
+
+    <section>
+      <h2 data-i18n="dashPremium">Premium</h2>
+      <div class="card">
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" data-i18n="dashAuto">Adapt to connection speed</div>
+            <div class="row-sub" data-i18n="dashAutoSub">Stop blocking images when the connection is fast. Uses the browser's own speed estimate — nothing is measured or sent.</div>
+          </div>
+          <span class="switch"><input type="checkbox" id="autoMode"><span class="slider"></span></span>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" data-i18n="dashConsent">Answer cookie banners</div>
+            <div class="row-sub" data-i18n="dashConsentSub">Chooses "reject" or "necessary only" where a banner offers it. Never accepts on your behalf — if no private option can be found, the banner is hidden and nothing is agreed to.</div>
+          </div>
+          <span class="switch"><input type="checkbox" id="consent"><span class="slider"></span></span>
+        </div>
+        <div class="row">
+          <div class="row-body">
+            <div class="row-title" data-i18n="dashPopups">Block unwanted popups</div>
+            <div class="row-sub" data-i18n="dashPopupsSub">Blocks windows a page opens on its own. Windows you open by clicking still work.</div>
+          </div>
+          <span class="switch"><input type="checkbox" id="popups"><span class="slider"></span></span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="dashProfiles">Per-site rules</h2>
+      <div class="card" id="profiles"></div>
+    </section>
+
+    <section>
+      <h2 data-i18n="dashBackup">Backup &amp; deploy</h2>
+      <div class="card">
+        <div class="actions">
+          <button class="primary" id="exportBtn" type="button" data-i18n="dashExport">Export settings</button>
+          <button id="importBtn" type="button" data-i18n="dashImport">Import settings</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+        </div>
+        <p class="note" id="ioNote" data-i18n="dashBackupNote">Exports every switch, paused site and per-site rule as a JSON file. The same file can be pushed to a managed fleet as policy.</p>
+      </div>
+    </section>
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+</html>

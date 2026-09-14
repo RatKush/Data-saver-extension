@@ -119,5 +119,17 @@
   "reviewLater": {
     "message": "இப்போது வேண்டாம்",
     "description": "Button that dismisses the review prompt. Only two dismissals are ever offered."
+  },
+  "dashOpen": {
+    "message": "தள விதிகள் & வரலாறு",
+    "description": "Link at the bottom of the popup that opens the dashboard."
+  },
+  "pillBlocking": {
+    "message": "இங்கே தடுக்கப்படுகிறது — இந்தத் தளத்தில் அனுமதிக்க கிளிக் செய்யவும்",
+    "description": "Tooltip on a per-site pill that is currently blocking."
+  },
+  "pillAllowing": {
+    "message": "இங்கே அனுமதிக்கப்படுகிறது — இந்தத் தளத்தில் தடுக்க கிளிக் செய்யவும்",
+    "description": "Tooltip on a per-site pill that is currently allowing."
   }
 }

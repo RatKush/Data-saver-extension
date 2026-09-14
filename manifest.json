@@ -62,5 +62,12 @@
         "path": "rules/media.json"
       }
     ]
+  },
+  "storage": {
+    "managed_schema": "managed-schema.json"
+  },
+  "options_ui": {
+    "page": "dashboard.html",
+    "open_in_tab": true
   }
 }
