@@ -112,7 +112,14 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'ds-toggle-site' && msg.hostname) {
-    toggleSite(msg.hostname).then((paused) => sendResponse({ ok: true, paused }));
+    toggleSite(msg.hostname)
+      .then((paused) => sendResponse({ ok: true, paused }))
+      // The popup disables its button until this replies, so a silent rejection
+      // would leave it stuck and the popup never closing. Always answer.
+      .catch((e) => {
+        console.warn('⚠️ Could not toggle site:', e);
+        sendResponse({ ok: false });
+      });
     return true; // keep the channel open for the async reply
   }
 
@@ -286,11 +293,15 @@ chrome.commands.onCommand.addListener((command) => {
     const tab = tabs && tabs[0];
     const host = tab && hostnameOf(tab.url);
     if (!host) return;
-    toggleSite(host).then(() => {
-      // Rules and content scripts only affect future requests, so the page has
-      // to reload for the change to be visible — same as the popup's button.
-      if (tab.id != null) chrome.tabs.reload(tab.id);
-    });
+    toggleSite(host)
+      .then(() => {
+        // Rules and content scripts only affect future requests, so the page
+        // has to reload for the change to be visible — same as the popup's
+        // button. Only reload if the write actually landed; reloading after a
+        // failed toggle just looks like the shortcut did nothing.
+        if (tab.id != null) chrome.tabs.reload(tab.id);
+      })
+      .catch((e) => console.warn('⚠️ Could not toggle site from shortcut:', e));
   });
 });
 
@@ -415,10 +426,18 @@ function loadAndSetInitialState() {
 chrome.runtime.onInstalled.addListener((details) => {
   console.log('🚀 Data Saver Extension installed');
   // Seed before reconciling so the first ruleset sync already reflects it.
-  seedDefaultAllowlist().then(() => {
-    loadAndSetInitialState();
-    refreshAllBadges();
-  });
+  // The catch is load-bearing: seeding is a nice-to-have, but reconciling is
+  // what actually turns blocking on. Without it a rejected storage write (sync
+  // disabled, quota, a transient error) skips loadAndSetInitialState entirely
+  // and the extension installs INERT — no rulesets, no content scripts, no
+  // blocking, no error anyone would ever see. Failing to seed must degrade to
+  // "defaults missing", never to "extension does nothing".
+  seedDefaultAllowlist()
+    .catch((e) => console.warn('⚠️ Could not seed default allowlist:', e))
+    .then(() => {
+      loadAndSetInitialState();
+      refreshAllBadges();
+    });
 
   // Blocking starts the moment this runs, so a brand-new user's next page load
   // looks broken with no explanation. The welcome tab is the explanation — it
