@@ -236,6 +236,23 @@ def main():
         # Start from a clean slate so the assertions below are about this run.
         sw_eval("chrome.storage.local.set({stats:{ads:0,images:0,media:0,bytes:0,since:null}}).then(()=>1)")
 
+        # A fresh profile must come up with YouTube already unblocked, seeded by
+        # onInstalled — this is the default that stops the extension looking
+        # broken on the site people try first.
+        seeded = sw_eval(
+            "chrome.storage.sync.get({allowlist:[],defaultsSeeded:false})"
+            ".then(r=>JSON.stringify(r))")
+        seeded = json.loads(seeded) if seeded else {}
+        print(f"default allowlist: {seeded.get('allowlist')} (seeded={seeded.get('defaultsSeeded')})")
+        yt_ok = ('youtube.com' in (seeded.get('allowlist') or [])
+                 and seeded.get('defaultsSeeded') is True)
+
+        yt_state = sw_eval(
+            "chrome.storage.sync.get({allowlist:[]})"
+            ".then(r=>['youtube.com','www.youtube.com','m.youtube.com','notyoutube.com']"
+            ".map(h=>h+'='+isAllowlisted(h,r.allowlist)).join(' '))")
+        print(f"youtube matching : {yt_state}")
+
         rulesets = sw_eval("chrome.declarativeNetRequest.getEnabledRulesets().then(r=>r.join(','))")
         print(f"rulesets on    : {rulesets}")
 
@@ -277,7 +294,8 @@ def main():
         sw_eval("toggleSite('127.0.0.1').then(p=>p)")
         time.sleep(2)
 
-        allowlist = sw_eval("chrome.storage.sync.get({allowlist:[]}).then(r=>r.allowlist.join(','))")
+        allowlist = sw_eval("chrome.storage.sync.get({allowlist:[]})"
+                            ".then(r=>r.allowlist.filter(d=>d!=='youtube.com').join(','))")
         print(f"allowlist      : {allowlist!r}")
 
         browser.call("Target.createTarget", {"url": fixture})
@@ -289,6 +307,13 @@ def main():
         print(f"blocked while paused: {paused_total} (expected 0)")
 
         ok = True
+        if not yt_ok:
+            print("FAIL: youtube.com was not seeded into the allowlist on install", file=sys.stderr)
+            ok = False
+        if yt_state != ("youtube.com=true www.youtube.com=true "
+                        "m.youtube.com=true notyoutube.com=false"):
+            print(f"FAIL: youtube subdomain matching wrong -> {yt_state}", file=sys.stderr)
+            ok = False
         if allowlist != "127.0.0.1":
             print(f"FAIL: allowlist should contain the host, got {allowlist!r}", file=sys.stderr)
             ok = False

@@ -142,8 +142,11 @@ function initSiteToggle() {
 
     siteHost.textContent = hostname;
 
-    chrome.storage.sync.get({ allowlist: [] }, ({ allowlist }) => {
-      render(allowlist.includes(hostname));
+    // background.js owns subdomain-aware matching — asking it keeps the popup
+    // from disagreeing with the rules on e.g. www.youtube.com vs youtube.com.
+    chrome.runtime.sendMessage({ type: 'ds-site-state', hostname }, (res) => {
+      void chrome.runtime.lastError;
+      render(Boolean(res && res.paused));
     });
 
     function render(isPaused) {

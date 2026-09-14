@@ -32,6 +32,12 @@ stop consuming bandwidth, not just visibly-playing `<video>` tags.
 have been blocked and roughly how much data that saved. Counted on your
 device from what actually got blocked; nothing is sent anywhere.
 
+**Sensible out of the box**
+
+▶️ **YouTube works straight away** — video sites break badly with media
+blocking switched on, so YouTube ships unblocked. Want to save data
+there too? One tap turns blocking back on for it.
+
 **Built for control, not all-or-nothing**
 
 - Three independent toggles — turn off just images, just video, or just
@@ -51,8 +57,8 @@ entirely inside your browser. Full privacy policy: [link]
 
 ---
 
-*Note: the video-streaming, ads and savings-meter paragraphs describe
-what shipped in v2.2 — update this file if the blocking behavior
+*Note: the video-streaming, ads, savings-meter and default-allowlist
+paragraphs describe what shipped in v2.2 — update this file if the blocking behavior
 changes materially in a future version, so the listing stays accurate.
 The meter is an ESTIMATE derived from blocked-request counts (Chrome
 exposes no per-request byte total to extensions); don't describe it as a

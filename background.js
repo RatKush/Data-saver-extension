@@ -115,6 +115,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     toggleSite(msg.hostname).then((paused) => sendResponse({ ok: true, paused }));
     return true; // keep the channel open for the async reply
   }
+
+  // The popup asks rather than testing membership itself, so subdomain
+  // matching has exactly one implementation.
+  if (msg.type === 'ds-site-state' && msg.hostname) {
+    chrome.storage.sync.get({ allowlist: [] }, ({ allowlist }) => {
+      sendResponse({ ok: true, paused: isAllowlisted(msg.hostname, allowlist) });
+    });
+    return true;
+  }
 });
 
 // ----------------------------
@@ -127,6 +136,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 // opening anything. This function is the single implementation behind all of
 // them — the popup used to write the allowlist itself, which would have meant
 // two copies of this logic the moment the shortcut existed.
+
+// Sites that ship unblocked. YouTube simply does not work with media blocking
+// on — the page loads and nothing plays — so shipping it blocked by default
+// trains people to believe the extension is broken rather than working. It is
+// a normal allowlist entry, so "Resume blocking here" removes it like any other.
+const DEFAULT_ALLOWLIST = ['youtube.com'];
+
 function hostnameOf(url) {
   try {
     return new URL(url).hostname || null;
@@ -135,14 +151,42 @@ function hostnameOf(url) {
   }
 }
 
+// The allowlist's DNR rule is `||domain^` and its script pattern is
+// `*://*.domain/*`, both of which cover subdomains. So membership has to be
+// tested the same way — otherwise the popup reports "Blocking active" on
+// www.youtube.com while the rules are quietly allowing it.
+function allowlistEntryFor(hostname, allowlist) {
+  return allowlist.find((d) => hostname === d || hostname.endsWith('.' + d)) || null;
+}
+
+function isAllowlisted(hostname, allowlist) {
+  return allowlistEntryFor(hostname, allowlist) !== null;
+}
+
 function toggleSite(hostname) {
   return chrome.storage.sync.get({ allowlist: [] }).then(({ allowlist }) => {
-    const paused = allowlist.includes(hostname);
-    const next = paused
-      ? allowlist.filter((d) => d !== hostname)
+    // Resuming on www.youtube.com has to drop the `youtube.com` entry that is
+    // actually covering it, not add a narrower one that changes nothing.
+    const covering = allowlistEntryFor(hostname, allowlist);
+    const next = covering
+      ? allowlist.filter((d) => d !== covering)
       : [...allowlist, hostname];
-    return chrome.storage.sync.set({ allowlist: next }).then(() => !paused);
+    return chrome.storage.sync.set({ allowlist: next }).then(() => !covering);
   });
+}
+
+// Applied once, not as a read-time default: a `get` default only fires while
+// the key is absent, so existing users who had ever used pause would silently
+// miss the new default while everyone else got it. The flag also means that
+// once someone resumes blocking on YouTube, it stays resumed.
+function seedDefaultAllowlist() {
+  return chrome.storage.sync
+    .get({ allowlist: [], defaultsSeeded: false })
+    .then(({ allowlist, defaultsSeeded }) => {
+      if (defaultsSeeded) return;
+      const merged = [...new Set([...allowlist, ...DEFAULT_ALLOWLIST])];
+      return chrome.storage.sync.set({ allowlist: merged, defaultsSeeded: true });
+    });
 }
 
 function updateBadge(tabId, url) {
@@ -152,7 +196,7 @@ function updateBadge(tabId, url) {
     return;
   }
   chrome.storage.sync.get({ allowlist: [] }, ({ allowlist }) => {
-    const paused = allowlist.includes(host);
+    const paused = isAllowlisted(host, allowlist);
     chrome.action.setBadgeText({ tabId, text: paused ? 'OFF' : '' });
     chrome.action.setBadgeBackgroundColor({ tabId, color: '#55555b' });
     chrome.action.setTitle({
@@ -303,8 +347,11 @@ function loadAndSetInitialState() {
 // ----------------------------
 chrome.runtime.onInstalled.addListener((details) => {
   console.log('🚀 Data Saver Extension installed');
-  loadAndSetInitialState();
-  refreshAllBadges();
+  // Seed before reconciling so the first ruleset sync already reflects it.
+  seedDefaultAllowlist().then(() => {
+    loadAndSetInitialState();
+    refreshAllBadges();
+  });
 
   // Blocking starts the moment this runs, so a brand-new user's next page load
   // looks broken with no explanation. The welcome tab is the explanation — it
