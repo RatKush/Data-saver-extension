@@ -22,6 +22,7 @@ INCLUDE=(
   popup.html
   popup.js
   welcome.html
+  welcome.js
   savings_counter.js
   hide_broken_images.js
   stop_all_media.js

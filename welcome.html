@@ -3,192 +3,439 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Data Saver is on</title>
+<title>Data Saver is live</title>
 <style>
-  /* No web fonts and no images on purpose — this page loads on the kind of
-     connection the extension exists for. */
+  /* No web fonts, no images, no external requests — this page loads on exactly
+     the connections the extension exists for. All the energy comes from type,
+     colour and motion, which cost nothing to download. */
   :root {
-    --bg: #1e1e20;
-    --surface: #29292c;
-    --surface-2: #323235;
-    --border: #3a3a3e;
-    --text: #f2f2f3;
-    --text-muted: #9a9aa0;
-    --accent: #9b3bff;
-    --accent-soft: rgba(155, 59, 255, 0.14);
+    --ink: #0c0c10;
+    --ink-2: #121218;
+    --surface: #17171f;
+    --surface-2: #1e1e28;
+    --border: #292936;
+    --border-lit: #3a3a4c;
+    --text: #f5f5f8;
+    --muted: #8d8da3;
+    --violet: #9b3bff;
+    --magenta: #ff3ba8;
+    --grad: linear-gradient(100deg, var(--violet), var(--magenta));
   }
 
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--bg);
+    background: var(--ink);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.6;
-    padding: 48px 20px 64px;
+    overflow-x: hidden;
   }
 
-  main { max-width: 620px; margin: 0 auto; }
+  /* One soft bloom behind the hero, rather than gradients scattered about. */
+  .bloom {
+    position: absolute;
+    top: -300px; left: 50%;
+    width: 900px; height: 640px;
+    margin-left: -450px;
+    background: radial-gradient(closest-side, rgba(155,59,255,.30), rgba(255,59,168,.10) 55%, transparent);
+    filter: blur(18px);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-  .badge {
-    display: inline-block;
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 22px 72px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 64px 0 8px; }
+
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .14em;
     text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-soft);
-    padding: 5px 10px;
+    color: var(--text);
+    background: rgba(155,59,255,.14);
+    border: 1px solid rgba(155,59,255,.4);
+    padding: 7px 14px 7px 11px;
     border-radius: 999px;
   }
 
+  .pip {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--violet);
+    animation: pulse 2.1s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(155,59,255,.7); }
+    70%  { box-shadow: 0 0 0 11px rgba(155,59,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(155,59,255,0); }
+  }
+
   h1 {
-    font-size: 30px;
-    line-height: 1.2;
-    margin: 18px 0 0;
-    letter-spacing: -0.4px;
+    font-size: clamp(40px, 7.4vw, 68px);
+    line-height: 1.03;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    margin: 22px 0 0;
+    text-wrap: balance;
+  }
+
+  /* Painted text needs a real colour underneath: if background-clip:text is
+     unsupported the gradient is ignored and this stays readable. */
+  h1 .pop {
+    color: var(--violet);
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    h1 .pop { color: transparent; }
   }
 
   .lede {
-    font-size: 16px;
-    color: var(--text-muted);
-    margin: 12px 0 0;
+    font-size: 17.5px;
+    color: var(--muted);
+    margin: 18px 0 0;
+    max-width: 54ch;
   }
 
-  h2 {
-    font-size: 15px;
-    margin: 40px 0 0;
-    letter-spacing: -0.1px;
-  }
-
-  p { margin: 10px 0 0; font-size: 14.5px; }
-
-  .card {
-    background: var(--surface);
+  /* ---------- the proof ---------- */
+  .proof {
+    margin-top: 38px;
+    background: linear-gradient(180deg, var(--surface), var(--ink-2));
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    margin-top: 14px;
+    border-radius: 18px;
+    padding: 26px 26px 22px;
   }
 
-  .row {
+  .proof-head {
     display: flex;
-    gap: 13px;
-    align-items: flex-start;
-    padding: 11px 0;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 22px;
   }
 
-  .row + .row { border-top: 1px solid var(--border); }
+  .proof-head h2 { font-size: 15px; margin: 0; font-weight: 700; }
+  .proof-head span { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-  .row .icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+  /* One stacked bar: the page, by weight. The three blocked slices carry the
+     colour, the surviving slice is deliberately drab — the picture makes the
+     argument before any of the text does. */
+  .weight {
+    display: flex;
+    height: 46px;
+    border-radius: 11px;
+    overflow: hidden;
     background: var(--surface-2);
+    gap: 2px;
+  }
+
+  .seg {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    min-width: 0;
+    overflow: hidden;
+    /* Resting state is the FINISHED layout — welcome.js collapses these to 0
+       and grows them back, so a blocked or failed script leaves a correct bar
+       rather than an empty one. flex-shrink absorbs the 2px gaps so the shares
+       still fit exactly across the container. */
+    flex: 0 1 auto;
+    transition: width 1.1s cubic-bezier(.22,.9,.3,1);
+  }
+
+  .seg i {
+    font-style: normal;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: rgba(255,255,255,.96);
+    white-space: nowrap;
+    padding: 0 6px;
+  }
+
+  /* Widths mirror the data-w attributes the script reads. */
+  .s-img   { width: 45%; background: linear-gradient(160deg, #9b3bff, #7b2ce0); }
+  .s-video { width: 20%; background: linear-gradient(160deg, #c73ad4, #a52fc0); }
+  .s-ads   { width: 20%; background: linear-gradient(160deg, #ff3ba8, #e02a8d); }
+  .s-rest  { width: 15%; background: var(--border-lit); }
+  .s-rest i { color: var(--muted); }
+
+  .key {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .key li { display: flex; align-items: center; gap: 7px; }
+  .key b { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .d-img   { background: #9b3bff; }
+  .d-video { background: #c73ad4; }
+  .d-ads   { background: #ff3ba8; }
+  .d-rest  { background: var(--border-lit); }
+
+  .proof-foot {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* ---------- sections ---------- */
+  h2.sec {
+    font-size: 13px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin: 52px 0 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 16px 17px;
+    transition: transform .18s ease, border-color .18s ease;
+  }
+
+  .tile:hover { transform: translateY(-3px); border-color: var(--border-lit); }
+
+  .tile .glyph,
+  .note .glyph {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
     flex-shrink: 0;
   }
 
-  .row b { display: block; font-size: 14px; }
-  .row span { display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .tile .glyph { margin-bottom: 12px; }
 
-  .tip {
-    background: var(--accent-soft);
-    border: 1px solid rgba(155, 59, 255, 0.3);
-    border-radius: 12px;
-    padding: 16px 18px;
+  .tile b { display: block; font-size: 14.5px; }
+  .tile p { margin: 5px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  .note {
     margin-top: 14px;
+    border-radius: 14px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
   }
 
-  .tip b { color: var(--accent); }
+  .note.accent {
+    background: linear-gradient(120deg, rgba(155,59,255,.14), rgba(255,59,168,.08));
+    border-color: rgba(155,59,255,.36);
+  }
 
-  ol { margin: 10px 0 0; padding-left: 20px; font-size: 14.5px; }
-  ol li { margin-top: 6px; }
+  .note.accent .glyph { background: rgba(0,0,0,.3); }
+
+  .note b { display: block; font-size: 14.5px; }
+  .note p { margin: 5px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .note p b { display: inline; color: var(--text); }
+  .note.accent > span > b { color: #d9b4ff; }
+
+  ol.steps { margin: 16px 0 0; padding: 0; list-style: none; counter-reset: s; }
+
+  ol.steps li {
+    counter-increment: s;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 13px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  ol.steps li::before {
+    content: counter(s);
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
 
   kbd {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 1px 6px;
-    font-size: 12.5px;
     font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--surface-2);
+    border: 1px solid var(--border-lit);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    padding: 2px 7px;
+    white-space: nowrap;
   }
 
   footer {
-    margin-top: 44px;
-    padding-top: 20px;
+    margin-top: 54px;
+    padding-top: 22px;
     border-top: 1px solid var(--border);
     font-size: 12.5px;
-    color: var(--text-muted);
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  footer b { color: var(--text); font-weight: 600; }
+
+  /* Entrance: welcome.js adds .anim to <body> and staggers .in onto these.
+     Without JS they are simply already visible — nothing is parked at
+     opacity:0 waiting on a script that might never run. */
+  body.anim .rise { opacity: 0; transform: translateY(14px); }
+  body.anim .rise.in {
+    opacity: 1; transform: none;
+    transition: opacity .55s ease, transform .55s cubic-bezier(.22,.9,.3,1);
+  }
+
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: 1fr; }
+    .hero { padding-top: 44px; }
+    .weight { height: 40px; }
+    /* Below this the narrow slices cannot hold a word legibly — the key carries
+       the labels instead. */
+    .seg i { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; transition: none !important; }
+    body.anim .rise { opacity: 1; transform: none; }
   }
 </style>
 </head>
 <body>
+<div class="bloom"></div>
 <main>
-  <span class="badge">Installed &amp; running</span>
-  <h1>Data Saver is on. Pages will look different.</h1>
-  <p class="lede">All three blockers start switched on, so you get the biggest possible saving straight away. That also means the web will look stripped-back until you tell it otherwise — here's what changed and how to adjust it.</p>
 
-  <h2>What's being blocked right now</h2>
-  <div class="card">
-    <div class="row">
-      <span class="icon">🚫</span>
-      <span>
-        <b>Ads &amp; trackers</b>
-        <span>Ad networks, analytics and tracking scripts. Almost nobody turns this one off.</span>
-      </span>
+  <section class="hero">
+    <span class="live rise"><span class="pip"></span>Data Saver is live</span>
+    <h1 class="rise">Every page you open<br>just got <span class="pop">a lot lighter.</span></h1>
+    <p class="lede rise">Ads, images and video now stop at the network layer — before a single
+    byte reaches your connection. Here's what that actually looks like.</p>
+  </section>
+
+  <section class="proof rise">
+    <div class="proof-head">
+      <h2>Where a page's weight actually goes</h2>
+      <span>typical page &middot; share of total bytes</span>
     </div>
-    <div class="row">
-      <span class="icon">🖼️</span>
-      <span>
-        <b>Images</b>
-        <span>Every image, everywhere. This is the big saving — and the big visual change. Pages load as text.</span>
-      </span>
+
+    <div class="weight" role="img"
+         aria-label="On a typical page, images are about 45 percent of total bytes, video about 20 percent, ads and trackers about 20 percent, and the actual text and code about 15 percent. Data Saver removes the first three.">
+      <span class="seg s-img"   data-w="45"><i>Images</i></span>
+      <span class="seg s-video" data-w="20"><i>Video</i></span>
+      <span class="seg s-ads"   data-w="20"><i>Ads</i></span>
+      <span class="seg s-rest"  data-w="15"><i>Text</i></span>
     </div>
-    <div class="row">
-      <span class="icon">🎬</span>
-      <span>
-        <b>Video &amp; audio</b>
-        <span>Autoplay and streaming, including the HLS/DASH segments most video sites use.</span>
-      </span>
+
+    <ul class="key">
+      <li><span class="dot d-img"></span>Images <b>30–60%</b></li>
+      <li><span class="dot d-video"></span>Video &amp; audio <b>10–35%</b></li>
+      <li><span class="dot d-ads"></span>Ads &amp; trackers <b>10–30%</b></li>
+      <li><span class="dot d-rest"></span>The actual page</li>
+    </ul>
+
+    <p class="proof-foot">Data Saver stops the first three before they download — which on most
+    sites is the large majority of what you were about to pay for. Ranges are typical for the
+    modern web and vary a lot by site; your own running total lives in the popup.</p>
+  </section>
+
+  <h2 class="sec rise">What's switched on</h2>
+  <div class="grid rise">
+    <div class="tile">
+      <span class="glyph">🚫</span>
+      <b>Ads &amp; trackers</b>
+      <p>Ad networks, analytics and tracking scripts. Almost nobody turns this one off.</p>
+    </div>
+    <div class="tile">
+      <span class="glyph">🖼️</span>
+      <b>Images</b>
+      <p>Every image, everywhere. The biggest saving — and the biggest visual change.</p>
+    </div>
+    <div class="tile">
+      <span class="glyph">🎬</span>
+      <b>Video &amp; audio</b>
+      <p>Autoplay and streaming, including the HLS/DASH segments most video sites use.</p>
     </div>
   </div>
 
-  <div class="card" style="border-color:rgba(155,59,255,.3)">
-    <div class="row" style="padding-top:2px">
-      <span class="icon">▶️</span>
-      <span>
-        <b>Video sites already work</b>
-        <span>YouTube, Netflix, Instagram, TikTok, Twitch and other streaming
-        platforms ship unblocked — you already know those use data, and blocking
-        them just stops them working. Want to save data there too? Open one and
-        hit <b>Resume blocking here</b>.</span>
-      </span>
-    </div>
+  <h2 class="sec rise">Two things worth knowing</h2>
+
+  <div class="note rise">
+    <span class="glyph">▶️</span>
+    <span>
+      <b>Streaming sites already work</b>
+      <p>YouTube, Netflix, Instagram, TikTok, Twitch and other video platforms ship unblocked —
+      you already know those cost data, and blocking them just stops them working. Want to save
+      there too? Open one and hit <b>Resume blocking here</b>.</p>
+    </span>
   </div>
 
-  <div class="tip">
-    <b>On unlimited broadband?</b>
-    <p>Then you probably want ads blocked and images left alone. Open the extension and switch <b>Block Images</b> off — you'll keep the ad blocking and the pages will look normal again. Takes one click, and it's the setting most desktop users end up on.</p>
+  <div class="note accent rise">
+    <span class="glyph">📶</span>
+    <span>
+      <b>On unlimited broadband?</b>
+      <p>Then you probably want ads blocked and images left alone. Open the extension and switch
+      <b>Block Images</b> off — you keep the ad blocking and pages look normal again. One click,
+      and it's where most desktop users land.</p>
+    </span>
   </div>
 
-  <h2>How to change anything</h2>
-  <ol>
-    <li>Click the Data Saver icon in your toolbar. If you don't see it, click the puzzle-piece <kbd>🧩</kbd> icon and pin it.</li>
-    <li>Flip any of the three switches. Changes apply straight away.</li>
-    <li>Need one site to work normally? Open the extension and hit <b>Don't block on this site</b> — it's the first thing in the panel. Or just press <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> on any page. That site stays exempt, the toolbar icon shows <b>OFF</b> there, and your other settings are untouched.</li>
+  <h2 class="sec rise">Make it yours</h2>
+  <ol class="steps rise">
+    <li><span>Click the Data Saver icon in your toolbar. Can't see it? Click the puzzle-piece
+    <kbd>🧩</kbd> and pin it.</span></li>
+    <li><span>Flip any of the three switches. Changes apply immediately.</span></li>
+    <li><span>Need one site to behave normally? Hit <b>Don't block on this site</b> at the top of
+    the panel, or press <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>D</kbd> on any page. The toolbar icon
+    shows <b>OFF</b> there, and nothing else changes.</span></li>
   </ol>
 
-  <h2>What you're saving</h2>
-  <p>The popup now keeps a running total of what's been blocked and roughly how much data that saved. It starts at zero — browse for a few minutes and check back.</p>
-
   <footer>
-    Data Saver collects nothing. No analytics, no accounts, no server. Every blocking rule ships inside the extension and runs entirely in your browser — including the savings counter, which never leaves this device.
+    <b>Data Saver collects nothing.</b> No analytics, no accounts, no server. Every blocking rule
+    ships inside the extension and runs entirely in your browser — including the savings counter,
+    which never leaves this device.
   </footer>
+
 </main>
+<script src="welcome.js"></script>
 </body>
 </html>
