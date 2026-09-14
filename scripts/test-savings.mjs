@@ -370,6 +370,44 @@ await test('upgrading from the v2.2 boolean flag adds only the new entries', asy
   assert.ok(list.includes('mysite.example'));
 });
 
+await test('a storage failure during seeding still turns blocking on', async () => {
+  const { chrome } = loadBackground();
+
+  // Reject only the promise form (seeding); the callback form that
+  // loadAndSetInitialState uses keeps working, as it would in the browser.
+  const realGet = chrome.storage.sync.get.bind(chrome.storage.sync);
+  chrome.storage.sync.get = (defaults, cb) =>
+    cb ? realGet(defaults, cb) : Promise.reject(new Error('QUOTA_BYTES quota exceeded'));
+
+  let applied = null;
+  chrome.declarativeNetRequest.updateEnabledRulesets = (o, cb) => { applied = o; cb && cb(); };
+
+  chrome._listeners.installed[0]({ reason: 'install' });
+  await settle(12);
+
+  assert.ok(applied, 'rulesets were never applied — the extension installed inert');
+  assert.deepEqual(plain(applied.enableRulesetIds).sort(),
+                   ['ad-domains', 'ads', 'images', 'media']);
+  assert.ok(chrome._registered.includes('data-saver-savings-counter'),
+            'content scripts were never registered');
+});
+
+await test('a failed toggle still answers the popup instead of hanging it', async () => {
+  const { chrome } = loadBackground();
+  const realGet = chrome.storage.sync.get.bind(chrome.storage.sync);
+  chrome.storage.sync.get = (defaults, cb) =>
+    cb ? realGet(defaults, cb) : Promise.reject(new Error('storage unavailable'));
+
+  let reply = 'never called';
+  chrome._listeners.message[0](
+    { type: 'ds-toggle-site', hostname: 'example.com' }, {}, (r) => { reply = r; });
+  await settle(10);
+
+  assert.notEqual(reply, 'never called',
+                  'popup button would stay disabled and the popup never close');
+  assert.equal(plain(reply).ok, false);
+});
+
 await test('subdomains count as allowlisted', async () => {
   const { ctx } = loadBackground();
   const isAllowlisted = vm.runInContext('isAllowlisted', ctx);
