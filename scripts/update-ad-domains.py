@@ -13,6 +13,7 @@ the unpacked extension.
 Usage:
     python3 scripts/update-ad-domains.py
 """
+import datetime
 import json
 import re
 import urllib.request
@@ -85,7 +86,22 @@ def main() -> None:
         )
 
     OUT_PATH.write_text(json.dumps(rules, separators=(",", ":")), encoding="utf-8")
+
+    # Record when this ran. File mtimes look like a build date but are reset by
+    # any git checkout, so staleness has to be recorded in tracked content —
+    # otherwise a decaying blocklist has no alarm attached to it, which is the
+    # failure mode that degrades the product silently between releases.
+    info = {
+        "built": datetime.date.today().isoformat(),
+        "source": LIST_URL,
+        "rules": len(rules),
+    }
+    (OUT_PATH.parent / "build-info.json").write_text(
+        json.dumps(info, indent=2) + "\n", encoding="utf-8"
+    )
+
     print(f"Wrote {len(rules)} domain-block rules to {OUT_PATH}")
+    print(f"Recorded build date {info['built']} in rules/build-info.json")
     print("Reload the unpacked extension in chrome://extensions to pick up the change.")
 
 

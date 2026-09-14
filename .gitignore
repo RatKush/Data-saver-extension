@@ -8,6 +8,9 @@ _metadata/
 # Build output — regenerate with scripts/package.sh
 dist/
 
-# Private business data — Chrome Web Store analytics export.
-# Remove this line if you actually want it version-controlled.
+# Private business data — Chrome Web Store analytics exports.
+# These contain install/uninstall counts, weekly users and region breakdowns.
+# Remove these lines if you actually want them version-controlled.
 Installs_uninstall data.csv
+Weekly users over time*.csv
+Weekly users over time*.xlsx
