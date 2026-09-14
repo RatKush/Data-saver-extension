@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "டேட்டா சேவர் — விளம்பரம், படம், வீடியோ தடு"
+  },
+  "appDesc": {
+    "message": "விளம்பரங்கள், படங்கள், தானியங்கு வீடியோவைத் தடுத்து டேட்டா சேமியுங்கள். மெதுவான இணைப்புகளுக்கு."
+  },
+  "cmdToggleSite": {
+    "message": "இந்தத் தளத்தில் தடுப்பை நிறுத்து அல்லது தொடங்கு"
+  },
+  "popupTagline": {
+    "message": "விளம்பரம், படம், வீடியோ தடுக்கப்படுகிறது"
+  },
+  "savingsCounting": {
+    "message": "என்ன தடுக்கப்படுகிறது எனக் கணக்கிடுகிறது…"
+  },
+  "savingsEmpty": {
+    "message": "சிறிது உலாவுங்கள், உங்கள் சேமிப்பு இங்கே தெரியும்"
+  },
+  "savingsEstimated": {
+    "message": "தடுக்கப்பட்ட கோரிக்கைகளிலிருந்து மதிப்பீடு"
+  },
+  "savingsEstimatedSince": {
+    "message": "மதிப்பீடு, $DATE$ முதல்",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "விளம்பரம்"
+  },
+  "savingsImages": {
+    "message": "படங்கள்"
+  },
+  "savingsVideos": {
+    "message": "வீடியோ"
+  },
+  "savingsReset": {
+    "message": "மீட்டமை"
+  },
+  "blockAds": {
+    "message": "விளம்பரங்களைத் தடு"
+  },
+  "blockAdsSub": {
+    "message": "விளம்பர நெட்வொர்க் மற்றும் டிராக்கர்"
+  },
+  "blockImages": {
+    "message": "படங்களைத் தடு"
+  },
+  "blockImagesSub": {
+    "message": "பக்கங்கள் உரையாக மட்டும் ஏற்றப்படும்"
+  },
+  "blockVideos": {
+    "message": "வீடியோவைத் தடு"
+  },
+  "blockVideosSub": {
+    "message": "தானியங்கு மற்றும் ஸ்ட்ரீமிங்கை நிறுத்தும்"
+  },
+  "siteNoHost": {
+    "message": "இந்தப் பக்கத்தில் தளம் இல்லை"
+  },
+  "siteNothingToDo": {
+    "message": "இங்கே தடையை நீக்க ஒன்றும் இல்லை"
+  },
+  "siteBlocking": {
+    "message": "தடுப்பு இயங்குகிறது"
+  },
+  "siteNotBlocking": {
+    "message": "இந்தத் தளத்தில் தடுக்கப்படவில்லை"
+  },
+  "siteDontBlock": {
+    "message": "இந்தத் தளத்தில் தடுக்க வேண்டாம்"
+  },
+  "siteResume": {
+    "message": "இங்கே மீண்டும் தடு"
+  },
+  "shortcutHint": {
+    "message": "அல்லது அழுத்தவும்"
+  },
+  "saved": {
+    "message": "சேமிக்கப்பட்டது"
+  },
+  "savingsRequests": {
+    "message": "கோரிக்கைகள் தடுக்கப்பட்டன"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ சேமிப்பு",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "டேட்டா சேவர்"
+  }
+}

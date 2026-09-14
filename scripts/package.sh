@@ -36,6 +36,11 @@ INCLUDE=(
   rules/media.json
 )
 
+# Locales are discovered rather than listed: there are 25 and growing, and a
+# hand-maintained list would silently drop one. The audit below still asserts
+# the zip contains exactly what this array resolves to.
+while IFS= read -r loc; do INCLUDE+=("$loc"); done < <(find _locales -name messages.json | sort)
+
 VERSION=$(python3 -c "import json; print(json.load(open('manifest.json'))['version'])")
 OUT_DIR="dist"
 OUT_FILE="$OUT_DIR/data-saver-extension-v${VERSION}.zip"

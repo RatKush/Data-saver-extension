@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Data Saver",
+  "name": "__MSG_appName__",
   "version": "2.2",
+  "default_locale": "en",
   "minimum_chrome_version": "111",
-  "description": "Save data by blocking ads, images, and autoplay videos — browse in text-only mode.",
+  "description": "__MSG_appDesc__",
   "permissions": [
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
@@ -17,7 +18,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Data Saver",
+    "default_title": "__MSG_popupTitle__",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
@@ -29,6 +30,14 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "commands": {
+    "toggle-site": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "__MSG_cmdToggleSite__"
+    }
   },
   "declarative_net_request": {
     "rule_resources": [
@@ -53,13 +62,5 @@
         "path": "rules/media.json"
       }
     ]
-  },
-  "commands": {
-    "toggle-site": {
-      "suggested_key": {
-        "default": "Alt+Shift+D"
-      },
-      "description": "Stop or resume blocking on the current site"
-    }
   }
 }

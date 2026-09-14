@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Economizar Dados — Bloquear Anúncios, Imagens e Vídeo"
+  },
+  "appDesc": {
+    "message": "Reduza o uso de dados bloqueando anúncios, imagens e vídeos com reprodução automática. Para conexões lentas ou limitadas."
+  },
+  "cmdToggleSite": {
+    "message": "Parar ou retomar o bloqueio neste site"
+  },
+  "popupTagline": {
+    "message": "Bloqueando anúncios, imagens e vídeo automático"
+  },
+  "savingsCounting": {
+    "message": "Contando o que foi bloqueado…"
+  },
+  "savingsEmpty": {
+    "message": "Navegue um pouco e sua economia aparecerá aqui"
+  },
+  "savingsEstimated": {
+    "message": "Estimativa a partir das solicitações bloqueadas"
+  },
+  "savingsEstimatedSince": {
+    "message": "Estimativa, desde $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "anúncios"
+  },
+  "savingsImages": {
+    "message": "imagens"
+  },
+  "savingsVideos": {
+    "message": "vídeos"
+  },
+  "savingsReset": {
+    "message": "Redefinir"
+  },
+  "blockAds": {
+    "message": "Bloquear Anúncios"
+  },
+  "blockAdsSub": {
+    "message": "Redes de anúncios e rastreadores"
+  },
+  "blockImages": {
+    "message": "Bloquear Imagens"
+  },
+  "blockImagesSub": {
+    "message": "Carrega as páginas apenas como texto"
+  },
+  "blockVideos": {
+    "message": "Bloquear Vídeos"
+  },
+  "blockVideosSub": {
+    "message": "Interrompe reprodução automática e streaming"
+  },
+  "siteNoHost": {
+    "message": "Nenhum site nesta página"
+  },
+  "siteNothingToDo": {
+    "message": "Nada para desbloquear aqui"
+  },
+  "siteBlocking": {
+    "message": "Bloqueio ativo"
+  },
+  "siteNotBlocking": {
+    "message": "Não está bloqueando neste site"
+  },
+  "siteDontBlock": {
+    "message": "Não bloquear neste site"
+  },
+  "siteResume": {
+    "message": "Retomar bloqueio aqui"
+  },
+  "shortcutHint": {
+    "message": "ou pressione"
+  },
+  "saved": {
+    "message": "Salvo"
+  },
+  "savingsRequests": {
+    "message": "solicitações bloqueadas"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ economizados",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Economizar Dados"
+  }
+}

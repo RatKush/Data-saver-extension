@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "데이터 세이버 — 광고·이미지·동영상 차단"
+  },
+  "appDesc": {
+    "message": "광고, 이미지, 자동 재생 동영상을 차단해 데이터를 절약하세요. 느리거나 제한된 연결을 위해 만들었습니다."
+  },
+  "cmdToggleSite": {
+    "message": "이 사이트에서 차단 중지 또는 재개"
+  },
+  "popupTagline": {
+    "message": "광고·이미지·자동 재생 동영상 차단 중"
+  },
+  "savingsCounting": {
+    "message": "차단된 항목 집계 중…"
+  },
+  "savingsEmpty": {
+    "message": "잠시 둘러보면 절약량이 여기에 표시됩니다"
+  },
+  "savingsEstimated": {
+    "message": "차단된 요청을 기준으로 한 추정치"
+  },
+  "savingsEstimatedSince": {
+    "message": "추정치, $DATE$부터",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "광고"
+  },
+  "savingsImages": {
+    "message": "이미지"
+  },
+  "savingsVideos": {
+    "message": "동영상"
+  },
+  "savingsReset": {
+    "message": "초기화"
+  },
+  "blockAds": {
+    "message": "광고 차단"
+  },
+  "blockAdsSub": {
+    "message": "광고 네트워크 및 트래커"
+  },
+  "blockImages": {
+    "message": "이미지 차단"
+  },
+  "blockImagesSub": {
+    "message": "페이지를 텍스트로만 불러옵니다"
+  },
+  "blockVideos": {
+    "message": "동영상 차단"
+  },
+  "blockVideosSub": {
+    "message": "자동 재생 및 스트리밍을 중지합니다"
+  },
+  "siteNoHost": {
+    "message": "이 페이지에는 사이트가 없습니다"
+  },
+  "siteNothingToDo": {
+    "message": "여기서 해제할 항목이 없습니다"
+  },
+  "siteBlocking": {
+    "message": "차단 작동 중"
+  },
+  "siteNotBlocking": {
+    "message": "이 사이트에서는 차단하지 않습니다"
+  },
+  "siteDontBlock": {
+    "message": "이 사이트에서 차단 안 함"
+  },
+  "siteResume": {
+    "message": "여기서 차단 재개"
+  },
+  "shortcutHint": {
+    "message": "또는 누르세요"
+  },
+  "saved": {
+    "message": "저장됨"
+  },
+  "savingsRequests": {
+    "message": "건 차단"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ 절약",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "데이터 세이버"
+  }
+}

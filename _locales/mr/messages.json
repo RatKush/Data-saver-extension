@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "डेटा सेव्हर — जाहिराती, प्रतिमा आणि व्हिडिओ ब्लॉक करा"
+  },
+  "appDesc": {
+    "message": "जाहिराती, प्रतिमा आणि ऑटोप्ले व्हिडिओ ब्लॉक करून डेटा वाचवा. संथ किंवा मर्यादित कनेक्शनसाठी."
+  },
+  "cmdToggleSite": {
+    "message": "या साइटवर ब्लॉकिंग थांबवा किंवा पुन्हा सुरू करा"
+  },
+  "popupTagline": {
+    "message": "जाहिराती, प्रतिमा आणि ऑटोप्ले व्हिडिओ ब्लॉक होत आहेत"
+  },
+  "savingsCounting": {
+    "message": "काय ब्लॉक होते ते मोजत आहे…"
+  },
+  "savingsEmpty": {
+    "message": "थोडे ब्राउझ करा, तुमची बचत इथे दिसेल"
+  },
+  "savingsEstimated": {
+    "message": "ब्लॉक केलेल्या विनंत्यांवरून अंदाजे"
+  },
+  "savingsEstimatedSince": {
+    "message": "अंदाजे, $DATE$ पासून",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "जाहिराती"
+  },
+  "savingsImages": {
+    "message": "प्रतिमा"
+  },
+  "savingsVideos": {
+    "message": "व्हिडिओ"
+  },
+  "savingsReset": {
+    "message": "रीसेट"
+  },
+  "blockAds": {
+    "message": "जाहिराती ब्लॉक करा"
+  },
+  "blockAdsSub": {
+    "message": "जाहिरात नेटवर्क आणि ट्रॅकर"
+  },
+  "blockImages": {
+    "message": "प्रतिमा ब्लॉक करा"
+  },
+  "blockImagesSub": {
+    "message": "पाने फक्त मजकूर म्हणून उघडतील"
+  },
+  "blockVideos": {
+    "message": "व्हिडिओ ब्लॉक करा"
+  },
+  "blockVideosSub": {
+    "message": "ऑटोप्ले आणि स्ट्रीमिंग थांबवते"
+  },
+  "siteNoHost": {
+    "message": "या पानावर साइट नाही"
+  },
+  "siteNothingToDo": {
+    "message": "इथे अनब्लॉक करण्यासारखे काही नाही"
+  },
+  "siteBlocking": {
+    "message": "ब्लॉकिंग सुरू आहे"
+  },
+  "siteNotBlocking": {
+    "message": "या साइटवर ब्लॉक होत नाही"
+  },
+  "siteDontBlock": {
+    "message": "या साइटवर ब्लॉक करू नका"
+  },
+  "siteResume": {
+    "message": "इथे पुन्हा ब्लॉक करा"
+  },
+  "shortcutHint": {
+    "message": "किंवा दाबा"
+  },
+  "saved": {
+    "message": "सेव्ह झाले"
+  },
+  "savingsRequests": {
+    "message": "विनंत्या ब्लॉक"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ वाचले",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "डेटा सेव्हर"
+  }
+}

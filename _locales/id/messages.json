@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Penghemat Kuota — Blokir Iklan, Gambar & Video"
+  },
+  "appDesc": {
+    "message": "Hemat kuota dengan memblokir iklan, gambar, dan video autoplay. Untuk koneksi lambat atau terbatas."
+  },
+  "cmdToggleSite": {
+    "message": "Hentikan atau lanjutkan pemblokiran di situs ini"
+  },
+  "popupTagline": {
+    "message": "Memblokir iklan, gambar & video autoplay"
+  },
+  "savingsCounting": {
+    "message": "Menghitung yang diblokir…"
+  },
+  "savingsEmpty": {
+    "message": "Jelajahi sebentar, penghematan Anda akan muncul di sini"
+  },
+  "savingsEstimated": {
+    "message": "Perkiraan dari permintaan yang diblokir"
+  },
+  "savingsEstimatedSince": {
+    "message": "Perkiraan, sejak $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "iklan"
+  },
+  "savingsImages": {
+    "message": "gambar"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "Atur ulang"
+  },
+  "blockAds": {
+    "message": "Blokir Iklan"
+  },
+  "blockAdsSub": {
+    "message": "Jaringan iklan & pelacak"
+  },
+  "blockImages": {
+    "message": "Blokir Gambar"
+  },
+  "blockImagesSub": {
+    "message": "Memuat halaman sebagai teks saja"
+  },
+  "blockVideos": {
+    "message": "Blokir Video"
+  },
+  "blockVideosSub": {
+    "message": "Menghentikan autoplay & streaming"
+  },
+  "siteNoHost": {
+    "message": "Tidak ada situs di halaman ini"
+  },
+  "siteNothingToDo": {
+    "message": "Tidak ada yang perlu dibuka blokirnya"
+  },
+  "siteBlocking": {
+    "message": "Pemblokiran aktif"
+  },
+  "siteNotBlocking": {
+    "message": "Tidak memblokir di situs ini"
+  },
+  "siteDontBlock": {
+    "message": "Jangan blokir di situs ini"
+  },
+  "siteResume": {
+    "message": "Blokir lagi di sini"
+  },
+  "shortcutHint": {
+    "message": "atau tekan"
+  },
+  "saved": {
+    "message": "Tersimpan"
+  },
+  "savingsRequests": {
+    "message": "permintaan diblokir"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ hemat",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Penghemat Kuota"
+  }
+}

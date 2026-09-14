@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Data Saver — I-block ang Ads, Larawan at Video"
+  },
+  "appDesc": {
+    "message": "Makatipid sa data sa pamamagitan ng pag-block ng ads, larawan, at autoplay na video. Para sa mabagal o limitadong koneksyon."
+  },
+  "cmdToggleSite": {
+    "message": "Itigil o ipagpatuloy ang pag-block sa site na ito"
+  },
+  "popupTagline": {
+    "message": "Bina-block ang ads, larawan at autoplay na video"
+  },
+  "savingsCounting": {
+    "message": "Binibilang ang na-block…"
+  },
+  "savingsEmpty": {
+    "message": "Mag-browse muna, lalabas dito ang naipon mong tipid"
+  },
+  "savingsEstimated": {
+    "message": "Tinatayang mula sa mga na-block na request"
+  },
+  "savingsEstimatedSince": {
+    "message": "Tinatayang, mula $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "ads"
+  },
+  "savingsImages": {
+    "message": "larawan"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "I-reset"
+  },
+  "blockAds": {
+    "message": "I-block ang Ads"
+  },
+  "blockAdsSub": {
+    "message": "Mga ad network at tracker"
+  },
+  "blockImages": {
+    "message": "I-block ang Larawan"
+  },
+  "blockImagesSub": {
+    "message": "Teksto lang ang ilo-load ng mga pahina"
+  },
+  "blockVideos": {
+    "message": "I-block ang Video"
+  },
+  "blockVideosSub": {
+    "message": "Pinipigilan ang autoplay at streaming"
+  },
+  "siteNoHost": {
+    "message": "Walang site sa pahinang ito"
+  },
+  "siteNothingToDo": {
+    "message": "Walang maa-unblock dito"
+  },
+  "siteBlocking": {
+    "message": "Aktibo ang pag-block"
+  },
+  "siteNotBlocking": {
+    "message": "Hindi bina-block sa site na ito"
+  },
+  "siteDontBlock": {
+    "message": "Huwag i-block sa site na ito"
+  },
+  "siteResume": {
+    "message": "Ipagpatuloy ang pag-block dito"
+  },
+  "shortcutHint": {
+    "message": "o pindutin ang"
+  },
+  "saved": {
+    "message": "Na-save"
+  },
+  "savingsRequests": {
+    "message": "request ang na-block"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ ang naitipid",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Data Saver"
+  }
+}

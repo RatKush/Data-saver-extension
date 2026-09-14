@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "ذخیره‌ساز داده — مسدودسازی تبلیغات، تصاویر و ویدیو"
+  },
+  "appDesc": {
+    "message": "با مسدود کردن تبلیغات، تصاویر و ویدیوی خودکار در مصرف داده صرفه‌جویی کنید. برای اتصال‌های کند یا محدود."
+  },
+  "cmdToggleSite": {
+    "message": "توقف یا از سرگیری مسدودسازی در این سایت"
+  },
+  "popupTagline": {
+    "message": "تبلیغات، تصاویر و ویدیوی خودکار مسدود می‌شوند"
+  },
+  "savingsCounting": {
+    "message": "در حال شمارش موارد مسدودشده…"
+  },
+  "savingsEmpty": {
+    "message": "کمی گشت بزنید تا صرفه‌جویی شما اینجا نمایش داده شود"
+  },
+  "savingsEstimated": {
+    "message": "برآورد از روی درخواست‌های مسدودشده"
+  },
+  "savingsEstimatedSince": {
+    "message": "برآوردی، از $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "تبلیغات"
+  },
+  "savingsImages": {
+    "message": "تصاویر"
+  },
+  "savingsVideos": {
+    "message": "ویدیو"
+  },
+  "savingsReset": {
+    "message": "بازنشانی"
+  },
+  "blockAds": {
+    "message": "مسدودسازی تبلیغات"
+  },
+  "blockAdsSub": {
+    "message": "شبکه‌های تبلیغاتی و ردیاب‌ها"
+  },
+  "blockImages": {
+    "message": "مسدودسازی تصاویر"
+  },
+  "blockImagesSub": {
+    "message": "صفحه‌ها فقط به‌صورت متن باز می‌شوند"
+  },
+  "blockVideos": {
+    "message": "مسدودسازی ویدیو"
+  },
+  "blockVideosSub": {
+    "message": "پخش خودکار و استریم را متوقف می‌کند"
+  },
+  "siteNoHost": {
+    "message": "سایتی در این صفحه نیست"
+  },
+  "siteNothingToDo": {
+    "message": "چیزی برای رفع مسدودیت نیست"
+  },
+  "siteBlocking": {
+    "message": "مسدودسازی فعال است"
+  },
+  "siteNotBlocking": {
+    "message": "در این سایت مسدود نمی‌شود"
+  },
+  "siteDontBlock": {
+    "message": "در این سایت مسدود نکن"
+  },
+  "siteResume": {
+    "message": "دوباره اینجا مسدود کن"
+  },
+  "shortcutHint": {
+    "message": "یا فشار دهید"
+  },
+  "saved": {
+    "message": "ذخیره شد"
+  },
+  "savingsRequests": {
+    "message": "درخواست مسدود شد"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ ذخیره شد",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "ذخیره‌ساز داده"
+  }
+}

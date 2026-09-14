@@ -19,6 +19,10 @@
 
     * { box-sizing: border-box; }
 
+    /* Pinning html too keeps RTL anchored correctly when the panel is rendered
+       in a viewport wider than itself, as headless screenshots are. */
+    html { width: 360px; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
@@ -86,9 +90,9 @@
     }
 
     #savedUnit {
-      font-size: 14px;
+      font-size: 12.5px;
       font-weight: 600;
-      color: var(--accent);
+      color: var(--text-muted);
     }
 
     .savings-label {
@@ -123,6 +127,13 @@
       color: var(--text-muted);
       margin-top: 1px;
     }
+
+    /* RTL: the few places where physical direction was assumed. Everything else
+       is flexbox, which mirrors on its own. */
+    [dir="rtl"] .savings-foot,
+    [dir="rtl"] .savings-breakdown { direction: rtl; }
+    [dir="rtl"] .savings-stat { text-align: right; }
+    [dir="rtl"] .shortcut-hint kbd { direction: ltr; display: inline-block; }
 
     .savings-foot {
       font-size: 10px;
@@ -382,8 +393,8 @@
   <div class="header">
     <img src="icons/icon48.png" alt="">
     <div class="header-text">
-      <h1>Data Saver</h1>
-      <p>Blocking ads, images &amp; autoplay video</p>
+      <h1 data-i18n="popupTitle">Data Saver</h1>
+      <p data-i18n="popupTagline">Blocking ads, images &amp; autoplay video</p>
     </div>
   </div>
 
@@ -395,33 +406,33 @@
         <div id="siteStatus">&nbsp;</div>
       </span>
     </div>
-    <button id="siteToggleBtn" type="button">Don't block on this site</button>
-    <div class="shortcut-hint">or press <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
+    <button id="siteToggleBtn" type="button" data-i18n="siteDontBlock">Don't block on this site</button>
+    <div class="shortcut-hint"><span data-i18n="shortcutHint">or press</span> <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
   </div>
 
   <div class="savings">
     <div class="savings-top" id="savedTop" hidden>
       <span id="savedAmount"></span>
-      <span id="savedUnit"></span>
+      <span id="savedUnit" data-i18n="savingsRequests">requests blocked</span>
     </div>
-    <div class="savings-label" id="savedLabel">Counting what gets blocked…</div>
+    <div class="savings-label" id="savedLabel" data-i18n="savingsCounting">Counting what gets blocked…</div>
     <div class="savings-breakdown">
       <div class="savings-stat">
         <b id="statAds">0</b>
-        <span>ads</span>
+        <span data-i18n="savingsAds">ads</span>
       </div>
       <div class="savings-stat">
         <b id="statImages">0</b>
-        <span>images</span>
+        <span data-i18n="savingsImages">images</span>
       </div>
       <div class="savings-stat">
         <b id="statMedia">0</b>
-        <span>videos</span>
+        <span data-i18n="savingsVideos">videos</span>
       </div>
     </div>
     <div class="savings-foot">
-      <span id="savedSince">Estimated from blocked requests</span>
-      <button id="resetStats" type="button">Reset</button>
+      <span id="savedSince" data-i18n="savingsEstimated">Estimated from blocked requests</span>
+      <button id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
     </div>
   </div>
 
@@ -429,8 +440,8 @@
     <label class="rule-row">
       <span class="rule-icon">🚫</span>
       <span class="rule-body">
-        <span class="rule-title">Block Ads</span>
-        <span class="rule-subtitle">Ad networks &amp; trackers</span>
+        <span class="rule-title" data-i18n="blockAds">Block Ads</span>
+        <span class="rule-subtitle" data-i18n="blockAdsSub">Ad networks &amp; trackers</span>
       </span>
       <span class="switch">
         <input type="checkbox" id="adsToggle">
@@ -441,8 +452,8 @@
     <label class="rule-row">
       <span class="rule-icon">🖼️</span>
       <span class="rule-body">
-        <span class="rule-title">Block Images</span>
-        <span class="rule-subtitle">Loads pages as text-only</span>
+        <span class="rule-title" data-i18n="blockImages">Block Images</span>
+        <span class="rule-subtitle" data-i18n="blockImagesSub">Loads pages as text-only</span>
       </span>
       <span class="switch">
         <input type="checkbox" id="imagesToggle">
@@ -453,8 +464,8 @@
     <label class="rule-row">
       <span class="rule-icon">🎬</span>
       <span class="rule-body">
-        <span class="rule-title">Block Videos</span>
-        <span class="rule-subtitle">Stops autoplay &amp; streaming</span>
+        <span class="rule-title" data-i18n="blockVideos">Block Videos</span>
+        <span class="rule-subtitle" data-i18n="blockVideosSub">Stops autoplay &amp; streaming</span>
       </span>
       <span class="switch">
         <input type="checkbox" id="mediaToggle">
@@ -464,7 +475,7 @@
   </div>
 
   <div class="footer">
-    <div class="saved-flash" id="savedFlash">Saved</div>
+    <div class="saved-flash" id="savedFlash" data-i18n="saved">Saved</div>
   </div>
 
   <script src="popup.js"></script>

@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Risparmio Dati — Blocca Pubblicità, Immagini e Video"
+  },
+  "appDesc": {
+    "message": "Riduci il consumo di dati bloccando pubblicità, immagini e video con riproduzione automatica. Per connessioni lente o limitate."
+  },
+  "cmdToggleSite": {
+    "message": "Interrompi o riprendi il blocco su questo sito"
+  },
+  "popupTagline": {
+    "message": "Blocco di pubblicità, immagini e video automatici"
+  },
+  "savingsCounting": {
+    "message": "Conteggio degli elementi bloccati…"
+  },
+  "savingsEmpty": {
+    "message": "Naviga un po' e il tuo risparmio apparirà qui"
+  },
+  "savingsEstimated": {
+    "message": "Stima dalle richieste bloccate"
+  },
+  "savingsEstimatedSince": {
+    "message": "Stima, dal $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "pubblicità"
+  },
+  "savingsImages": {
+    "message": "immagini"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "Reimposta"
+  },
+  "blockAds": {
+    "message": "Blocca Pubblicità"
+  },
+  "blockAdsSub": {
+    "message": "Reti pubblicitarie e tracker"
+  },
+  "blockImages": {
+    "message": "Blocca Immagini"
+  },
+  "blockImagesSub": {
+    "message": "Carica le pagine solo come testo"
+  },
+  "blockVideos": {
+    "message": "Blocca Video"
+  },
+  "blockVideosSub": {
+    "message": "Ferma riproduzione automatica e streaming"
+  },
+  "siteNoHost": {
+    "message": "Nessun sito in questa pagina"
+  },
+  "siteNothingToDo": {
+    "message": "Nulla da sbloccare qui"
+  },
+  "siteBlocking": {
+    "message": "Blocco attivo"
+  },
+  "siteNotBlocking": {
+    "message": "Non si blocca su questo sito"
+  },
+  "siteDontBlock": {
+    "message": "Non bloccare su questo sito"
+  },
+  "siteResume": {
+    "message": "Riprendi il blocco qui"
+  },
+  "shortcutHint": {
+    "message": "oppure premi"
+  },
+  "saved": {
+    "message": "Salvato"
+  },
+  "savingsRequests": {
+    "message": "richieste bloccate"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ risparmiati",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Risparmio Dati"
+  }
+}

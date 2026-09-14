@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Kihifadhi Data — Zuia Matangazo, Picha na Video"
+  },
+  "appDesc": {
+    "message": "Okoa data kwa kuzuia matangazo, picha na video zinazojicheza. Imetengenezwa kwa muunganisho wa polepole au wenye kikomo."
+  },
+  "cmdToggleSite": {
+    "message": "Simamisha au endelea kuzuia kwenye tovuti hii"
+  },
+  "popupTagline": {
+    "message": "Inazuia matangazo, picha na video za kujicheza"
+  },
+  "savingsCounting": {
+    "message": "Inahesabu kilichozuiwa…"
+  },
+  "savingsEmpty": {
+    "message": "Vinjari kidogo, akiba yako itaonekana hapa"
+  },
+  "savingsEstimated": {
+    "message": "Makadirio kutoka maombi yaliyozuiwa"
+  },
+  "savingsEstimatedSince": {
+    "message": "Makadirio, tangu $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "matangazo"
+  },
+  "savingsImages": {
+    "message": "picha"
+  },
+  "savingsVideos": {
+    "message": "video"
+  },
+  "savingsReset": {
+    "message": "Weka upya"
+  },
+  "blockAds": {
+    "message": "Zuia Matangazo"
+  },
+  "blockAdsSub": {
+    "message": "Mitandao ya matangazo na vifuatiliaji"
+  },
+  "blockImages": {
+    "message": "Zuia Picha"
+  },
+  "blockImagesSub": {
+    "message": "Hupakia kurasa kama maandishi pekee"
+  },
+  "blockVideos": {
+    "message": "Zuia Video"
+  },
+  "blockVideosSub": {
+    "message": "Husimamisha kujicheza na utiririshaji"
+  },
+  "siteNoHost": {
+    "message": "Hakuna tovuti kwenye ukurasa huu"
+  },
+  "siteNothingToDo": {
+    "message": "Hakuna cha kuondoa zuio hapa"
+  },
+  "siteBlocking": {
+    "message": "Uzuiaji unafanya kazi"
+  },
+  "siteNotBlocking": {
+    "message": "Hakuna uzuiaji kwenye tovuti hii"
+  },
+  "siteDontBlock": {
+    "message": "Usizuie kwenye tovuti hii"
+  },
+  "siteResume": {
+    "message": "Endelea kuzuia hapa"
+  },
+  "shortcutHint": {
+    "message": "au bonyeza"
+  },
+  "saved": {
+    "message": "Imehifadhiwa"
+  },
+  "savingsRequests": {
+    "message": "maombi yamezuiwa"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ imeokolewa",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Kihifadhi Data"
+  }
+}

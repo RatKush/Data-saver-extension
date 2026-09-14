@@ -1,0 +1,101 @@
+{
+  "appName": {
+    "message": "Datensparmodus — Werbung, Bilder & Videos blockieren"
+  },
+  "appDesc": {
+    "message": "Sparen Sie Daten, indem Sie Werbung, Bilder und automatisch startende Videos blockieren. Für langsame oder limitierte Verbindungen."
+  },
+  "cmdToggleSite": {
+    "message": "Blockierung auf dieser Seite stoppen oder fortsetzen"
+  },
+  "popupTagline": {
+    "message": "Werbung, Bilder & Autoplay-Videos werden blockiert"
+  },
+  "savingsCounting": {
+    "message": "Blockiertes wird gezählt…"
+  },
+  "savingsEmpty": {
+    "message": "Surfen Sie ein wenig – Ihre Ersparnis erscheint hier"
+  },
+  "savingsEstimated": {
+    "message": "Geschätzt aus blockierten Anfragen"
+  },
+  "savingsEstimatedSince": {
+    "message": "Geschätzt, seit $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "5 Sep"
+      }
+    }
+  },
+  "savingsAds": {
+    "message": "Werbung"
+  },
+  "savingsImages": {
+    "message": "Bilder"
+  },
+  "savingsVideos": {
+    "message": "Videos"
+  },
+  "savingsReset": {
+    "message": "Zurücksetzen"
+  },
+  "blockAds": {
+    "message": "Werbung blockieren"
+  },
+  "blockAdsSub": {
+    "message": "Werbenetzwerke & Tracker"
+  },
+  "blockImages": {
+    "message": "Bilder blockieren"
+  },
+  "blockImagesSub": {
+    "message": "Lädt Seiten nur als Text"
+  },
+  "blockVideos": {
+    "message": "Videos blockieren"
+  },
+  "blockVideosSub": {
+    "message": "Stoppt Autoplay & Streaming"
+  },
+  "siteNoHost": {
+    "message": "Keine Website auf dieser Seite"
+  },
+  "siteNothingToDo": {
+    "message": "Hier gibt es nichts freizugeben"
+  },
+  "siteBlocking": {
+    "message": "Blockierung aktiv"
+  },
+  "siteNotBlocking": {
+    "message": "Auf dieser Seite wird nicht blockiert"
+  },
+  "siteDontBlock": {
+    "message": "Auf dieser Seite nicht blockieren"
+  },
+  "siteResume": {
+    "message": "Blockierung hier fortsetzen"
+  },
+  "shortcutHint": {
+    "message": "oder drücken Sie"
+  },
+  "saved": {
+    "message": "Gespeichert"
+  },
+  "savingsRequests": {
+    "message": "Anfragen blockiert"
+  },
+  "savingsBytes": {
+    "message": "≈ $SIZE$ gespart",
+    "placeholders": {
+      "size": {
+        "content": "$1",
+        "example": "644 MB"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Datensparmodus"
+  }
+}
