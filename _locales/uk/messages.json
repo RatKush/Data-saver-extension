@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Тут дозволено — натисніть, щоб блокувати на цьому сайті",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Панель «Економія трафіку»",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Усе, що нижче, зберігається лише на цьому пристрої. Немає ні облікового запису, ні сервера, куди це можна надіслати.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Деякі налаштування керуються вашою організацією і не можуть бути змінені тут.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Історія економії",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Очистити історію",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Поки нічого не записано.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Останні 7 днів",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Останні 30 днів",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "За весь час",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Де зекономлено найбільше",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Поки нічого не записано.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Історія сайтів вимкнена, тому нічого не записується. Увімкніть її вище, щоб побачити, звідки береться економія.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Преміум",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Запам’ятовувати, які сайти",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Зберігає перелік сайтів, де щось було заблоковано, щоб ця сторінка могла показати, звідки береться економія. Зберігається лише на цьому пристрої й нікуди не надсилається. Типово вимкнено — повторне вимкнення видаляє записане.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Підлаштовуватися під швидкість з’єднання",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Не блокувати зображення за швидкого з’єднання. Використовує власну оцінку швидкості браузера — нічого не вимірюється й не надсилається.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Відповідати на банери про файли cookie",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Обирає «відхилити» або «лише необхідні», якщо банер це пропонує. Ніколи не погоджується замість вас — якщо приватного варіанта немає, банер просто ховається і згода не надається.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Блокувати небажані спливаючі вікна",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Блокує вікна, які сторінка відкриває сама. Вікна, відкриті вашим кліком, працюють.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Правила для сайтів",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Правил поки немає. Відкрийте вікно розширення на будь-якому сайті, щоб додати.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Видалити",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Резервна копія та розгортання",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Експорт налаштувань",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Імпорт налаштувань",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Експортує всі перемикачі, призупинені сайти та правила у файл JSON. Той самий файл можна застосувати як політику на керованих пристроях.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Не вдалося експортувати налаштування.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Цей файл не є коректним JSON.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Не вдалося імпортувати цей файл.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "Імпортовано налаштувань: $N$.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

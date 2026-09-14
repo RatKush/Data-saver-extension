@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "येथे परवानगी — या साइटवर ब्लॉक करण्यासाठी क्लिक करा",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "डेटा सेव्हर डॅशबोर्ड",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "खालील सर्व काही फक्त याच उपकरणावर साठवले जाते. खाते नाही, आणि पाठवण्यासाठी सर्व्हरही नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "काही सेटिंग्ज तुमच्या संस्थेकडून व्यवस्थापित आहेत आणि येथे बदलता येणार नाहीत.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "बचतीचा इतिहास",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "इतिहास साफ करा",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "अद्याप काहीही नोंदवले नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "मागील ७ दिवस",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "मागील ३० दिवस",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "एकूण",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "सर्वाधिक बचत कुठे झाली",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "अद्याप काहीही नोंदवले नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "साइट इतिहास बंद आहे, त्यामुळे काहीही नोंदवले जात नाही. बचत कुठून येते हे पाहण्यासाठी वर तो चालू करा.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "प्रीमियम",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "कोणत्या साइट्स लक्षात ठेवा",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "जिथे काही ब्लॉक झाले त्या साइट्सची यादी ठेवते, जेणेकरून हे पृष्ठ तुमची बचत कुठून येते ते दाखवू शकेल. फक्त याच उपकरणावर साठवले जाते, कुठेही पाठवले जात नाही. डीफॉल्टनुसार बंद — पुन्हा बंद केल्यास नोंदवलेले हटवले जाते.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "कनेक्शनच्या वेगानुसार जुळवून घ्या",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "कनेक्शन वेगवान असताना प्रतिमा ब्लॉक करणे थांबवा. ब्राउझरचा स्वतःचा वेग अंदाज वापरते — काहीही मोजले किंवा पाठवले जात नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "कुकी बॅनरला उत्तर द्या",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "बॅनर पर्याय देत असेल तिथे “नकार” किंवा “फक्त आवश्यक” निवडते. तुमच्या वतीने कधीही स्वीकारत नाही — खाजगी पर्याय न मिळाल्यास बॅनर लपवले जाते आणि कशालाही संमती दिली जात नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "नकोसे पॉपअप ब्लॉक करा",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "पृष्ठ स्वतःहून उघडणाऱ्या विंडो ब्लॉक करते. तुम्ही क्लिक करून उघडलेल्या विंडो चालूच राहतात.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "साइटनिहाय नियम",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "अद्याप साइटनिहाय नियम नाहीत. जोडण्यासाठी कोणत्याही साइटवर पॉपअप उघडा.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "काढा",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "बॅकअप आणि तैनाती",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "सेटिंग्ज निर्यात करा",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "सेटिंग्ज आयात करा",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "प्रत्येक स्विच, थांबवलेली साइट आणि साइटनिहाय नियम JSON फाइल म्हणून निर्यात करते. तीच फाइल धोरण म्हणून व्यवस्थापित यंत्रांना पाठवता येते.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "सेटिंग्ज निर्यात करता आल्या नाहीत.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "ती फाइल वैध JSON नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "ती फाइल आयात करता आली नाही.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ सेटिंग्ज आयात केल्या.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

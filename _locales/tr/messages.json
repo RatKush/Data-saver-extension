@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Burada izinli — bu sitede engellemek için tıklayın",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Data Saver panosu",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Aşağıdaki her şey yalnızca bu cihazda saklanır. Hesap da yok, gönderilecek bir sunucu da.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Bazı ayarlar kuruluşunuz tarafından yönetiliyor ve burada değiştirilemez.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Tasarruf geçmişi",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Geçmişi temizle",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Henüz bir kayıt yok.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Son 7 gün",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Son 30 gün",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Tüm zamanlar",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "En çok nerede tasarruf edildi",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Henüz bir kayıt yok.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Site geçmişi kapalı, bu yüzden hiçbir şey kaydedilmiyor. Tasarrufun nereden geldiğini görmek için yukarıdan açın.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Premium",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Hangi siteler olduğunu hatırla",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Bir şeylerin engellendiği sitelerin listesini tutar; böylece bu sayfa tasarrufunuzun nereden geldiğini gösterebilir. Yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Varsayılan olarak kapalı — tekrar kapatmak kaydedilenleri siler.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Bağlantı hızına uyum sağla",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Bağlantı hızlıyken görselleri engellemeyi bırak. Tarayıcının kendi hız tahminini kullanır — hiçbir şey ölçülmez veya gönderilmez.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Çerez bildirimlerini yanıtla",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Bildirim seçenek sunduğunda “reddet” ya da “sadece gerekli” seçeneğini işaretler. Sizin adınıza asla kabul etmez — gizliliği koruyan bir seçenek bulunamazsa bildirim gizlenir ve hiçbir şey kabul edilmez.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "İstenmeyen açılır pencereleri engelle",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Sayfanın kendiliğinden açtığı pencereleri engeller. Tıklayarak açtıklarınız çalışmaya devam eder.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Site kuralları",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Henüz site kuralı yok. Eklemek için herhangi bir sitede uzantıyı açın.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Kaldır",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Yedekleme ve dağıtım",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Ayarları dışa aktar",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Ayarları içe aktar",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Her anahtarı, duraklatılmış siteyi ve site kuralını JSON dosyası olarak dışa aktarır. Aynı dosya yönetilen cihazlara politika olarak gönderilebilir.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Ayarlar dışa aktarılamadı.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Bu dosya geçerli bir JSON değil.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Bu dosya içe aktarılamadı.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ ayar içe aktarıldı.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

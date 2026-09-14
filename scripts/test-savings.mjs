@@ -805,6 +805,47 @@ await test('a page with no host is not recorded against a site', async () => {
   assert.deepEqual(st, {});
 });
 
+console.log('\nbackground.js — site history is opt-in');
+
+await test('hostnames are NOT recorded by default', async () => {
+  const { chrome, ctx } = loadBackground();
+  // siteHistory unset — the default must be off, not merely absent.
+  await vm.runInContext('recordBlocked', ctx)({ ads: 3, images: 2 }, 'private.example');
+  const local = plain(chrome.storage.local._dump());
+  assert.deepEqual(local.siteStats, {}, 'a hostname was recorded without consent');
+  // The totals and the day bucket still work — only the site list is withheld.
+  assert.equal(local.stats.ads, 3);
+  assert.equal(Object.keys(local.history).length, 1);
+});
+
+await test('hostnames are recorded once the user opts in', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ siteHistory: true });
+  await vm.runInContext('recordBlocked', ctx)({ ads: 3, images: 2 }, 'kept.example');
+  assert.deepEqual(plain(chrome.storage.local._dump().siteStats), { 'kept.example': { n: 5, bytes: 3 * 30 * 1024 + 2 * 35 * 1024 } });
+});
+
+await test('switching site history off deletes what was already recorded', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.local.set({ siteStats: { 'old.example': { n: 9, bytes: 10 } } });
+  for (const fn of chrome._listeners.changed) {
+    fn({ siteHistory: { oldValue: true, newValue: false } }, 'sync');
+  }
+  await Promise.resolve();
+  assert.deepEqual(plain(chrome.storage.local._dump().siteStats), {},
+                   'the recorded sites survived the switch being turned off');
+});
+
+await test('turning site history ON does not wipe anything', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.local.set({ siteStats: { 'a.example': { n: 1, bytes: 1 } } });
+  for (const fn of chrome._listeners.changed) {
+    fn({ siteHistory: { oldValue: false, newValue: true } }, 'sync');
+  }
+  await Promise.resolve();
+  assert.deepEqual(Object.keys(plain(chrome.storage.local._dump().siteStats)), ['a.example']);
+});
+
 console.log('\nbackground.js — export / import');
 
 await test('a round trip preserves what the user configured', async () => {

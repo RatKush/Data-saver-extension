@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Imeruhusiwa hapa — bofya kuzuia kwenye tovuti hii",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Dashibodi ya Kihifadhi Data",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Kila kitu kilicho hapa chini kimehifadhiwa kwenye kifaa hiki pekee. Hakuna akaunti wala seva ya kukituma.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Baadhi ya mipangilio inasimamiwa na shirika lako na haiwezi kubadilishwa hapa.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Historia ya uokoaji",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Futa historia",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Hakuna kilichorekodiwa bado.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Siku 7 zilizopita",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Siku 30 zilizopita",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Jumla",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Wapi kuliokolewa zaidi",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Hakuna kilichorekodiwa bado.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Historia ya tovuti imezimwa, kwa hivyo hakuna kinachorekodiwa. Iwashe hapo juu ili kuona uokoaji unatoka wapi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Malipo",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Kumbuka ni tovuti zipi",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Huhifadhi orodha ya tovuti ambazo vitu vilizuiwa, ili ukurasa huu uweze kuonyesha uokoaji wako unatoka wapi. Huhifadhiwa kwenye kifaa hiki pekee na hautumwi popote. Imezimwa kwa chaguo-msingi — kuizima tena kunafuta kilichorekodiwa.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Kubadilika kulingana na kasi ya muunganisho",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Acha kuzuia picha wakati muunganisho ni wa haraka. Hutumia makadirio ya kasi ya kivinjari chenyewe — hakuna kinachopimwa wala kutumwa.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Jibu mabango ya vidakuzi",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Huchagua “kataa” au “vinavyohitajika pekee” pale bango linapotoa chaguo hilo. Halikubali kamwe kwa niaba yako — kama hakuna chaguo la faragha linalopatikana, bango hufichwa na hakuna kinachokubaliwa.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Zuia madirisha ibukizi yasiyotakiwa",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Huzuia madirisha ambayo ukurasa hufungua wenyewe. Madirisha unayofungua kwa kubofya bado hufanya kazi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Kanuni za kila tovuti",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Bado hakuna kanuni. Fungua kiendelezi kwenye tovuti yoyote ili kuongeza.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Ondoa",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Hifadhi rudufu na usambazaji",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Hamisha mipangilio",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Ingiza mipangilio",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Huhamisha kila swichi, tovuti iliyosimamishwa na kanuni ya tovuti kama faili ya JSON. Faili hiyo hiyo inaweza kutumwa kama sera kwa vifaa vinavyosimamiwa.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Imeshindwa kuhamisha mipangilio.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Faili hiyo si JSON sahihi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Imeshindwa kuingiza faili hiyo.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "Mipangilio $N$ imeingizwa.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

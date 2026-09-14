@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "ఇక్కడ అనుమతించబడింది — ఈ సైట్‌లో బ్లాక్ చేయడానికి క్లిక్ చేయండి",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "డేటా సేవర్ డాష్‌బోర్డ్",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "కింద ఉన్నదంతా ఈ పరికరంలో మాత్రమే నిల్వ చేయబడుతుంది. ఖాతా లేదు, పంపడానికి సర్వర్ కూడా లేదు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "కొన్ని సెట్టింగ్‌లు మీ సంస్థ నిర్వహిస్తుంది, ఇక్కడ మార్చలేరు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "ఆదా చరిత్ర",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "చరిత్రను తొలగించు",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "ఇంకా ఏమీ నమోదు కాలేదు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "గత 7 రోజులు",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "గత 30 రోజులు",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "మొత్తం",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "ఎక్కడ ఎక్కువ ఆదా అయింది",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "ఇంకా ఏమీ నమోదు కాలేదు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "సైట్ చరిత్ర ఆఫ్‌లో ఉంది, కాబట్టి ఏమీ నమోదు కావడం లేదు. ఆదా ఎక్కడి నుంచి వస్తుందో చూడటానికి పైన దీన్ని ఆన్ చేయండి.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "ప్రీమియం",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "ఏ సైట్‌లో గుర్తుంచుకో",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "ఎక్కడ బ్లాక్ జరిగిందో ఆ సైట్‌ల జాబితాను ఉంచుతుంది, తద్వారా మీ ఆదా ఎక్కడి నుంచి వస్తుందో ఈ పేజీ చూపగలదు. ఈ పరికరంలో మాత్రమే నిల్వ, ఎక్కడికీ పంపబడదు. డిఫాల్ట్‌గా ఆఫ్ — మళ్లీ ఆఫ్ చేస్తే నమోదైనవి తొలగిపోతాయి.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "కనెక్షన్ వేగానికి అనుగుణంగా మారు",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "కనెక్షన్ వేగంగా ఉన్నప్పుడు చిత్రాలను బ్లాక్ చేయడం ఆపు. బ్రౌజర్ సొంత వేగ అంచనాను ఉపయోగిస్తుంది — ఏదీ కొలవబడదు లేదా పంపబడదు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "కుకీ బ్యానర్‌లకు సమాధానం ఇవ్వు",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "బ్యానర్ అవకాశం ఇచ్చిన చోట “తిరస్కరించు” లేదా “అవసరమైనవి మాత్రమే” ఎంచుకుంటుంది. మీ తరపున ఎప్పుడూ అంగీకరించదు — ప్రైవేట్ ఎంపిక దొరకకపోతే బ్యానర్ దాచబడుతుంది, దేనికీ సమ్మతి ఇవ్వబడదు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "అవాంఛిత పాపప్‌లను బ్లాక్ చేయి",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "పేజీ దానంతట తానే తెరిచే విండోలను బ్లాక్ చేస్తుంది. మీరు క్లిక్ చేసి తెరిచేవి పని చేస్తూనే ఉంటాయి.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "సైట్ నియమాలు",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "ఇంకా సైట్ నియమాలు లేవు. జోడించడానికి ఏ సైట్‌లోనైనా పాపప్ తెరవండి.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "తీసివేయి",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "బ్యాకప్ & విస్తరణ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "సెట్టింగ్‌లను ఎగుమతి చేయి",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "సెట్టింగ్‌లను దిగుమతి చేయి",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "ప్రతి స్విచ్, నిలిపివేసిన సైట్ మరియు సైట్ నియమాన్ని JSON ఫైల్‌గా ఎగుమతి చేస్తుంది. అదే ఫైల్‌ను విధానంగా నిర్వహిత పరికరాలకు పంపవచ్చు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "సెట్టింగ్‌లను ఎగుమతి చేయలేకపోయాం.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "ఆ ఫైల్ చెల్లుబాటు అయ్యే JSON కాదు.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "ఆ ఫైల్‌ను దిగుమతి చేయలేకపోయాం.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ సెట్టింగ్‌లు దిగుమతి అయ్యాయి.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Permitido aqui — clique para bloquear neste site",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Painel do Data Saver",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Tudo abaixo fica guardado somente neste dispositivo. Não há conta nem servidor para onde enviar.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Algumas configurações são gerenciadas pela sua organização e não podem ser alteradas aqui.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Histórico de economia",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Limpar histórico",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Nada registrado ainda.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "Últimos 7 dias",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "Últimos 30 dias",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Total",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Onde mais economizou",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Nada registrado ainda.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "O histórico de sites está desativado, então nada é registrado. Ative acima para ver de onde vem a economia.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Premium",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Lembrar quais sites",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Mantém uma lista dos sites onde algo foi bloqueado, para que esta página possa mostrar de onde vem sua economia. Guardado somente neste dispositivo e nunca enviado a lugar nenhum. Desativado por padrão — desativar de novo apaga o que foi registrado.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Adaptar à velocidade da conexão",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Parar de bloquear imagens quando a conexão estiver rápida. Usa a estimativa de velocidade do próprio navegador — nada é medido ou enviado.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Responder aos avisos de cookies",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Escolhe “recusar” ou “somente necessários” onde o aviso oferece. Nunca aceita em seu nome — se nenhuma opção privada for encontrada, o aviso é ocultado e nada é consentido.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Bloquear pop-ups indesejados",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Bloqueia janelas que a página abre sozinha. As que você abre clicando continuam funcionando.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Regras por site",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Ainda não há regras por site. Abra a extensão em qualquer site para adicionar uma.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Remover",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Backup e implantação",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Exportar configurações",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Importar configurações",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Exporta cada chave, site pausado e regra por site como um arquivo JSON. O mesmo arquivo pode ser aplicado como política em máquinas gerenciadas.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Não foi possível exportar as configurações.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Esse arquivo não é um JSON válido.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Não foi possível importar esse arquivo.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ configurações importadas.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

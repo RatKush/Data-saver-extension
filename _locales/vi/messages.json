@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Đang cho phép — nhấp để chặn trên trang này",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Bảng điều khiển Data Saver",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Mọi thứ bên dưới chỉ được lưu trên thiết bị này. Không có tài khoản và không có máy chủ nào để gửi đi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Một số cài đặt do tổ chức của bạn quản lý và không thể thay đổi tại đây.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Lịch sử tiết kiệm",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Xóa lịch sử",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Chưa ghi nhận gì.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "7 ngày qua",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "30 ngày qua",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Tổng cộng",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Nơi tiết kiệm nhiều nhất",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Chưa ghi nhận gì.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Lịch sử trang đang tắt nên không có gì được ghi lại. Bật ở trên để xem phần tiết kiệm đến từ đâu.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Cao cấp",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Ghi nhớ những trang nào",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Lưu danh sách các trang có nội dung bị chặn, để trang này có thể cho biết phần tiết kiệm của bạn đến từ đâu. Chỉ lưu trên thiết bị này và không bao giờ được gửi đi đâu. Mặc định tắt — tắt lại sẽ xóa những gì đã ghi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Thích ứng với tốc độ kết nối",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Ngừng chặn hình ảnh khi kết nối nhanh. Dùng ước tính tốc độ của chính trình duyệt — không đo và không gửi gì cả.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Trả lời biểu ngữ cookie",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Chọn “từ chối” hoặc “chỉ những gì cần thiết” khi biểu ngữ có sẵn tùy chọn đó. Không bao giờ đồng ý thay bạn — nếu không tìm được lựa chọn riêng tư, biểu ngữ sẽ được ẩn và không đồng ý điều gì.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Chặn cửa sổ bật lên không mong muốn",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Chặn các cửa sổ do trang tự mở. Cửa sổ bạn tự nhấp để mở vẫn hoạt động.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Quy tắc theo trang",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Chưa có quy tắc nào. Mở tiện ích trên bất kỳ trang nào để thêm.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Xóa",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Sao lưu & triển khai",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Xuất cài đặt",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Nhập cài đặt",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Xuất mọi công tắc, trang đã tạm dừng và quy tắc theo trang thành tệp JSON. Chính tệp đó có thể triển khai làm chính sách cho các thiết bị được quản lý.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Không thể xuất cài đặt.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Tệp đó không phải JSON hợp lệ.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Không thể nhập tệp đó.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "Đã nhập $N$ cài đặt.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

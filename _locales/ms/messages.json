@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "Dibenarkan di sini — klik untuk sekat di tapak ini",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "Papan pemuka Penjimat Data",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "Semua di bawah disimpan pada peranti ini sahaja. Tiada akaun dan tiada pelayan untuk menghantarnya.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "Sesetengah tetapan diurus oleh organisasi anda dan tidak boleh diubah di sini.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "Sejarah penjimatan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "Kosongkan sejarah",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "Belum ada yang direkodkan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "7 hari lepas",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "30 hari lepas",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "Sepanjang masa",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "Di mana paling banyak dijimatkan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "Belum ada yang direkodkan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "Sejarah tapak dimatikan, jadi tiada apa yang direkodkan. Hidupkannya di atas untuk melihat dari mana datangnya penjimatan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "Premium",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "Ingat tapak yang mana",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "Menyimpan senarai tapak tempat sesuatu disekat, supaya halaman ini boleh menunjukkan dari mana penjimatan anda datang. Disimpan pada peranti ini sahaja dan tidak pernah dihantar ke mana-mana. Dimatikan secara lalai — mematikannya semula memadam apa yang direkodkan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "Sesuaikan dengan kelajuan sambungan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "Berhenti menyekat imej apabila sambungan laju. Menggunakan anggaran kelajuan pelayar sendiri — tiada apa yang diukur atau dihantar.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "Jawab sepanduk kuki",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "Memilih “tolak” atau “yang perlu sahaja” apabila sepanduk menawarkannya. Tidak pernah menerima bagi pihak anda — jika tiada pilihan peribadi ditemui, sepanduk disembunyikan dan tiada apa yang dipersetujui.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "Sekat pop timbul yang tidak diingini",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "Menyekat tetingkap yang dibuka halaman dengan sendirinya. Tetingkap yang anda buka dengan klik masih berfungsi.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "Peraturan setiap tapak",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "Belum ada peraturan. Buka sambungan di mana-mana tapak untuk menambahnya.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "Buang",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "Sandaran & penggunaan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "Eksport tetapan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "Import tetapan",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "Mengeksport setiap suis, tapak dijeda dan peraturan tapak sebagai fail JSON. Fail yang sama boleh dihantar sebagai dasar kepada peranti terurus.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "Tidak dapat mengeksport tetapan.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "Fail itu bukan JSON yang sah.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "Tidak dapat mengimport fail itu.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "$N$ tetapan diimport.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

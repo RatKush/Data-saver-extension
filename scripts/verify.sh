@@ -78,6 +78,18 @@ done
 [ "$syntax_ok" -eq 1 ] && ok "all extension JS parses"
 
 # ---------------------------------------------------------------------------
+step "Locales"
+
+# Catches the three failures that have actually shipped here: a key missing
+# from a translation, wrong-script leakage, and a placeholder translated away.
+if locale_out=$(python3 "$(dirname "$0")/check-locales.py" 2>&1); then
+  ok "$locale_out"
+else
+  printf '%s\n' "$locale_out"
+  bad "locale check failed"
+fi
+
+# ---------------------------------------------------------------------------
 step "Unit tests"
 
 if node scripts/test-savings.mjs > /tmp/ds-unit.log 2>&1; then

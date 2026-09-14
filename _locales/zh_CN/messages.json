@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "在此允许 — 点击以在本站拦截",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "省流量控制台",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "以下所有内容仅保存在本设备上。没有账号，也没有可发送的服务器。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "部分设置由你的组织管理，无法在此更改。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "节省历史",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "清除历史",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "暂无记录。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "最近 7 天",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "最近 30 天",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "全部时间",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "哪里节省得最多",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "暂无记录。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "站点历史已关闭，因此不会记录任何内容。在上方开启即可查看节省来自何处。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "高级版",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "记住是哪些站点",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "保存发生拦截的站点列表，以便本页显示你的流量节省来自何处。仅存储在本设备上，绝不发送到任何地方。默认关闭 — 再次关闭会删除已记录的内容。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "适应连接速度",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "连接较快时停止拦截图片。使用浏览器自身的速度估计 — 不测量也不发送任何数据。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "回应 Cookie 横幅",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "在横幅提供选项时选择“拒绝”或“仅必要”。绝不代你接受 — 若找不到保护隐私的选项，则只隐藏横幅，不同意任何内容。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "拦截不请自来的弹窗",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "拦截页面自行打开的窗口。你点击打开的窗口仍然正常。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "站点规则",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "暂无站点规则。在任意网站打开扩展即可添加。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "移除",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "备份与部署",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "导出设置",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "导入设置",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "将每个开关、已暂停的站点和站点规则导出为 JSON 文件。同一文件可作为策略下发到受管设备。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "无法导出设置。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "该文件不是有效的 JSON。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "无法导入该文件。",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "已导入 $N$ 项设置。",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

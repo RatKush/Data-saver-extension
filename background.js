@@ -176,6 +176,12 @@ function recordBlocked(counts, host, now = Date.now()) {
       stats: EMPTY_STATS, history: {}, siteStats: {}
     });
 
+    // Which sites were visited is the only browsing-shaped record this
+    // extension keeps, so it is OFF unless the user asks for it. Read here
+    // rather than at the call site so there is exactly one gate: no caller
+    // can record a hostname by forgetting to check.
+    const { siteHistory } = await chrome.storage.sync.get({ siteHistory: false });
+
     const next = {
       ads: (stats.ads || 0) + (counts.ads || 0),
       images: (stats.images || 0) + (counts.images || 0),
@@ -192,7 +198,7 @@ function recordBlocked(counts, host, now = Date.now()) {
     await chrome.storage.local.set({
       stats: next,
       history: addToHistory(history, counts, bytes, now),
-      siteStats: addToSiteStats(siteStats, host, counts, bytes)
+      siteStats: addToSiteStats(siteStats, siteHistory ? host : null, counts, bytes)
     });
   }).catch((e) => {
     console.warn('⚠️ Could not record blocked requests:', e);
@@ -1038,7 +1044,7 @@ function mergeSettings(user, managed, autoState) {
 const SETTING_DEFAULTS = {
   ads: true, images: true, media: true,
   allowlist: [], siteProfiles: {},
-  autoMode: false, consent: false, popups: false
+  autoMode: false, consent: false, popups: false, siteHistory: false
 };
 
 function readManagedPolicy() {
@@ -1123,6 +1129,14 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && RECONCILE_KEYS.some((k) => changes[k])) {
     loadAndSetInitialState();
   }
+  // Turning site history off has to delete what it already gathered —
+  // leaving the old list behind would make the switch a promise about the
+  // future only. Handled here rather than in the dashboard so it happens
+  // however the setting was changed, including a sync from another device.
+  if (areaName === 'sync' && changes.siteHistory && changes.siteHistory.newValue === false) {
+    chrome.storage.local.set({ siteStats: {} });
+  }
+
   // Auto-mode lives in local storage because it is an observation, not a
   // preference, and syncing it across devices would be wrong.
   if (areaName === 'local' && changes.autoState) {

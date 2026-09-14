@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "อนุญาตอยู่ที่นี่ — คลิกเพื่อบล็อกในเว็บนี้",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "แดชบอร์ด Data Saver",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "ทุกอย่างด้านล่างถูกเก็บไว้บนอุปกรณ์นี้เท่านั้น ไม่มีบัญชีและไม่มีเซิร์ฟเวอร์ที่จะส่งไป",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "การตั้งค่าบางอย่างถูกจัดการโดยองค์กรของคุณและไม่สามารถเปลี่ยนที่นี่ได้",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "ประวัติการประหยัด",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "ล้างประวัติ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "ยังไม่มีการบันทึก",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "7 วันล่าสุด",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "30 วันล่าสุด",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "ทั้งหมด",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "ประหยัดได้มากที่สุดที่ไหน",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "ยังไม่มีการบันทึก",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "ประวัติเว็บไซต์ปิดอยู่ จึงไม่มีการบันทึก เปิดด้านบนเพื่อดูว่าการประหยัดมาจากที่ใด",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "พรีเมียม",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "จำว่าเป็นเว็บไหน",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "เก็บรายชื่อเว็บที่มีการบล็อก เพื่อให้หน้านี้แสดงได้ว่าการประหยัดของคุณมาจากที่ใด เก็บไว้บนอุปกรณ์นี้เท่านั้นและไม่เคยส่งไปที่ใด ปิดไว้เป็นค่าเริ่มต้น — การปิดอีกครั้งจะลบสิ่งที่บันทึกไว้",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "ปรับตามความเร็วการเชื่อมต่อ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "หยุดบล็อกรูปภาพเมื่อการเชื่อมต่อเร็ว ใช้การประเมินความเร็วของเบราว์เซอร์เอง — ไม่มีการวัดหรือส่งข้อมูลใด ๆ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "ตอบแบนเนอร์คุกกี้",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "เลือก “ปฏิเสธ” หรือ “เฉพาะที่จำเป็น” เมื่อแบนเนอร์มีตัวเลือกนั้น จะไม่ยอมรับแทนคุณเด็ดขาด — หากหาตัวเลือกที่เป็นส่วนตัวไม่ได้ แบนเนอร์จะถูกซ่อนและไม่ยินยอมสิ่งใด",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "บล็อกป๊อปอัปที่ไม่ต้องการ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "บล็อกหน้าต่างที่หน้าเว็บเปิดขึ้นเอง หน้าต่างที่คุณคลิกเปิดยังใช้งานได้",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "กฎรายเว็บ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "ยังไม่มีกฎรายเว็บ เปิดส่วนขยายบนเว็บใดก็ได้เพื่อเพิ่ม",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "ลบ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "สำรองข้อมูลและติดตั้งใช้งาน",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "ส่งออกการตั้งค่า",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "นำเข้าการตั้งค่า",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "ส่งออกทุกสวิตช์ เว็บที่หยุดไว้ และกฎรายเว็บเป็นไฟล์ JSON ไฟล์เดียวกันนี้สามารถส่งเป็นนโยบายไปยังอุปกรณ์ที่จัดการอยู่ได้",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "ส่งออกการตั้งค่าไม่สำเร็จ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "ไฟล์นั้นไม่ใช่ JSON ที่ถูกต้อง",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "นำเข้าไฟล์นั้นไม่สำเร็จ",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "นำเข้าการตั้งค่าแล้ว $N$ รายการ",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }

@@ -131,5 +131,139 @@
   "pillAllowing": {
     "message": "مسموح هنا — انقر للحظر في هذا الموقع",
     "description": "Tooltip on a per-site pill that is currently allowing."
+  },
+  "dashTitle": {
+    "message": "لوحة موفر البيانات",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLede": {
+    "message": "كل ما يلي مُخزَّن على هذا الجهاز فقط. لا يوجد حساب ولا خادم يُرسل إليه.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashManaged": {
+    "message": "بعض الإعدادات تديرها مؤسستك ولا يمكن تغييرها هنا.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistory": {
+    "message": "سجل التوفير",
+    "description": "Dashboard (options page) string."
+  },
+  "dashClearHistory": {
+    "message": "مسح السجل",
+    "description": "Dashboard (options page) string."
+  },
+  "dashHistoryEmpty": {
+    "message": "لم يُسجَّل شيء بعد.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast7": {
+    "message": "آخر 7 أيام",
+    "description": "Dashboard (options page) string."
+  },
+  "dashLast30": {
+    "message": "آخر 30 يومًا",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAllTime": {
+    "message": "الإجمالي",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSites": {
+    "message": "أين تحقق أكبر توفير",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesEmpty": {
+    "message": "لم يُسجَّل شيء بعد.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashTopSitesOff": {
+    "message": "سجل المواقع مُعطَّل، لذا لا يُسجَّل شيء. فعِّله بالأعلى لمعرفة مصدر التوفير.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPremium": {
+    "message": "المميّز",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistory": {
+    "message": "تذكَّر أي المواقع",
+    "description": "Dashboard (options page) string."
+  },
+  "dashSiteHistorySub": {
+    "message": "يحتفظ بقائمة المواقع التي حُظر فيها شيء، حتى تتمكن هذه الصفحة من إظهار مصدر توفيرك. يُخزَّن على هذا الجهاز فقط ولا يُرسل إلى أي مكان. مُعطَّل افتراضيًا — وإيقافه مجددًا يحذف ما سُجِّل.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAuto": {
+    "message": "التكيّف مع سرعة الاتصال",
+    "description": "Dashboard (options page) string."
+  },
+  "dashAutoSub": {
+    "message": "أوقف حظر الصور عندما يكون الاتصال سريعًا. يعتمد على تقدير السرعة الخاص بالمتصفح — لا يُقاس شيء ولا يُرسل.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsent": {
+    "message": "الرد على لافتات ملفات تعريف الارتباط",
+    "description": "Dashboard (options page) string."
+  },
+  "dashConsentSub": {
+    "message": "يختار “رفض” أو “الضروري فقط” حيثما تتيح اللافتة ذلك. لا يوافق نيابة عنك أبدًا — وإذا تعذّر إيجاد خيار خاص، تُخفى اللافتة ولا تتم الموافقة على أي شيء.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopups": {
+    "message": "حظر النوافذ المنبثقة غير المرغوبة",
+    "description": "Dashboard (options page) string."
+  },
+  "dashPopupsSub": {
+    "message": "يحظر النوافذ التي تفتحها الصفحة من تلقاء نفسها. النوافذ التي تفتحها بالنقر تظل تعمل.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfiles": {
+    "message": "قواعد لكل موقع",
+    "description": "Dashboard (options page) string."
+  },
+  "dashProfilesEmpty": {
+    "message": "لا توجد قواعد بعد. افتح النافذة المنبثقة في أي موقع لإضافة واحدة.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashRemove": {
+    "message": "إزالة",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackup": {
+    "message": "النسخ الاحتياطي والنشر",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExport": {
+    "message": "تصدير الإعدادات",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImport": {
+    "message": "استيراد الإعدادات",
+    "description": "Dashboard (options page) string."
+  },
+  "dashBackupNote": {
+    "message": "يصدّر كل مفتاح وموقع موقوف وقاعدة موقع في ملف JSON. يمكن دفع الملف نفسه كسياسة إلى أجهزة مُدارة.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashExportFailed": {
+    "message": "تعذّر تصدير الإعدادات.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportBadFile": {
+    "message": "هذا الملف ليس JSON صالحًا.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImportFailed": {
+    "message": "تعذّر استيراد هذا الملف.",
+    "description": "Dashboard (options page) string."
+  },
+  "dashImported": {
+    "message": "تم استيراد $N$ إعدادات.",
+    "description": "Dashboard (options page) string.",
+    "placeholders": {
+      "n": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
   }
 }
