@@ -258,14 +258,14 @@
   <p class="subtitle">A browser extension that blocks ads, images, and autoplaying video to reduce bandwidth use.</p>
 
   <dl class="facts">
-    <div class="fact"><dt>Effective</dt><dd>August 28, 2026</dd></div>
-    <div class="fact"><dt>Applies to</dt><dd>Data Saver v2.1+</dd></div>
+    <div class="fact"><dt>Effective</dt><dd>September 15, 2026</dd></div>
+    <div class="fact"><dt>Applies to</dt><dd>Data Saver v2.3+</dd></div>
     <div class="fact"><dt>Data collected</dt><dd>None</dd></div>
   </dl>
 
   <div class="tldr">
     <span class="tldr-mark">TL;DR</span>
-    <p>Data Saver collects nothing, sends nothing to any server, and has no analytics. Every rule it enforces ships inside the extension itself and runs entirely inside your own browser. Your on/off settings are stored using Chrome's own <code>storage.sync</code>, which is Google's mechanism, not ours — we never see it.</p>
+    <p>Data Saver collects nothing, sends nothing to any server, and has no analytics. Every rule it enforces ships inside the extension itself and runs entirely inside your own browser. Your settings and your blocked-request counts are stored by Chrome on your own device — we never see them, because there is no server for them to be sent to.</p>
   </div>
 
   <section>
@@ -275,12 +275,28 @@
 
   <section>
     <h2>Data we collect</h2>
-    <p>None. Specifically:</p>
+    <p>None. "Collect" here means what Chrome means by it: transmitted off your device. Nothing this extension records ever leaves your machine, because the extension makes no network requests of its own and there is no server to receive them.</p>
     <ul>
       <li>We do not collect, log, or transmit your browsing history, page content, or the URLs you visit.</li>
       <li>We do not run analytics, telemetry, or crash reporting of any kind.</li>
       <li>We do not operate any server. Nothing your browser does is ever sent anywhere by this extension.</li>
-      <li>The only data stored is your own on/off preferences for each blocking category, plus the list of sites you've chosen to pause blocking on — both held in Chrome's <code>storage.sync</code>, under your own Google account if Chrome Sync is enabled, never accessible to us.</li>
+    </ul>
+
+    <h3>What is stored on your own device</h3>
+    <p>Being precise about this matters more than the sentence above, because the extension does keep things — it just keeps them where only you can see them.</p>
+    <ul>
+      <li><strong>Your settings</strong> — the on/off preference for each blocking category, sites you've chosen not to block on, any per-site rules you've created, and the optional data-budget figures. Held in Chrome's <code>storage.sync</code>, under your own Google account if Chrome Sync is enabled, never accessible to us.</li>
+      <li><strong>Blocked-request counts</strong> — how many ads, images and videos have been blocked, an estimated byte total, and a per-day tally for the last 60 days, so the extension can show you your own savings. Numbers only; no addresses, no page content.</li>
+      <li><strong>A list of sites where something was blocked — only if you switch it on.</strong> This is the one thing the extension records that resembles browsing history, so it is <strong>off by default</strong>. Turning on "Remember which sites" in the dashboard stores a capped list of hostnames so the dashboard can show where your savings came from. Switching it back off deletes that list immediately. It stays on your device either way.</li>
+      <li><strong>An administrator policy</strong>, if one has been deployed to your machine by a school or employer. That is read-only, read locally, and nothing is reported back to the administrator by this extension.</li>
+    </ul>
+    <p>Everything above can be cleared from the extension itself — the savings counter has a Reset control, and the site list has its own separate Clear control.</p>
+
+    <h3>Optional features that act on the page</h3>
+    <p>Two features, both off unless you switch them on, do more than block requests:</p>
+    <ul>
+      <li><strong>Answering cookie banners.</strong> When enabled, the extension looks for a consent banner and presses the most privacy-preserving option it offers — "reject all" or "necessary only". <strong>It never presses accept.</strong> If no privacy-preserving option can be found, the banner is hidden and no consent of any kind is recorded on your behalf. It reads nothing from the page except the text of candidate buttons.</li>
+      <li><strong>Blocking pop-ups.</strong> When enabled, windows a page tries to open without you clicking are prevented from opening. Windows you open yourself still work. Nothing about the page is read or recorded.</li>
     </ul>
   </section>
 
@@ -302,11 +318,11 @@
         </tr>
         <tr>
           <td class="perm-name">storage</td>
-          <td class="perm-why">Saves your toggle choices and per-site pause list locally/synced via your own Chrome account, so your settings persist between browsing sessions.</td>
+          <td class="perm-why">Saves your toggle choices, per-site rules, pause list and blocked-request counts &mdash; locally, or synced via your own Chrome account, so they persist between sessions. The same permission is how the extension reads an administrator policy if your school or employer has deployed one; that is read-only and read locally.</td>
         </tr>
         <tr>
           <td class="perm-name">scripting</td>
-          <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio and clean up broken-image placeholders left behind by blocked images.</td>
+          <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio, clean up broken-image placeholders left behind by blocked images, and count how many requests were blocked so the popup can show you your own total. Two further scripts &mdash; answering cookie banners and blocking unrequested pop-ups &mdash; are registered only if you switch those features on.</td>
         </tr>
       </tbody>
     </table>
@@ -335,7 +351,9 @@
 
   <section>
     <h2>Contact</h2>
-    <p><em>[Add a contact email or support link here before publishing to the Chrome Web Store — a way for users and Google's review team to reach you is required.]</em></p>
+    <p>Questions, bug reports and privacy enquiries — including from the Chrome Web Store review team — should go to the project's issue tracker:</p>
+    <p><a href="https://github.com/RatKush/Data-saver-extension/issues">github.com/RatKush/Data-saver-extension/issues</a></p>
+    <p>The source for this extension is public at <a href="https://github.com/RatKush/Data-saver-extension">github.com/RatKush/Data-saver-extension</a>, so every claim on this page can be checked against the code rather than taken on trust.</p>
   </section>
 
   <footer>
