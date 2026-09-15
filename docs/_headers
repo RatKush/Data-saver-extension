@@ -1,0 +1,19 @@
+# Cloudflare Pages response headers.
+#
+# These pages are handed to enterprise IT and security reviewers as part of a
+# licensing conversation, so the site itself should stand up to the same
+# scrutiny the extension does. There is no JavaScript anywhere in this site,
+# which is what makes script-src 'none' honest rather than aspirational.
+
+/*
+  Content-Security-Policy: default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; script-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Content-addressed only by name here, so keep it short enough that a fix to
+# the stylesheet reaches a reader the same day.
+/assets/*
+  Cache-Control: public, max-age=3600, must-revalidate
