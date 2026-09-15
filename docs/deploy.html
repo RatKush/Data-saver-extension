@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Saver — deploying by policy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav">
+    <a class="mark" href="index.html"><img src="assets/icon48.png" alt="">Data Saver</a>
+    <a class="item" href="index.html">For organisations</a>
+    <a class="item" href="pilot.html">Pilot</a>
+    <a class="item" href="deploy.html" aria-current="page">Deployment</a>
+    <a class="item" href="terms.html">Licence</a>
+    <a class="item" href="privacy-policy.html">Privacy</a>
+  </nav>
+
+  <header>
+    <p class="eyebrow">Administrators</p>
+    <h1>Deploying Data Saver by policy</h1>
+    <p class="dek">Force-install it, pin the settings you care about, and leave the rest to the user. Everything below uses the browser's own extension policy — there is no agent, no installer and no licence key to distribute.</p>
+  </header>
+
+  <dl class="facts">
+    <div><dt>Extension ID</dt><dd style="font-size:13px;font-family:var(--mono);word-break:break-all">cjijlgnefahbmcogbhacnnnlnaeolmjg</dd></div>
+    <div><dt>Browsers</dt><dd>Chrome · Edge</dd><small>version 111 or later</small></div>
+    <div><dt>Platforms</dt><dd>All</dd><small>Windows, macOS, Linux, ChromeOS</small></div>
+  </dl>
+
+  <h2>1. Force-install the extension</h2>
+  <p>Use the browser's existing extension policy. On Windows this is the <code>ExtensionInstallForcelist</code> Group Policy setting under <em>Google Chrome → Extensions</em>; the same key exists for Edge and in the Google Admin console.</p>
+  <pre><code>cjijlgnefahbmcogbhacnnnlnaeolmjg;https://clients2.google.com/service/update2/crx</code></pre>
+  <p>Users cannot remove a force-installed extension, which is usually what you want for a measured pilot — a rollback then means removing the policy rather than chasing devices.</p>
+
+  <h2>2. Pin the settings you care about</h2>
+  <p>Policy is delivered through the <code>3rdparty</code> section of the browser's managed policy, keyed by extension ID. <strong>Only the keys you set are enforced</strong> — anything you leave out stays under the user's control, so you can lock image blocking on and still let people switch video blocking off themselves.</p>
+
+  <div class="t-scroll">
+    <table>
+      <thead><tr><th>Key</th><th>Type</th><th>What it controls</th></tr></thead>
+      <tbody>
+        <tr><td><code>ads</code></td><td>boolean</td><td>Block ads and trackers</td></tr>
+        <tr><td><code>images</code></td><td>boolean</td><td>Block images</td></tr>
+        <tr><td><code>media</code></td><td>boolean</td><td>Block video and audio</td></tr>
+        <tr><td><code>consent</code></td><td>boolean</td><td>Answer cookie banners with the most private option</td></tr>
+        <tr><td><code>popups</code></td><td>boolean</td><td>Block popups not opened by the user</td></tr>
+        <tr><td><code>allowlist</code></td><td>array</td><td>Sites where blocking is switched off entirely</td></tr>
+        <tr><td><code>siteProfiles</code></td><td>object</td><td>Per-site overrides, keyed by domain</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>A typical starting policy</h3>
+  <p>Ads and images blocked, video left alone, and two internal applications exempted so nothing breaks on the first morning:</p>
+  <pre><code>{
+  "3rdparty": {
+    "extensions": {
+      "cjijlgnefahbmcogbhacnnnlnaeolmjg": {
+        "ads": true,
+        "images": true,
+        "media": false,
+        "allowlist": ["intranet.example.org", "erp.example.org"],
+        "siteProfiles": {
+          "docs.example.org": { "images": false }
+        }
+      }
+    }
+  }
+}</code></pre>
+  <p>In that example <code>allowlist</code> switches blocking off entirely for two internal systems, while <code>siteProfiles</code> keeps ads blocked on the documentation site but lets its images through — the narrower fix, and usually the better one.</p>
+
+  <h3>Where the file goes</h3>
+  <div class="t-scroll">
+    <table>
+      <thead><tr><th>Platform</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td>Windows</td><td>Group Policy, or the registry under <code>HKLM\Software\Policies\Google\Chrome\3rdparty\extensions\cjijlgnefahbmcogbhacnnnlnaeolmjg</code></td></tr>
+        <tr><td>macOS</td><td>A configuration profile or plist in <code>/Library/Managed Preferences/com.google.Chrome.plist</code>, pushed by Jamf, Intune or equivalent</td></tr>
+        <tr><td>Linux</td><td>A JSON file in <code>/etc/opt/chrome/policies/managed/</code></td></tr>
+        <tr><td>ChromeOS</td><td>Google Admin console → Devices → Chrome → Apps &amp; extensions → the extension → <em>Policy for extensions</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>3. Confirm it applied</h2>
+  <ol>
+    <li>Open <code>chrome://policy</code> on a target device and check the extension's policy appears with the values you set.</li>
+    <li>Open the extension's dashboard. Managed settings are shown at their enforced value and greyed out, with a notice saying they are managed by your organisation.</li>
+    <li>Load a page with advertising on it and open the popup. The blocked count should move.</li>
+  </ol>
+
+  <div class="note">
+    <h3>What the user can still do</h3>
+    <p>Anything you have not pinned. They can also always stop blocking on the page they are looking at — a button at the top of the popup and <code>Alt+Shift+D</code>. That is deliberate and we would advise against trying to remove it: when a site breaks and there is no visible way out, people uninstall the extension instead, and on a managed device they raise a ticket with you. The escape hatch is what keeps the deployment quiet.</p>
+    <p>If a specific site must never be exempted, pin it through <code>siteProfiles</code> rather than relying on users not touching it.</p>
+  </div>
+
+  <h2>Rollback</h2>
+  <p>Remove the extension ID from <code>ExtensionInstallForcelist</code> and the browser uninstalls it at the next policy refresh. No files are left behind, and nothing needs to be cleaned up on the device — all state lived in the browser's own extension storage.</p>
+
+  <div class="cta">
+    <p>Deployment not applying, or a site behaving oddly under policy?</p>
+    <a class="btn" href="https://github.com/RatKush/Data-saver-extension/issues">Ask a question</a>
+  </div>
+
+
+  <footer>
+    <span>Data Saver — an independent browser extension, not affiliated with Google or Chrome.</span>
+    <span><a href="https://github.com/RatKush/Data-saver-extension">Source</a> · <a href="https://github.com/RatKush/Data-saver-extension/issues">Contact</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
