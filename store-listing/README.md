@@ -23,6 +23,10 @@ later without moving anything.
 | `terms.html` | Draft licence terms. **Not written by a lawyer — flagged as needing review on the page itself.** |
 | `privacy-policy.html` | Required by the Chrome Web Store. |
 
+It lives in the **same Cloudflare account as the sibling ad-blocker project**, as a separate Pages project. Nothing meaningful is shared: Pages does not meter bandwidth or requests for static assets, and the only account-level limits are 500 builds/month and one build at a time — neither close to binding for two small static sites. That would change only if either project added Pages Functions, which run on Workers and draw on the shared Workers quota. This site has none.
+
+`_headers` sets the response headers. The CSP is `script-src 'none'` because there is genuinely no JavaScript on any of these pages, and no `'unsafe-inline'` for styles because the single inline style attribute was moved into the stylesheet to avoid needing it. Worth keeping that way: these pages get read by the same IT and security reviewers who will vet the extension.
+
 All five share `assets/site.css`. The deployment page's policy-key table is
 generated from `managed-schema.json`, so the documented keys cannot drift
 from the ones the extension actually accepts.
