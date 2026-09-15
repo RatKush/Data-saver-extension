@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Saver — 30-day pilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav">
+    <a class="mark" href="index.html"><img src="assets/icon48.png" alt="">Data Saver</a>
+    <a class="item" href="index.html">For organisations</a>
+    <a class="item" href="pilot.html" aria-current="page">Pilot</a>
+    <a class="item" href="deploy.html">Deployment</a>
+    <a class="item" href="terms.html">Licence</a>
+    <a class="item" href="privacy-policy.html">Privacy</a>
+  </nav>
+
+  <header>
+    <p class="eyebrow">Evaluation</p>
+    <h1>A 30-day pilot, measured by you</h1>
+    <p class="dek">The pilot exists because we will not quote you a saving we cannot measure. You deploy to a slice of your fleet, your own monitoring produces the number, and you decide what it is worth.</p>
+  </header>
+
+  <div class="note">
+    <h3>Why you measure instead of us</h3>
+    <p>An extension can count the requests it blocked — that number is exact, and the product shows it. What it cannot do is know how many bytes those requests <em>would have</em> transferred, because Chrome exposes no such API to extensions in a production build. Every byte figure the product displays is labelled an estimate for that reason.</p>
+    <p>Your netflow, proxy logs or carrier reporting measure real egress. That is a better instrument than anything we could build, and it is already deployed.</p>
+  </div>
+
+  <h2>What you need</h2>
+  <ul>
+    <li><strong>20–100 managed devices</strong> running Chrome or Edge. Enough that individual behaviour averages out; small enough to roll back in an afternoon.</li>
+    <li><strong>A way to deploy an extension by policy</strong> — Group Policy, Intune, Jamf, or the Google Admin console. See the <a href="deploy.html">deployment guide</a>.</li>
+    <li><strong>Existing bandwidth reporting</strong> that can be filtered to those devices: netflow, a proxy, a firewall report, or per-line carrier data.</li>
+    <li><strong>A named contact on your side</strong> who can answer whether a site broke, because that matters as much as the byte count.</li>
+  </ul>
+
+  <h2>How it runs</h2>
+  <ol class="steps">
+    <li>
+      <div>
+        <h3>Agree the measure and the threshold — before anything is installed</h3>
+        <p>Pick one metric, usually web egress per device per working day. Write down the number that would make this worth buying. Deciding afterwards is how pilots turn into arguments.</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Baseline for two weeks</h3>
+        <p>No deployment yet. Record the metric across the pilot group so there is something to compare against, over a period long enough to include a normal working pattern.</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Deploy by policy</h3>
+        <p>Force-install the extension and push a policy file. We supply one tailored to your environment — typically ads and images blocked, video left alone, and any internal applications exempted so nothing breaks on day one.</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Run for four weeks</h3>
+        <p>Collect the same metric. Keep a note of anything users report as broken; the per-site rules exist precisely to fix those without weakening the policy everywhere.</p>
+      </div>
+    </li>
+    <li>
+      <div>
+        <h3>Compare, and decide</h3>
+        <p>Against the threshold agreed in step one. If it is not met, that is a real answer and the pilot cost you a policy push and a rollback.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h2>What we provide</h2>
+  <ul>
+    <li>The packaged extension, identical to the public Chrome Web Store build.</li>
+    <li>A policy file written for your environment, including exemptions for internal applications.</li>
+    <li>The <a href="deploy.html">deployment guide</a> and direct help if a push does not apply cleanly.</li>
+    <li>A rollback procedure, agreed before you start.</li>
+  </ul>
+
+  <div class="note warn">
+    <h3>Confounders worth naming up front</h3>
+    <p><strong>Web browsing is only part of your egress.</strong> Video conferencing, software updates, backups and cloud sync are untouched by this and can easily dominate a total. Filter to web traffic if your tooling allows it; if it does not, expect the headline reduction to look smaller than the effect on browsing itself.</p>
+    <p><strong>Seasonality and population drift.</strong> A baseline over a holiday period, or a pilot group that changes size, will move the number for reasons that have nothing to do with the extension.</p>
+    <p><strong>Video platforms ship unblocked by default.</strong> Streaming sites are exempt out of the box because blocking them breaks them rather than saving anyone a surprise. If your goal is to suppress streaming specifically, that is a policy change to make deliberately at step three.</p>
+  </div>
+
+  <h2>Cost</h2>
+  <p>The pilot is free, and there is no obligation at the end of it. We are looking for the first deployments as much as you are looking for the saving — that is an honest description of where this product is, and it is why the terms are what they are.</p>
+
+  <div class="cta">
+    <p>Tell us roughly how many devices and what you can measure, and we will send a policy file for your environment.</p>
+    <a class="btn" href="https://github.com/RatKush/Data-saver-extension/issues">Start a pilot</a>
+  </div>
+
+
+  <footer>
+    <span>Data Saver — an independent browser extension, not affiliated with Google or Chrome.</span>
+    <span><a href="https://github.com/RatKush/Data-saver-extension">Source</a> · <a href="https://github.com/RatKush/Data-saver-extension/issues">Contact</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
