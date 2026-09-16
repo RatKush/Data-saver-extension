@@ -377,6 +377,34 @@ def build(tmp):
         </div>"""),
     ]
 
+    # --- small promo tile -------------------------------------------------
+    # 440x280 is tiny: the wordmark, one line, and nothing else survives at
+    # that size. Captured at scale 1 because the store requires those exact
+    # pixel dimensions — a 2x render is rejected as the wrong size.
+    tile = f"""<!doctype html><meta charset=utf-8><style>
+      * {{ box-sizing:border-box; }}
+      body {{ margin:0; width:440px; height:280px; background:{BG}; color:{TEXT};
+              font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+              overflow:hidden; }}
+      .t {{ width:440px; height:280px; padding:34px 36px; display:flex;
+            flex-direction:column; justify-content:center; gap:14px; }}
+      .row {{ display:flex; align-items:center; gap:11px; }}
+      .row img {{ width:34px; height:34px; border-radius:9px; }}
+      .name {{ font-size:23px; font-weight:700; letter-spacing:-.4px; }}
+      h2 {{ margin:0; font-size:27px; line-height:1.18; font-weight:700; letter-spacing:-.7px; }}
+      h2 em {{ font-style:normal; color:{ACCENT}; }}
+      p {{ margin:0; font-size:14px; color:{MUTED}; line-height:1.4; }}
+    </style>
+    <div class="t">
+      <div class="row"><img src="{data_uri(os.path.join(ROOT, 'icons', 'icon128.png'))}" alt=""><span class="name">Data Saver</span></div>
+      <h2>Block ads, images<br>and video. <em>Use less data.</em></h2>
+      <p>Built for slow, capped or metered connections.</p>
+    </div>"""
+    tile_path = os.path.join(tmp, "tile.html")
+    open(tile_path, "w").write(tile)
+    shoot("file://" + tile_path, os.path.join(OUT, "promo-440x280.png"), 440, 280, False, scale=1)
+    print("  wrote store-listing/screenshots/promo-440x280.png")
+
     for name, body in frames:
         path = os.path.join(tmp, "frame.html")
         open(path, "w").write(frame_html(body))
