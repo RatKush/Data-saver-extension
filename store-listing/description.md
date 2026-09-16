@@ -91,7 +91,7 @@ be exported as a file and deployed to a fleet.
 
 Data Saver collects nothing. No analytics, no tracking, no server of
 its own. Every blocking rule ships inside the extension and runs
-entirely inside your browser. Full privacy policy: [link]
+entirely inside your browser. Full privacy policy: https://data-saver-extension.pages.dev/privacy-policy
 
 ---
 
