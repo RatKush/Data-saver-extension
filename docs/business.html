@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Saver for organisations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav">
+    <a class="mark" href="/"><img src="/assets/icon48.png" alt="">Data Saver</a>
+    <a class="item" href="/business" aria-current="page">For organisations</a>
+    <a class="item" href="/pilot">Pilot</a>
+    <a class="item" href="/deploy">Deployment</a>
+    <a class="item" href="/terms">Licence</a>
+    <a class="item" href="/privacy-policy">Privacy</a>
+  </nav>
+
+  <header>
+    <p class="eyebrow">For organisations</p>
+    <h1>Cut the web traffic on every machine you pay for</h1>
+    <p class="dek">Data Saver stops ads, trackers, images and video <em>before</em> they download, rather than hiding them afterwards. It deploys by policy, needs no account, and reports nothing anywhere — because it has no server to report to.</p>
+  </header>
+
+  <dl class="facts">
+    <div><dt>Installs</dt><dd>6,469</dd><small>lifetime, to September 2026</small></div>
+    <div><dt>Weekly actives</dt><dd>2,352</dd><small>organic, no marketing spend</small></div>
+    <div><dt>Languages</dt><dd>25</dd><small>interface and store listing</small></div>
+    <div><dt>Servers</dt><dd>None</dd><small>nothing leaves the device</small></div>
+  </dl>
+
+  <h2>The claim we will not make</h2>
+  <p>Most tools in this category will quote you a percentage. We will not, and it is worth explaining why, because it is the same reason the product is worth deploying.</p>
+  <p>Chrome exposes no API that tells an extension how many bytes a blocked request would have transferred. Anyone quoting you a precise saving from inside a browser extension is estimating and presenting it as measurement. <strong>Your own network already measures this properly.</strong> So the offer is a pilot: deploy it to a slice of your fleet, read your own netflow or bandwidth reporting, and decide on your numbers rather than ours.</p>
+
+  <div class="cta">
+    <p><strong>A 30-day pilot costs nothing</strong> and ends with a figure from your own monitoring.</p>
+    <a class="btn" href="/pilot">How the pilot works</a>
+  </div>
+
+  <h2>Who this is for</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Mobile operators &amp; capped-market ISPs</h3>
+      <p>Bandwidth is a direct cost line. Reducing page weight on subscriber devices reduces it at the source rather than at the network edge.</p>
+    </div>
+    <div class="card">
+      <h3>Schools &amp; universities</h3>
+      <p>Shared links that collapse at 9am. Blocking images and video on managed lab machines frees capacity without new hardware.</p>
+    </div>
+    <div class="card">
+      <h3>NGOs and field operations</h3>
+      <p>Satellite and mobile-backhauled sites where every megabyte is metered and the connection is the constraint on the work.</p>
+    </div>
+    <div class="card">
+      <h3>Enterprises paying roaming</h3>
+      <p>Travelling staff on tethered or foreign-network connections, where a single laptop can generate a surprising invoice.</p>
+    </div>
+    <div class="card">
+      <h3>Device makers</h3>
+      <p>Entry-level hardware shipped into markets where data cost, not device cost, is what limits use. Ships preconfigured.</p>
+    </div>
+  </div>
+
+  <h2>What a licence covers</h2>
+  <ul>
+    <li><strong>Central deployment and lock-down.</strong> Every setting can be pinned by policy through Group Policy, MDM, or the Google Admin console. Locked settings are shown to the user as managed rather than silently enforced.</li>
+    <li><strong>The maintained blocklist.</strong> Roughly 3,600 rules, rebuilt from upstream sources and shipped inside the package — no runtime fetch, so nothing breaks when your firewall blocks an update host.</li>
+    <li><strong>Per-site rules.</strong> Block ads on a site while allowing its images, or the reverse, pinned centrally so an internal application keeps working.</li>
+    <li><strong>Portable configuration.</strong> Work out a configuration on one machine, export it as JSON, and deploy that same file as policy.</li>
+    <li><strong>A named contact</strong> for deployment questions during the pilot and the licence term.</li>
+  </ul>
+
+  <h2>Why it is safe to deploy</h2>
+  <ul>
+    <li><strong>Manifest V3, no remote code.</strong> Every blocking rule ships inside the package and is evaluated by Chrome itself. The extension never fetches executable content.</li>
+    <li><strong>No network egress of its own.</strong> No analytics, no telemetry, no licence call-home. There is nothing for your egress filtering to allow.</li>
+    <li><strong>No data collection.</strong> Settings and blocked-request counts stay on the device. The one feature that records hostnames is off by default and local. See the <a href="/privacy-policy">privacy policy</a>.</li>
+    <li><strong>Public source.</strong> Every claim on this page can be checked against <a href="https://github.com/RatKush/Data-saver-extension">the code</a> rather than taken on trust.</li>
+    <li><strong>Already in production.</strong> Thousands of weekly users through the <a href="https://chromewebstore.google.com/detail/Data%20Saver/cjijlgnefahbmcogbhacnnnlnaeolmjg">Chrome Web Store</a>, which is the same build you would deploy.</li>
+  </ul>
+
+  <div class="cta">
+    <p>Deployment questions, or want to start a pilot?</p>
+    <a class="btn" href="/pilot">Start a pilot</a>
+    <a class="btn quiet" href="https://github.com/RatKush/Data-saver-extension/issues">Get in touch</a>
+  </div>
+
+
+  <footer>
+    <span>Data Saver — an independent browser extension, not affiliated with Google or Chrome.</span>
+    <span><a href="https://github.com/RatKush/Data-saver-extension">Source</a> · <a href="https://github.com/RatKush/Data-saver-extension/issues">Contact</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
