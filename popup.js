@@ -99,7 +99,6 @@ function renderSavings(stats) {
   const amount = document.getElementById('savedAmount');
   const unit = document.getElementById('savedUnit');
   const label = document.getElementById('savedLabel');
-  const since = document.getElementById('savedSince');
 
   const total = (stats.ads || 0) + (stats.images || 0) + (stats.media || 0);
 
@@ -113,7 +112,6 @@ function renderSavings(stats) {
     // rendering glitch) — the label carries the whole message instead.
     document.getElementById('savedTop').hidden = true;
     label.textContent = t('savingsEmpty') || 'Browse a little and your savings will show up here';
-    since.textContent = t('savingsEstimated') || 'Estimated from blocked requests';
     renderBar(stats, 0);
     return;
   }
@@ -126,15 +124,11 @@ function renderSavings(stats) {
   amount.textContent = total.toLocaleString();
   unit.textContent = t('savingsRequests') || 'requests blocked';
 
+  // The approximation sign is what marks this as an estimate now that the
+  // "Estimated, since ..." line has gone from the panel. The dashboard still
+  // carries the date the count runs from, and the reset lives there too.
   const [value, suffix] = formatBytes(stats.bytes || 0);
   label.textContent = t('savingsBytes', `${value} ${suffix}`) || `≈ ${value} ${suffix} saved`;
-
-  if (stats.since) {
-    const date = new Date(stats.since).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-    since.textContent = t('savingsEstimatedSince', date) || `Estimated, since ${date}`;
-  } else {
-    since.textContent = t('savingsEstimated') || 'Estimated from blocked requests';
-  }
 
   renderBar(stats, total);
 }
@@ -167,12 +161,6 @@ function initSavings() {
   // The popup can be open while pages in other tabs keep blocking, so keep it live.
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === 'local' && changes.stats) renderSavings(changes.stats.newValue || EMPTY);
-  });
-
-  document.getElementById('resetStats').addEventListener('click', () => {
-    chrome.storage.local.set({ stats: { ...EMPTY, since: Date.now() } }, () => {
-      renderSavings({ ...EMPTY, since: Date.now() });
-    });
   });
 }
 

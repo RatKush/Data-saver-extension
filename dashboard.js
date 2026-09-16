@@ -52,6 +52,15 @@ function renderHistory(history, stats) {
   document.getElementById('tAll').textContent =
     fmt((stats.ads || 0) + (stats.images || 0) + (stats.media || 0));
 
+  // The popup used to carry this line. It belongs somewhere, because an
+  // all-time figure means nothing without knowing when it started.
+  const since = document.getElementById('tSince');
+  if (since) {
+    since.textContent = stats.since
+      ? (t('savingsEstimatedSince', shortDate(stats.since)) || `since ${shortDate(stats.since)}`)
+      : '';
+  }
+
   const trend = document.getElementById('trend');
   trend.textContent = '';
   const peak = Math.max(1, ...days.map((d) => d.total));
@@ -340,6 +349,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (chrome.i18n.getMessage('@@bidi_dir') === 'rtl') document.body.setAttribute('dir', 'rtl');
   applyTranslations();
   initBackup();
+
+  // Resetting the counter is separate from clearing history: one throws away
+  // the totals, the other throws away the record of which sites produced them.
+  document.getElementById('resetStats').addEventListener('click', () => {
+    chrome.storage.local.set(
+      { stats: { ads: 0, images: 0, media: 0, bytes: 0, since: Date.now() } }, load);
+  });
 
   document.getElementById('clearHistory').addEventListener('click', () => {
     // Deliberately separate from the popup's Reset: this clears the record of
