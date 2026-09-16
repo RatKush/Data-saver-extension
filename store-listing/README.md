@@ -12,7 +12,9 @@
 `docs/` is a small static site, published on **Cloudflare Pages** — the same
 account the sibling ad-blocker project uses. Point a Pages project at this
 repo with the build output directory set to `docs`, and it serves at
-`<project>.pages.dev`. Free, no domain needed, and a custom domain attaches
+**https://data-saver-extension.pages.dev**.
+
+Canonical URLs are extensionless — Pages 308-redirects the `.html` form, so link to `/privacy-policy`, not `/privacy-policy.html`. Free, no domain needed, and a custom domain attaches
 later without moving anything.
 
 | Page | What it is for |
@@ -31,6 +33,5 @@ All five share `assets/site.css`. The deployment page's policy-key table is
 generated from `managed-schema.json`, so the documented keys cannot drift
 from the ones the extension actually accepts.
 
-**Once the site is live, the URL goes in two places:** the Chrome Web Store
-dashboard's privacy policy field, and the `[link]` placeholder at the end of
-`description.md`.
+**Privacy policy URL** (for the Chrome Web Store dashboard's privacy field):
+`https://data-saver-extension.pages.dev/privacy-policy` — already filled into `description.md`.
