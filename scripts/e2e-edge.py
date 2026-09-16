@@ -33,6 +33,19 @@ import time
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# --dir lets the run load a directory other than the working tree — in
+# practice, an extracted release zip. The working tree and the zip are not the
+# same thing: the zip is built from an explicit include list, so a file that
+# exists on disk and is missing from that list passes every test here and then
+# breaks for real users. Test what ships.
+_dir = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--dir=")), None)
+if _dir:
+    # realpath, not abspath: Chrome derives an unpacked extension's id from the
+    # resolved path, and on macOS /tmp is a symlink to /private/tmp. abspath
+    # leaves the symlink in place, so the predicted id never matches and the
+    # run fails looking for a service worker that is right there.
+    ROOT = os.path.realpath(_dir)
 EDGE = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
 PORT_CDP = 9333
 PORT_WEB = 8731
@@ -285,6 +298,75 @@ def main():
         print(f"counted        : {total} requests, ~{mb:.1f} MB estimated "
               f"(ads={stats['ads']}, images={stats['images']})")
 
+        # ---- The popup and the dashboard, under real extension APIs. ----
+        # Everything above exercises the service worker and the content
+        # scripts. The popup is the surface users actually touch, and until
+        # now it had only ever been rendered against hand-written stubs — a
+        # stub that has drifted from the real API does not throw, it just
+        # quietly renders an empty panel. So load both pages for real and
+        # assert they populated: if popup.js threw at DOMContentLoaded these
+        # nodes keep their placeholder text and nothing is wired up.
+        def probe(page_name, expr):
+            t = browser.call("Target.createTarget",
+                             {"url": f"chrome-extension://{ext_id}/{page_name}"})
+            sid = browser.call("Target.attachToTarget",
+                               {"targetId": t["targetId"], "flatten": True})["sessionId"]
+            time.sleep(2.5)
+            r = browser.call("Runtime.evaluate",
+                             {"expression": expr, "returnByValue": True,
+                              "awaitPromise": True}, session=sid)
+            browser.call("Target.closeTarget", {"targetId": t["targetId"]})
+            return r.get("result", {}).get("value")
+
+        print("\nloading the popup and dashboard for real …")
+
+        popup = probe("popup.html", """(() => {
+          const host = document.getElementById('siteHost');
+          const amount = document.getElementById('savedAmount');
+          const top = document.getElementById('savedTop');
+          const ads = document.getElementById('adsToggle');
+          const pills = document.querySelectorAll('.pill');
+          return JSON.stringify({
+            host: (host && host.textContent || '').trim(),
+            shown: !!(top && !top.hidden),
+            amount: (amount && amount.textContent || '').trim(),
+            adsChecked: !!(ads && ads.checked),
+            pills: pills.length,
+            err: window.__err || null
+          });
+        })()""")
+        print(f"popup          : {popup}")
+
+        dash = probe("dashboard.html", """(() => {
+          const t7 = document.getElementById('t7');
+          const trend = document.getElementById('trend');
+          const gb = document.getElementById('budgetGB');
+          return JSON.stringify({
+            totals: (t7 && t7.textContent || '').trim(),
+            trendBars: trend ? trend.children.length : 0,
+            budgetField: !!gb,
+            topSites: !!document.getElementById('topSites').textContent.trim()
+          });
+        })()""")
+        print(f"dashboard      : {dash}")
+
+        import json as _json
+        pu, da = _json.loads(popup or "{}"), _json.loads(dash or "{}")
+        ui_ok = True
+        # The toggle reflecting stored state proves popup.js ran to completion:
+        # it is set from a storage callback near the end of initialisation.
+        if not pu.get("adsChecked"):
+            print("  ✗ popup: ads toggle never reflected stored settings"); ui_ok = False
+        if pu.get("pills") != 3:
+            print(f"  ✗ popup: expected 3 per-site pills, saw {pu.get('pills')}"); ui_ok = False
+        if not pu.get("shown"):
+            print("  ✗ popup: savings figure stayed hidden despite counted blocks"); ui_ok = False
+        if da.get("trendBars") != 14:
+            print(f"  ✗ dashboard: expected a 14-day trend, saw {da.get('trendBars')} bars"); ui_ok = False
+        if not da.get("budgetField"):
+            print("  ✗ dashboard: data budget controls missing"); ui_ok = False
+        print("  both pages initialised correctly" if ui_ok else "  UI CHECK FAILED")
+
         if real_url:
             print("\n(--url run: reporting only, fixture assertions skipped)")
             return 0
@@ -347,7 +429,8 @@ def main():
             print("FAIL: 'since' was never stamped", file=sys.stderr)
             ok = False
 
-        print("\nPASS — meter counts real blocks, and pausing a site stops them" if ok else "\nFAILED")
+        ok = ok and ui_ok
+        print("\nPASS — meter counts, pausing stops them, and both pages load" if ok else "\nFAILED")
         return 0 if ok else 1
 
     finally:

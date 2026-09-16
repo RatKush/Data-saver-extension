@@ -99,6 +99,17 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+# Built here rather than at the end, so the browser test below can load the
+# artifact that actually ships instead of the working tree.
+if ./scripts/package.sh > /tmp/ds-pkg.log 2>&1; then
+  ZIP=$(ls -t dist/*.zip | head -1)
+  PACKAGED=1
+else
+  ZIP=""
+  PACKAGED=0
+fi
+
+# ---------------------------------------------------------------------------
 step "Browser test (Microsoft Edge)"
 
 if [ "$FAST" -eq 1 ]; then
@@ -106,11 +117,26 @@ if [ "$FAST" -eq 1 ]; then
 elif [ ! -x "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" ]; then
   warn "Edge not installed — skipping the only test that exercises real DNR blocking"
 else
-  if python3 scripts/e2e-edge.py > /tmp/ds-e2e.log 2>&1; then
-    ok "$(grep -E '^counted' /tmp/ds-e2e.log | sed 's/counted *: //')"
+  # Run against the EXTRACTED ZIP, not the working tree. The zip is built from
+  # an explicit include list, so a file that exists on disk but is missing from
+  # that list would pass a working-tree test and then break for real users.
+  # Test the artifact.
+  ZIPDIR="$(mktemp -d)"
+  if [ -f "$ZIP" ] && unzip -q "$ZIP" -d "$ZIPDIR"; then
+    TARGET="--dir=$ZIPDIR"
+    WHAT="packaged zip"
   else
-    bad "browser test failed"; sed 's/^/      /' /tmp/ds-e2e.log | tail -20
+    TARGET=""
+    WHAT="working tree (no zip built yet)"
   fi
+
+  if python3 scripts/e2e-edge.py $TARGET > /tmp/ds-e2e.log 2>&1; then
+    ok "$(grep -E '^counted' /tmp/ds-e2e.log | sed 's/counted *: //')  [$WHAT]"
+  else
+    bad "browser test failed against the $WHAT"
+    sed 's/^/      /' /tmp/ds-e2e.log | tail -20
+  fi
+  rm -rf "$ZIPDIR"
 fi
 
 # ---------------------------------------------------------------------------
@@ -135,11 +161,11 @@ PY
 # ---------------------------------------------------------------------------
 step "Package audit"
 
-if ./scripts/package.sh > /tmp/ds-pkg.log 2>&1; then
+if [ "$PACKAGED" -eq 1 ]; then
   ok "$(tail -1 /tmp/ds-pkg.log)"
   # The packager builds from an allowlist, but assert the negative too: private
   # analytics exports were being shipped inside the extension until 2026-09-14.
-  zip=$(ls -t dist/*.zip | head -1)
+  zip="$ZIP"
   if unzip -Z1 "$zip" | grep -qiE '\.csv$|\.xlsx$|^\.|/\.'; then
     bad "package contains data or dotfiles that must not ship"
     unzip -Z1 "$zip" | grep -iE '\.csv$|\.xlsx$|^\.|/\.' | sed 's/^/      /'

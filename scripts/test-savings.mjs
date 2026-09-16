@@ -67,6 +67,7 @@ function makeChrome() {
   return {
     _listeners: listeners,
     _registered: registered,
+    get _rulesets() { return this.declarativeNetRequest._rulesets; },
     _local: local,
     runtime: {
       lastError: undefined,
@@ -93,7 +94,8 @@ function makeChrome() {
       setTitle({ tabId, title }) { this._title[tabId] = title; }
     },
     declarativeNetRequest: {
-      updateEnabledRulesets: (_o, cb) => cb && cb(),
+      _rulesets: [],
+      updateEnabledRulesets(o, cb) { this._rulesets.push(o); cb && cb(); },
       getDynamicRules: (cb) => cb([]),
       updateDynamicRules: (_o, cb) => cb && cb()
     },
@@ -722,6 +724,110 @@ await test('editing from a subdomain updates the covering rule', async () => {
   const stored = plain(chrome.storage.sync._dump().siteProfiles);
   assert.deepEqual(Object.keys(stored), ['example.com'], 'a narrower duplicate rule was added');
   assert.deepEqual(stored['example.com'], { images: false, media: false });
+});
+
+// ---------------------------------------------------------------------------
+// background.js — upgrading a live v2.1 install
+// ---------------------------------------------------------------------------
+// 2,352 people are running v2.1 right now. They will not get a fresh install,
+// they will get an update on top of storage written by a build that knew
+// nothing about seededDefaults, userChoices, stats, siteProfiles or any of the
+// premium keys. Breaking them is the one failure this release cannot have, and
+// "it works on a clean profile" does not test for it.
+
+console.log('\nbackground.js — upgrade from v2.1');
+
+// Exactly what a v2.1 profile holds: the three switches and nothing else.
+function v21Profile(chrome, over) {
+  chrome.storage.sync._reset(Object.assign(
+    { ads: true, images: true, media: false }, over));
+}
+
+await test('an upgrade keeps the switches the user had chosen', async () => {
+  const { chrome, ctx } = loadBackground();
+  v21Profile(chrome, { ads: true, images: false, media: false });
+
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+
+  const out = plain(chrome.storage.sync._dump());
+  assert.equal(out.ads, true);
+  assert.equal(out.images, false, 'the upgrade re-enabled a blocker the user had turned off');
+  assert.equal(out.media, false);
+});
+
+await test('an upgrade still turns blocking on', async () => {
+  const { chrome, ctx } = loadBackground();
+  v21Profile(chrome);
+
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+
+  // The inert-install bug: rulesets never enabled, no error anyone would see.
+  assert.ok(chrome._rulesets.length > 0, 'no ruleset update was issued on upgrade');
+  const last = plain(chrome._rulesets[chrome._rulesets.length - 1]);
+  assert.ok(last.enableRulesetIds.includes('ads'), 'ads ruleset not enabled after upgrade');
+});
+
+await test('an upgrade does not open the welcome tab', async () => {
+  const { chrome } = loadBackground();
+  const opened = [];
+  chrome.tabs.create = (o) => opened.push(o.url);
+  v21Profile(chrome);
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+  assert.equal(opened.length, 0, 'an existing user was shown the first-run page');
+});
+
+await test('a v2.1 user keeps a site they had already unblocked', async () => {
+  const { chrome } = loadBackground();
+  v21Profile(chrome, { allowlist: ['mybank.example'] });
+
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+
+  const list = plain(chrome.storage.sync._dump().allowlist);
+  assert.ok(list.includes('mybank.example'), "the user's own allowlist entry was dropped");
+});
+
+await test('every premium feature is off after an upgrade', async () => {
+  const { chrome, ctx } = loadBackground();
+  v21Profile(chrome);
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+
+  // Nothing new should switch itself on for someone who upgraded into it.
+  const merged = plain(vm.runInContext('mergeSettings', ctx)(
+    Object.assign({}, vm.runInContext('SETTING_DEFAULTS', ctx), plain(chrome.storage.sync._dump())),
+    {}, null));
+  for (const k of ['consent', 'popups', 'autoMode', 'siteHistory', 'budgetEnabled']) {
+    assert.ok(!merged[k], `${k} was enabled without the user asking`);
+  }
+});
+
+await test('an upgrade stamps an install date without inventing history', async () => {
+  const { chrome } = loadBackground();
+  v21Profile(chrome);
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+
+  const local = plain(chrome.storage.local._dump());
+  assert.ok(local.installedAt, 'no install date stamped, so the review prompt could never fire');
+  // It must count from the upgrade, not pretend the user is brand new AND not
+  // backdate them into an immediate review prompt.
+  assert.ok(Math.abs(Date.now() - local.installedAt) < 5000);
+});
+
+await test('the review prompt cannot fire immediately after an upgrade', async () => {
+  const { chrome, ctx } = loadBackground();
+  v21Profile(chrome);
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
+  await new Promise((r) => setTimeout(r, 0));
+
+  // A heavy user upgrading must still serve the 15 days before being asked.
+  chrome.storage.local.set({ stats: { ads: 99999, images: 99999, media: 0 } });
+  const state = plain(await vm.runInContext('getReviewState', ctx)(Date.now()));
+  assert.equal(state.show, false, 'an upgrading user was prompted for a review on day one');
 });
 
 console.log('\nbackground.js — sync quota caps');
