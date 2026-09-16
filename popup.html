@@ -572,7 +572,7 @@
 
     /* ---------- Toggle rows ---------- */
     .rules {
-      padding: 2px 14px 0;
+      padding: 6px 7px;
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -588,7 +588,7 @@
       transition: background 0.15s ease;
     }
 
-    .rule-row:hover { background: var(--surface); }
+    .rule-row:hover { background: var(--surface-2); }
 
     .rule-icon {
       width: 32px;
@@ -750,61 +750,7 @@
       <div class="shortcut-hint"><span data-i18n="shortcutHint">or press</span> <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd></div>
     </div>
 
-    <div class="budget" id="budgetBar" hidden>
-      <span class="budget-text" id="budgetText"></span>
-      <button id="budgetEase" type="button" data-i18n="budgetEase">Ease off</button>
-    </div>
-
-    <div class="card savings">
-      <div class="savings-top" id="savedTop" hidden>
-        <span id="savedAmount"></span>
-        <span id="savedUnit" data-i18n="savingsRequests">requests blocked</span>
-      </div>
-      <div class="savings-label" id="savedLabel" data-i18n="savingsCounting">Counting what gets blocked…</div>
-      <div class="bar" id="savedBar" aria-hidden="true">
-        <span id="barAds"></span>
-        <span id="barImages"></span>
-        <span id="barMedia"></span>
-      </div>
-      <div class="savings-breakdown">
-        <div class="savings-stat">
-          <b id="statAds">0</b>
-          <span data-i18n="savingsAds">ads</span>
-        </div>
-        <div class="savings-stat">
-          <b id="statImages">0</b>
-          <span data-i18n="savingsImages">images</span>
-        </div>
-        <div class="savings-stat">
-          <b id="statMedia">0</b>
-          <span data-i18n="savingsVideos">videos</span>
-        </div>
-      </div>
-      <div class="savings-foot">
-        <span id="savedSince" data-i18n="savingsEstimated">Estimated from blocked requests</span>
-        <button id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
-      </div>
-    </div>
-
-    <div class="card review" id="reviewCard" hidden>
-      <div class="review-top">
-        <span class="review-star" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.14 1 5.86L12 16.94l-5.25 2.76 1-5.86L3.5 9.7l5.9-.9z"></path>
-          </svg>
-        </span>
-        <div>
-          <h2 id="reviewTitle" data-i18n="reviewTitle">Enjoying Data Saver?</h2>
-          <p id="reviewBody">A quick rating helps other people on limited data find it.</p>
-        </div>
-      </div>
-      <div class="review-actions">
-        <button id="reviewRate" type="button" data-i18n="reviewRate">Rate it</button>
-        <button id="reviewLater" type="button" data-i18n="reviewLater">Not now</button>
-      </div>
-    </div>
-
-    <div class="rules">
+    <div class="card rules">
       <label class="rule-row">
         <span class="rule-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -857,6 +803,60 @@
           <span class="slider"></span>
         </span>
       </label>
+    </div>
+
+    <div class="budget" id="budgetBar" hidden>
+      <span class="budget-text" id="budgetText"></span>
+      <button id="budgetEase" type="button" data-i18n="budgetEase">Ease off</button>
+    </div>
+
+    <div class="card savings">
+      <div class="savings-top" id="savedTop" hidden>
+        <span id="savedAmount"></span>
+        <span id="savedUnit" data-i18n="savingsRequests">requests blocked</span>
+      </div>
+      <div class="savings-label" id="savedLabel" data-i18n="savingsCounting">Counting what gets blocked…</div>
+      <div class="bar" id="savedBar" aria-hidden="true">
+        <span id="barAds"></span>
+        <span id="barImages"></span>
+        <span id="barMedia"></span>
+      </div>
+      <div class="savings-breakdown">
+        <div class="savings-stat">
+          <b id="statAds">0</b>
+          <span data-i18n="savingsAds">ads</span>
+        </div>
+        <div class="savings-stat">
+          <b id="statImages">0</b>
+          <span data-i18n="savingsImages">images</span>
+        </div>
+        <div class="savings-stat">
+          <b id="statMedia">0</b>
+          <span data-i18n="savingsVideos">videos</span>
+        </div>
+      </div>
+      <div class="savings-foot">
+        <span id="savedSince" data-i18n="savingsEstimated">Estimated from blocked requests</span>
+        <button id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
+      </div>
+    </div>
+
+    <div class="card review" id="reviewCard" hidden>
+      <div class="review-top">
+        <span class="review-star" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.14 1 5.86L12 16.94l-5.25 2.76 1-5.86L3.5 9.7l5.9-.9z"></path>
+          </svg>
+        </span>
+        <div>
+          <h2 id="reviewTitle" data-i18n="reviewTitle">Enjoying Data Saver?</h2>
+          <p id="reviewBody">A quick rating helps other people on limited data find it.</p>
+        </div>
+      </div>
+      <div class="review-actions">
+        <button id="reviewRate" type="button" data-i18n="reviewRate">Rate it</button>
+        <button id="reviewLater" type="button" data-i18n="reviewLater">Not now</button>
+      </div>
     </div>
 
     <div class="footer">
