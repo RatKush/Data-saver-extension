@@ -219,13 +219,17 @@
     <section>
       <div class="sec-head">
         <h2 data-i18n="dashHistory">Savings history</h2>
-        <button class="quiet" id="clearHistory" type="button" data-i18n="dashClearHistory">Clear history</button>
+        <span style="display:flex;gap:4px">
+          <button class="quiet" id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
+          <button class="quiet" id="clearHistory" type="button" data-i18n="dashClearHistory">Clear history</button>
+        </span>
       </div>
       <div class="card">
         <div class="totals">
           <div><div class="total-n" id="t7">0</div><div class="total-l" data-i18n="dashLast7">Last 7 days</div></div>
           <div><div class="total-n" id="t30">0</div><div class="total-l" data-i18n="dashLast30">Last 30 days</div></div>
-          <div><div class="total-n" id="tAll">0</div><div class="total-l" data-i18n="dashAllTime">All time</div></div>
+          <div><div class="total-n" id="tAll">0</div><div class="total-l" data-i18n="dashAllTime">All time</div>
+          <div class="total-l" id="tSince" style="margin-top:2px"></div></div>
         </div>
         <div class="trend" id="trend"></div>
         <div class="trend-ax"><span id="trendFrom"></span><span id="trendTo"></span></div>

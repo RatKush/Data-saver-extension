@@ -438,7 +438,7 @@
     .savings-breakdown {
       display: flex;
       gap: 10px;
-      margin-top: 11px;
+      margin-top: 13px;
     }
 
     .savings-stat { flex: 1; min-width: 0; }
@@ -471,34 +471,6 @@
     .savings-stat:nth-child(1) span::before { background: var(--ramp-1); }
     .savings-stat:nth-child(2) span::before { background: var(--ramp-2); }
     .savings-stat:nth-child(3) span::before { background: var(--ramp-3); }
-
-    .savings-foot {
-      font-size: 10.5px;
-      color: var(--text-muted);
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    #resetStats {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font: inherit;
-      font-size: 10.5px;
-      cursor: pointer;
-      padding: 3px 6px;
-      border-radius: 5px;
-      flex-shrink: 0;
-      transition: background 0.15s ease, color 0.15s ease;
-    }
-
-    #resetStats:hover { color: var(--text); background: var(--surface-2); }
-    #resetStats:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
     /* ---------- Review prompt ---------- */
     /* Asked in the popup rather than injected into the page: it appears only
@@ -688,7 +660,6 @@
     /* ---------- RTL ---------- */
     /* Only the places where physical direction was assumed. Everything else is
        flexbox, which mirrors on its own. */
-    [dir="rtl"] .savings-foot,
     [dir="rtl"] .savings-breakdown { direction: rtl; }
     [dir="rtl"] .savings-stat { text-align: right; }
     [dir="rtl"] .shortcut-hint kbd { direction: ltr; display: inline-block; }
@@ -834,10 +805,6 @@
           <b id="statMedia">0</b>
           <span data-i18n="savingsVideos">videos</span>
         </div>
-      </div>
-      <div class="savings-foot">
-        <span id="savedSince" data-i18n="savingsEstimated">Estimated from blocked requests</span>
-        <button id="resetStats" type="button" data-i18n="savingsReset">Reset</button>
       </div>
     </div>
 
