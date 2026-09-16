@@ -1,0 +1,82 @@
+Save mobile data in Chrome. Data Saver blocks ads, trackers, images and autoplaying video before they download — not after — so you never pay for those bytes at all. Built for anyone on a limited, capped, prepaid, slow or metered connection.
+
+Google removed Chrome's built-in Data Saver and Lite Mode. This puts that control back, and goes further: you decide what gets blocked, on which sites.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT IT BLOCKS
+
+🚫 Ads and trackers — a maintained blocklist of known ad and tracking domains, plus rules for ad networks and analytics scripts. Everything is evaluated locally by Chrome. Nothing is sent to any server to make a blocking decision.
+
+🖼️ Images — loads pages as text only. Blocked images collapse cleanly instead of leaving broken-icon boxes behind.
+
+🎬 Video and audio — stops autoplay before it starts, and blocks the adaptive streaming (HLS and DASH) requests most video sites use, not just old-style direct video files. Streaming sites actually stop consuming bandwidth rather than merely hiding the player.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SEE WHAT YOU SAVE
+
+📊 The popup shows the exact number of ads, images and videos blocked, plus an estimate of the data that saved. Counted on your device from what actually got blocked. Nothing is sent anywhere.
+
+📈 An optional dashboard adds a 14-day trend and, if you turn it on, which sites saved you the most.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CONTROL, NOT ALL-OR-NOTHING
+
+▶️ Streaming sites work out of the box. YouTube, Netflix, Instagram, TikTok, Twitch and others ship unblocked — you already know those use data, and blocking them just breaks them. Want to save data on one anyway? One tap turns blocking on for it.
+
+⚡ One tap to unblock any site. The first control in the popup stops all blocking on the page you are on, without touching your settings anywhere else. Or press Alt+Shift+D on any page. The toolbar icon shows OFF where you have unblocked, and your choice sticks.
+
+🎛️ Per-site rules. Block ads on a site but let its images through, or the reverse. Every site can have its own combination.
+
+🍪 Cookie banner handling (optional). Chooses "reject" or "necessary only" where a banner offers it. It never accepts on your behalf.
+
+🚪 Pop-up blocking (optional). Stops windows a page opens by itself. Windows you open by clicking still work.
+
+📶 Adapt to connection speed (optional). Stop blocking images when your connection is fast, using the browser's own speed estimate.
+
+🪫 Data budget (optional). Enter your monthly allowance and billing date, and Data Saver blocks progressively harder as your cycle runs down.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COMMON QUESTIONS
+
+How do I reduce data usage in Chrome?
+Install Data Saver and leave the three switches on. Ads, images and video are the bulk of most page weight, and blocking them before download is the only way to actually avoid paying for those bytes.
+
+Does this replace Chrome's Lite Mode or Data Saver?
+Chrome's built-in data saver was retired. This does the same job on the desktop browser, and gives you per-site control it never had.
+
+Is it just an ad blocker?
+No. Ad blocking is one of three switches. Most ad blockers hide ads after the page fetches them; the point here is that images, video and ads are stopped at the network layer so the bytes are never downloaded at all.
+
+Will it break websites?
+Blocking images and video changes how pages look, and some sites will need images. That is why unblocking a site takes one tap, and why per-site rules exist.
+
+How much data does it actually save?
+It depends entirely on the sites you visit. The popup shows you your own real figure rather than a marketing number — and the byte total is labelled an estimate, because Chrome does not tell extensions the exact size of a request it blocked.
+
+Does it work offline or on slow 2G and 3G connections?
+Yes. All blocking rules ship inside the extension and are evaluated by Chrome on your device, so nothing has to be downloaded for it to work.
+
+Does it collect my data?
+No. There is no server, no analytics and no telemetry. Your settings and counts stay on your device.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHO IT IS FOR
+
+People on prepaid or capped mobile plans. Anyone tethering to a phone. Rural and satellite connections. Students on shared campus links. Travellers paying roaming charges. Older or low-spec machines where fewer images means faster pages. Schools, NGOs and businesses that pay for bandwidth by the gigabyte.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PRIVACY
+
+Data Saver collects nothing. No analytics, no tracking, no account, no server of its own. Every blocking rule ships inside the extension and runs entirely inside your browser. The source is public and every claim here can be checked against it.
+
+Privacy policy: https://data-saver-extension.pages.dev/privacy-policy
+Source code: https://github.com/RatKush/Data-saver-extension
+For organisations: https://data-saver-extension.pages.dev
+
+Available in 25 languages.
