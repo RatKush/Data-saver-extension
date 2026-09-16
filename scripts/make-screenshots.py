@@ -270,6 +270,22 @@ FRAME_CSS = f"""
           text-transform:uppercase; padding:7px 13px; border-radius:999px;
           background:{SURFACE}; border:1px solid {BORDER}; color:{MUTED}; }}
   .tag.on {{ background:{ACCENT_SOFT}; border-color:{ACCENT_LINE}; color:{ACCENT}; }}
+
+  /* argument frames — no UI, just the case for the product */
+  .bar {{ display:flex; width:100%; height:210px; border-radius:16px; overflow:hidden;
+          gap:3px; margin-top:8px; }}
+  .bar div {{ display:flex; flex-direction:column; justify-content:flex-end;
+              padding:14px 16px; }}
+  .bar b {{ font-size:34px; font-weight:700; letter-spacing:-.8px; line-height:1; }}
+  .bar span {{ font-size:15px; opacity:.75; margin-top:7px; }}
+  .cap {{ font-size:15px; color:{MUTED}; margin-top:18px; }}
+  .pts {{ display:flex; flex-direction:column; gap:34px; margin-top:6px; }}
+  .pt {{ display:flex; gap:22px; align-items:flex-start; }}
+  .pt .k {{ width:52px; height:52px; border-radius:15px; flex:none; display:grid;
+            place-items:center; background:{ACCENT_SOFT}; color:{ACCENT};
+            font-size:26px; font-weight:700; }}
+  .pt h3 {{ margin:0; font-size:30px; font-weight:700; letter-spacing:-.6px; }}
+  .pt p {{ margin:8px 0 0; font-size:19px; color:{MUTED}; line-height:1.5; max-width:62ch; }}
 """
 
 
@@ -365,7 +381,30 @@ def build(tmp):
           </div>
         </div>"""),
 
-        ("03-controls.png", f"""
+        ("03-weight.png", f"""
+        <div class="frame">
+          <h1 style="max-width:30ch">Most of a page <em>isn't the page</em></h1>
+          <p class="sub">Images, video and advertising are the bulk of what you download.
+          Data Saver stops them at the network layer, so you never pay for the bytes.</p>
+          <div class="stage" style="align-items:center">
+            <div style="width:100%">
+              <div class="bar">
+                <div style="flex:45;background:#1F6F62;color:#EAFBF7">
+                  <b>30&ndash;60%</b><span>Images</span></div>
+                <div style="flex:22;background:#2E9C89;color:#06231E">
+                  <b>10&ndash;35%</b><span>Video &amp; audio</span></div>
+                <div style="flex:20;background:#5FD0BC;color:#06231E">
+                  <b>10&ndash;30%</b><span>Ads &amp; trackers</span></div>
+                <div style="flex:13;background:#2A2F31;color:#C7D0D0">
+                  <b>The rest</b><span>The words you came for</span></div>
+              </div>
+              <p class="cap">Typical page weight. The exact split varies by site &mdash; the
+              extension shows you your own real figures rather than these.</p>
+            </div>
+          </div>
+        </div>"""),
+
+        ("04-controls.png", f"""
         <div class="frame split">
           <div class="copy">
             <h1>Three switches. <em>Your call.</em></h1>
@@ -374,6 +413,34 @@ def build(tmp):
             without touching anything else.</p>
           </div>
           <div class="popup"><img src="{u_popup}"></div>
+        </div>"""),
+
+        ("05-trust.png", f"""
+        <div class="frame">
+          <h1 style="max-width:30ch">Saves data. <em>Doesn't take any.</em></h1>
+          <p class="sub">The three things people ask before installing a blocker.</p>
+          <div class="stage" style="align-items:center; justify-content:flex-start">
+            <div class="pts">
+              <div class="pt">
+                <div class="k">&#10003;</div>
+                <div><h3>Streaming still works</h3>
+                <p>Video platforms ship unblocked &mdash; you already know those use data, and
+                blocking them just breaks them. Any site is one tap either way.</p></div>
+              </div>
+              <div class="pt">
+                <div class="k">&#10003;</div>
+                <div><h3>Nothing is collected</h3>
+                <p>No account, no analytics, no server of its own. Every rule ships inside the
+                extension and runs in your browser. The source is public.</p></div>
+              </div>
+              <div class="pt">
+                <div class="k">&#10003;</div>
+                <div><h3>Free, and in 25 languages</h3>
+                <p>No trial, no paid tier, no upsell &mdash; including Hindi, Bengali, Tamil,
+                Telugu, Marathi, Arabic, Indonesian, Swahili and Filipino.</p></div>
+              </div>
+            </div>
+          </div>
         </div>"""),
     ]
 
@@ -400,6 +467,45 @@ def build(tmp):
       <h2>Block ads, images<br>and video. <em>Use less data.</em></h2>
       <p>Built for slow, capped or metered connections.</p>
     </div>"""
+    # --- marquee promo tile -----------------------------------------------
+    # 1400x560, used in featured placements. Wide enough to carry the product
+    # alongside the line, unlike the 440 tile.
+    marquee = f"""<!doctype html><meta charset=utf-8><style>
+      * {{ box-sizing:border-box; }}
+      body {{ margin:0; width:1400px; height:560px; background:{BG}; color:{TEXT};
+              font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+              overflow:hidden; }}
+      .m {{ width:1400px; height:560px; padding:56px 68px; display:flex;
+            align-items:center; gap:70px; }}
+      .copy {{ flex:1; }}
+      .row {{ display:flex; align-items:center; gap:14px; margin-bottom:22px; }}
+      .row img {{ width:44px; height:44px; border-radius:12px; }}
+      .name {{ font-size:27px; font-weight:700; letter-spacing:-.5px; }}
+      h2 {{ margin:0; font-size:54px; line-height:1.1; font-weight:700; letter-spacing:-1.4px;
+            max-width:16ch; }}
+      h2 em {{ font-style:normal; color:{ACCENT}; }}
+      p {{ margin:20px 0 0; font-size:20px; color:{MUTED}; line-height:1.45; max-width:44ch; }}
+      .shotwrap {{ flex:none; width:300px; height:448px; border-radius:18px;
+                   overflow:hidden; border:1px solid {BORDER};
+                   box-shadow:0 30px 70px rgba(0,0,0,.6); }}
+      .shotwrap img {{ display:block; width:300px; }}
+    </style>
+    <div class="m">
+      <div class="copy">
+        <div class="row"><img src="{data_uri(os.path.join(ROOT, 'icons', 'icon128.png'))}" alt="">
+          <span class="name">Data Saver</span></div>
+        <h2>Block ads, images and video. <em>Use less data.</em></h2>
+        <p>Stops them before they download, not after. Built for slow, capped
+        or metered connections &mdash; and it collects nothing.</p>
+      </div>
+      <div class="shotwrap"><img src="{u_popup}" alt=""></div>
+    </div>"""
+    marquee_path = os.path.join(tmp, "marquee.html")
+    open(marquee_path, "w").write(marquee)
+    shoot("file://" + marquee_path,
+          os.path.join(OUT, "promo-1400x560.png"), 1400, 560, False, scale=1)
+    print("  wrote store-listing/screenshots/promo-1400x560.png")
+
     tile_path = os.path.join(tmp, "tile.html")
     open(tile_path, "w").write(tile)
     shoot("file://" + tile_path, os.path.join(OUT, "promo-440x280.png"), 440, 280, False, scale=1)
