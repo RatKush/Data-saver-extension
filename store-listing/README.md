@@ -2,6 +2,7 @@
 
 | File | What it is |
 |---|---|
+| `PUBLISHING.md` | **Step-by-step for shipping a release.** Read this first. |
 | `description.txt` | **Paste this into the "Description" field, verbatim.** Plain text — the field does not render Markdown. |
 | `description.md` | Notes on why the description is written the way it is, and the claims that must not be overstated. Not for pasting. |
 | `permission-justifications.md` | Paste into the dashboard's "Privacy practices" tab. |
