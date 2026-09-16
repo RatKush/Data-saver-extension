@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Data Saver for organisations</title>
+<title>Data Saver — use less data in Chrome</title>
+<meta name="description" content="A Chrome extension that blocks ads, images and autoplay video before they download, so you use less mobile data. Free, open source, and collects nothing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,7 +15,7 @@
 
   <nav class="nav">
     <a class="mark" href="/"><img src="/assets/icon48.png" alt="">Data Saver</a>
-    <a class="item" href="/" aria-current="page">For organisations</a>
+    <a class="item" href="/business">For organisations</a>
     <a class="item" href="/pilot">Pilot</a>
     <a class="item" href="/deploy">Deployment</a>
     <a class="item" href="/terms">Licence</a>
@@ -22,75 +23,50 @@
   </nav>
 
   <header>
-    <p class="eyebrow">For organisations</p>
-    <h1>Cut the web traffic on every machine you pay for</h1>
-    <p class="dek">Data Saver stops ads, trackers, images and video <em>before</em> they download, rather than hiding them afterwards. It deploys by policy, needs no account, and reports nothing anywhere — because it has no server to report to.</p>
+    <p class="eyebrow">Chrome extension</p>
+    <h1>Use less data, without giving any away</h1>
+    <p class="dek">Data Saver blocks ads, trackers, images and autoplaying video <em>before</em>
+    they download — not after. Built for anyone on a limited, capped, prepaid, slow or metered
+    connection. Free, open source, and it collects nothing.</p>
   </header>
 
-  <dl class="facts">
-    <div><dt>Installs</dt><dd>6,469</dd><small>lifetime, to September 2026</small></div>
-    <div><dt>Weekly actives</dt><dd>2,352</dd><small>organic, no marketing spend</small></div>
-    <div><dt>Languages</dt><dd>25</dd><small>interface and store listing</small></div>
-    <div><dt>Servers</dt><dd>None</dd><small>nothing leaves the device</small></div>
-  </dl>
-
-  <h2>The claim we will not make</h2>
-  <p>Most tools in this category will quote you a percentage. We will not, and it is worth explaining why, because it is the same reason the product is worth deploying.</p>
-  <p>Chrome exposes no API that tells an extension how many bytes a blocked request would have transferred. Anyone quoting you a precise saving from inside a browser extension is estimating and presenting it as measurement. <strong>Your own network already measures this properly.</strong> So the offer is a pilot: deploy it to a slice of your fleet, read your own netflow or bandwidth reporting, and decide on your numbers rather than ours.</p>
-
   <div class="cta">
-    <p><strong>A 30-day pilot costs nothing</strong> and ends with a figure from your own monitoring.</p>
-    <a class="btn" href="/pilot">How the pilot works</a>
+    <p><strong>Add it to Chrome</strong> — free, no account, nothing to sign up for.</p>
+    <a class="btn" href="https://chromewebstore.google.com/detail/Data%20Saver/cjijlgnefahbmcogbhacnnnlnaeolmjg">Get it from the Chrome Web Store</a>
   </div>
 
-  <h2>Who this is for</h2>
-  <div class="cards">
-    <div class="card">
-      <h3>Mobile operators &amp; capped-market ISPs</h3>
-      <p>Bandwidth is a direct cost line. Reducing page weight on subscriber devices reduces it at the source rather than at the network edge.</p>
-    </div>
-    <div class="card">
-      <h3>Schools &amp; universities</h3>
-      <p>Shared links that collapse at 9am. Blocking images and video on managed lab machines frees capacity without new hardware.</p>
-    </div>
-    <div class="card">
-      <h3>NGOs and field operations</h3>
-      <p>Satellite and mobile-backhauled sites where every megabyte is metered and the connection is the constraint on the work.</p>
-    </div>
-    <div class="card">
-      <h3>Enterprises paying roaming</h3>
-      <p>Travelling staff on tethered or foreign-network connections, where a single laptop can generate a surprising invoice.</p>
-    </div>
-    <div class="card">
-      <h3>Device makers</h3>
-      <p>Entry-level hardware shipped into markets where data cost, not device cost, is what limits use. Ships preconfigured.</p>
-    </div>
-  </div>
-
-  <h2>What a licence covers</h2>
+  <h2>What it does</h2>
   <ul>
-    <li><strong>Central deployment and lock-down.</strong> Every setting can be pinned by policy through Group Policy, MDM, or the Google Admin console. Locked settings are shown to the user as managed rather than silently enforced.</li>
-    <li><strong>The maintained blocklist.</strong> Roughly 3,600 rules, rebuilt from upstream sources and shipped inside the package — no runtime fetch, so nothing breaks when your firewall blocks an update host.</li>
-    <li><strong>Per-site rules.</strong> Block ads on a site while allowing its images, or the reverse, pinned centrally so an internal application keeps working.</li>
-    <li><strong>Portable configuration.</strong> Work out a configuration on one machine, export it as JSON, and deploy that same file as policy.</li>
-    <li><strong>A named contact</strong> for deployment questions during the pilot and the licence term.</li>
+    <li><strong>Blocks ads and trackers</strong> using a maintained blocklist evaluated by Chrome itself. Nothing is sent anywhere to decide what to block.</li>
+    <li><strong>Blocks images</strong>, loading pages as text only. Blocked images collapse cleanly rather than leaving broken-icon boxes.</li>
+    <li><strong>Stops video and audio</strong>, including the adaptive streaming requests most video sites use — not just visible <code>&lt;video&gt;</code> tags.</li>
+    <li><strong>Shows what you saved</strong> — the exact number of blocked requests, with an estimate of the data that saved beside it.</li>
   </ul>
 
-  <h2>Why it is safe to deploy</h2>
+  <h2>It does not break your browsing</h2>
+  <p>That is the usual worry, and it is a fair one. Three things address it:</p>
   <ul>
-    <li><strong>Manifest V3, no remote code.</strong> Every blocking rule ships inside the package and is evaluated by Chrome itself. The extension never fetches executable content.</li>
-    <li><strong>No network egress of its own.</strong> No analytics, no telemetry, no licence call-home. There is nothing for your egress filtering to allow.</li>
-    <li><strong>No data collection.</strong> Settings and blocked-request counts stay on the device. The one feature that records hostnames is off by default and local. See the <a href="/privacy-policy">privacy policy</a>.</li>
-    <li><strong>Public source.</strong> Every claim on this page can be checked against <a href="https://github.com/RatKush/Data-saver-extension">the code</a> rather than taken on trust.</li>
-    <li><strong>Already in production.</strong> Thousands of weekly users through the <a href="https://chromewebstore.google.com/detail/Data%20Saver/cjijlgnefahbmcogbhacnnnlnaeolmjg">Chrome Web Store</a>, which is the same build you would deploy.</li>
+    <li><strong>Video platforms ship unblocked.</strong> You already know those use data; blocking them just stops them working.</li>
+    <li><strong>One tap stops blocking on any site</strong> — the first control in the panel, or <code>Alt+Shift+D</code>. The toolbar icon shows <code>OFF</code> where you have done it.</li>
+    <li><strong>Per-site rules.</strong> Block ads on a site but let its images through, or the reverse.</li>
   </ul>
 
-  <div class="cta">
-    <p>Deployment questions, or want to start a pilot?</p>
-    <a class="btn" href="/pilot">Start a pilot</a>
-    <a class="btn quiet" href="https://github.com/RatKush/Data-saver-extension/issues">Get in touch</a>
-  </div>
+  <h2>What it will not claim</h2>
+  <p>Most tools in this category quote you a percentage saved. This one does not, because it
+  cannot honestly measure one: Chrome tells an extension that a request was blocked, but never
+  how many bytes it would have transferred. The popup shows you the exact count of what was
+  stopped and labels the byte figure as the estimate it is.</p>
 
+  <h2>Privacy</h2>
+  <p>There is no server, no account, no analytics and no telemetry. Every blocking rule ships
+  inside the extension and runs in your browser. Settings and counts stay on your device. The
+  one feature that records which sites you visited is off by default, kept locally, and deleted
+  when you switch it off.</p>
+  <p><a href="/privacy-policy">Read the privacy policy</a> · <a href="https://github.com/RatKush/Data-saver-extension">Read the source</a></p>
+
+  <h2>Deploying it across an organisation?</h2>
+  <p>Settings can be pinned centrally by policy, and a configuration can be exported and pushed
+  to a fleet. <a href="/business">Details for organisations</a>.</p>
 
   <footer>
     <span>Data Saver — an independent browser extension, not affiliated with Google or Chrome.</span>

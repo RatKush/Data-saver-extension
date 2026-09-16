@@ -47,6 +47,13 @@ overwrite a version once published.
 | Screenshots | All five in `screenshots/`, **in filename order** |
 | Small promo tile | `screenshots/promo-440x280.png` |
 | Marquee promo tile | `screenshots/promo-1400x560.png` |
+| Homepage URL | `https://data-saver-extension.pages.dev` |
+| Support URL | `https://github.com/RatKush/Data-saver-extension/issues` |
+
+The homepage is deliberately the consumer page. `/` answers what the thing
+does and links to the store; the organisations pitch lives at `/business`.
+They were the same page once, which meant anyone clicking "Homepage" from the
+listing landed on a licensing argument about managed fleets.
 
 ### Screenshot order
 

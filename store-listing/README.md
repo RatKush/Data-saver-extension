@@ -21,7 +21,8 @@ later without moving anything.
 
 | Page | What it is for |
 |---|---|
-| `index.html` | The offer. The page you send a prospective organisation. |
+| `index.html` | Consumer homepage — what the extension does, and the store link. This is the listing's Homepage URL. |
+| `business.html` | The offer. The page you send a prospective organisation. |
 | `pilot.html` | The 30-day pilot protocol — the thing that produces a number, measured by them rather than claimed by us. |
 | `deploy.html` | Administrator deployment: force-install, the managed-policy keys, per-platform paths, rollback. |
 | `terms.html` | Draft licence terms. **Not written by a lawyer — flagged as needing review on the page itself.** |
