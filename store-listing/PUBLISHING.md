@@ -44,8 +44,44 @@ overwrite a version once published.
 | Field | Source |
 |---|---|
 | Description | `store-listing/description.txt` — **paste verbatim** |
-| Screenshots | `screenshots/01-savings.png`, `02-before-after.png`, `03-controls.png` |
+| Screenshots | All five in `screenshots/`, **in filename order** |
 | Small promo tile | `screenshots/promo-440x280.png` |
+| Marquee promo tile | `screenshots/promo-1400x560.png` |
+
+### Screenshot order
+
+The store allows five and the first is the most-seen — it fronts the listing
+and many people never scroll the carousel. The filenames carry the order, so
+uploading in name order is correct by construction.
+
+| # | File | Why here |
+|---|---|---|
+| 1 | `01-savings.png` | Proof and product in one frame: a real page plus the meter showing a concrete number. The slot most people see, so it answers "does it work" immediately. |
+| 2 | `02-before-after.png` | The same page with and without. Visceral, needs no reading, and the second-most-seen slot. |
+| 3 | `03-weight.png` | The argument — images, video and ads are the bulk of a page. Explains *why* it works, once interest exists. |
+| 4 | `04-controls.png` | Answers the objection that follows: will this break my browsing. Shows the switches and the one-tap unblock. |
+| 5 | `05-trust.png` | Closes: streaming still works, nothing is collected, free, 25 languages. |
+
+Two of these are argument frames rather than UI. That is deliberate — a
+dashboard screenshot was tried and rejected because dense UI is unreadable at
+the size a listing is actually browsed, and a screenshot that has to be
+squinted at persuades nobody.
+
+### Image format
+
+All assets must be **JPEG or 24-bit PNG with no alpha channel**. The store
+rejects 32-bit RGBA, which is what headless Chromium emits when a page has a
+transparent background. Everything `make-screenshots.py` produces is already
+24-bit RGB because every frame paints an opaque background — verify with:
+
+```sh
+python3 - <<'EOF'
+import struct, glob
+for f in sorted(glob.glob("store-listing/screenshots/*.png")):
+    w, h, d, ct = struct.unpack(">IIBB", open(f, "rb").read()[16:26])
+    print(f, w, h, "RGB ok" if ct == 2 else f"COLOUR TYPE {ct} — HAS ALPHA, WILL BE REJECTED")
+EOF
+```
 
 **The description field is plain text.** It does not render Markdown. That is
 why the source is a `.txt` and not the `.md` beside it — pasting the `.md`
