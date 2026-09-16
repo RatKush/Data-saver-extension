@@ -320,24 +320,38 @@
     #budgetEase:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     #budgetEase:disabled { opacity: 0.45; cursor: default; }
 
+    /* Opens the dashboard. A real button rather than a text link: it leaves
+       the popup for another surface, which is a bigger action than it looked
+       like when it was a line of grey text people did not notice. */
     .dash-link {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       width: 100%;
-      text-align: center;
       font: inherit;
-      font-size: 11.5px;
+      font-size: 12.5px;
       font-weight: 600;
-      color: var(--text-muted);
-      background: none;
-      border: none;
-      padding: 7px;
-      border-radius: 8px;
+      letter-spacing: -0.05px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 11px 14px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease;
+      transition: background 0.15s ease, border-color 0.15s ease;
     }
 
-    .dash-link:hover { background: var(--surface); color: var(--text); }
+    .dash-link:hover { background: var(--surface-2); border-color: var(--border-2); }
+    .dash-link:active { transform: translateY(1px); }
     .dash-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .dash-link svg {
+      width: 14px;
+      height: 14px;
+      flex: none;
+      color: var(--text-muted);
+    }
 
     .shortcut-hint {
       font-size: 10.5px;
@@ -658,7 +672,7 @@
     }
 
     /* ---------- Footer ---------- */
-    .footer { padding: 8px 18px 13px; text-align: center; }
+    .footer { padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 8px; }
 
     .saved-flash {
       font-size: 11px;
@@ -846,7 +860,13 @@
     </div>
 
     <div class="footer">
-      <button class="dash-link" id="openDashboard" type="button" data-i18n="dashOpen">Per-site rules &amp; history</button>
+      <button class="dash-link" id="openDashboard" type="button">
+        <span data-i18n="dashOpen">Per-site rules &amp; history</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 6l6 6-6 6"></path>
+        </svg>
+      </button>
       <div class="saved-flash" id="savedFlash" data-i18n="saved">Saved</div>
     </div>
   </div>
