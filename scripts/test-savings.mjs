@@ -735,6 +735,49 @@ await test('editing from a subdomain updates the covering rule', async () => {
 // premium keys. Breaking them is the one failure this release cannot have, and
 // "it works on a clean profile" does not test for it.
 
+// ---------------------------------------------------------------------------
+// The paywall line
+// ---------------------------------------------------------------------------
+// Everything released in 2.3 is free permanently. This pins that, so a future
+// change that makes isPro() a real check cannot quietly remove capability
+// people already have. It nearly did once: CONSENT_SCRIPT and POPUP_SCRIPT
+// were gated on isPro() while it still returned true.
+
+console.log('\nbackground.js — free features stay free');
+
+await test('features released in 2.3 do not depend on isPro()', async () => {
+  const { chrome, ctx } = loadBackground();
+  // Force the paywall shut. Nothing that shipped free may react to it.
+  vm.runInContext('isPro = () => false;', ctx);
+
+  vm.runInContext('refreshAll', ctx)({
+    ads: true, images: true, media: true, allowlist: [],
+    consent: true, popups: true,
+    siteProfiles: { 'example.com': { images: false } }
+  });
+  await settle();
+
+  const ids = plain(chrome._registered); // the stub records ids, not objects
+  assert.ok(ids.includes('data-saver-consent'),
+            'cookie banner handling was taken away by the paywall');
+  assert.ok(ids.includes('data-saver-popups'),
+            'pop-up blocking was taken away by the paywall');
+});
+
+await test('per-site rules and the budget ignore the paywall too', async () => {
+  const { ctx } = loadBackground();
+  vm.runInContext('isPro = () => false;', ctx);
+
+  const rules = plain(vm.runInContext('siteProfileRules', ctx)(
+    { ads: true, images: true, media: true, siteProfiles: { 'example.com': { images: false } } }, 1));
+  assert.equal(rules.length, 1, 'per-site rules stopped working behind the paywall');
+
+  const out = plain(vm.runInContext('mergeSettings', ctx)(
+    { ads: true, images: true, media: true, budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 },
+    {}, null, new Date(2026, 8, 27).getTime()));
+  assert.equal(out.budgetStage, 'strict', 'the data budget stopped working behind the paywall');
+});
+
 console.log('\nbackground.js — upgrade from v2.1');
 
 // Exactly what a v2.1 profile holds: the three switches and nothing else.

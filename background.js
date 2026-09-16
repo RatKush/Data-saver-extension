@@ -46,9 +46,12 @@ const COUNTER_SCRIPT = {
   allFrames: true
 };
 
-// Premium layers. Both are off by default and gated on isPro(): consent
-// answering touches what a site records about the user, and popup blocking
-// changes page behaviour, so neither should switch itself on.
+// Both are off by default: consent answering touches what a site records
+// about the user, and popup blocking changes page behaviour, so neither
+// should switch itself on.
+//
+// THESE ARE FREE AND MUST STAY FREE. They shipped unlocked in 2.3, so gating
+// them now would take away capability users already have — see isPro().
 const CONSENT_SCRIPT = {
   id: 'data-saver-consent',
   matches: ['<all_urls>'],
@@ -78,10 +81,20 @@ const SITE_PROFILE_RULE_PRIORITY = 900;  // above the statics, below a full paus
 // ----------------------------
 // 🔑 Entitlement
 // ----------------------------
-// The premium features below are built and fully working; pricing is not
-// decided yet. This is the ONE place a paywall would attach, so adding it
-// later is a change to this function rather than a refactor of every caller.
-// Returning true means everything is unlocked, which is the current state.
+// THE PAYWALL LINE. Everything that shipped in 2.3 is free and stays free —
+// per-site rules, savings history, the data budget, connection-aware mode,
+// cookie banners, pop-up blocking, managed policy, export/import. Those were
+// released unlocked, and gating them afterwards would be taking capability
+// away from people who already have it.
+//
+// So this function guards NEW capability only, built after 2.3. If you find
+// yourself adding isPro() to a call site that existed before this comment,
+// that is the mistake this comment exists to stop: it happened once already,
+// where CONSENT_SCRIPT and POPUP_SCRIPT were gated here while isPro() still
+// returned true, which would have silently removed both on the release that
+// made the check real.
+//
+// Still returns true — nothing gated has been built yet.
 function isPro() {
   return true;
 }
@@ -1228,8 +1241,8 @@ function refreshAll(data) {
   updateContentScript('images', images, allowlist.concat(profileExclusions(data, 'images')));
 
   registerScripts([COUNTER_SCRIPT], ads || images || media, allowlist);
-  registerScripts([CONSENT_SCRIPT], Boolean(data.consent) && isPro(), allowlist);
-  registerScripts([POPUP_SCRIPT], Boolean(data.popups) && isPro(), allowlist);
+  registerScripts([CONSENT_SCRIPT], Boolean(data.consent), allowlist);
+  registerScripts([POPUP_SCRIPT], Boolean(data.popups), allowlist);
 
   syncDynamicRules(data);
 }
