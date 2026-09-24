@@ -508,8 +508,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clearHistory').addEventListener('click', () => {
     // Deliberately separate from the popup's Reset: this clears the record of
     // WHICH SITES were visited, which is the only browsing-shaped data the
-    // extension keeps, and a user should be able to drop it on its own.
-    chrome.storage.local.set({ history: {}, siteStats: {} }, load);
+    // extension keeps, and a user should be able to drop it on its own. The
+    // daily data-used totals go with it — the privacy policy promises that
+    // everything the extension stores can be cleared from the extension.
+    chrome.storage.local.set({ history: {}, siteStats: {}, usage: {} }, load);
   });
 
   load();

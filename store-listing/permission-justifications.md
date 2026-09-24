@@ -164,22 +164,29 @@ financial info, authentication info, personal communications, location,
 web history, user activity, website content. Data Saver collects none of
 these; see the privacy policy for the full explanation.
 
-**This remains correct in 2.3, including the "web history" and "user
+**This remains correct in 2.5, including the "web history" and "user
 activity" rows, and it is worth being precise about why.** Chrome's
 disclosure asks whether data is COLLECTED, which it defines as
-transmitted off the user's device. Two 2.3 features store more than
-before, and neither changes the answer:
+transmitted off the user's device. Several features store things
+locally, and none of them changes the answer:
 
 - The savings counter keeps per-category counts and a daily total.
-- The optional "Remember which sites" setting keeps a capped list of
-  hostnames where something was blocked.
+- The "data used" meter (2.5) keeps one estimated byte total per day —
+  no URLs, no hostnames.
+- "Remember which sites" keeps a capped list of hostnames where
+  something was blocked. It is on by default since 2.5 (a user who had
+  switched it off keeps it off).
+- "Load image" and "Play on this page" (2.5) keep a one-image rule or a
+  tab-and-site note in memory only, removed within a minute or when the
+  tab leaves the site.
 
-Both are written to `chrome.storage.local` on the user's own machine.
-The extension makes no network requests of its own, has no server, no
-analytics and no telemetry, so nothing can leave the device. The
-hostname list is additionally capped, can be switched off (it is on by
-default since 2.5), clearable by
-its own control, and deleted outright when the setting is switched off.
+All of it is held on the user's own machine (`chrome.storage.local`,
+session storage and session rules). The extension makes no network
+requests of its own, has no server, no analytics and no telemetry, so
+nothing can leave the device. The hostname list is additionally capped,
+can be switched off, is cleared by the dashboard's Clear history control
+(which also clears the data-used totals), and is deleted outright when
+the setting is switched off.
 
 If the dashboard asks you to certify compliance with the Developer
 Program Policies re: not selling user data — that's also accurate to

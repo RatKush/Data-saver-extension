@@ -26,7 +26,7 @@
     <p class="dek">A browser extension that blocks ads, images, and autoplaying video to reduce bandwidth use.</p>
   
     <dl class="facts">
-      <div><dt>Effective</dt><dd>September 24, 2026</dd></div>
+      <div><dt>Effective</dt><dd>September 25, 2026</dd></div>
       <div><dt>Applies to</dt><dd>Data Saver v2.3+</dd></div>
       <div><dt>Data collected</dt><dd>None</dd></div>
     </dl>
@@ -60,7 +60,13 @@
         <li><strong>A list of sites where something was blocked — unless you switch it off.</strong> This is the one thing the extension records that resembles browsing history. "Remember which sites" stores a capped list of hostnames so the dashboard can show where your savings came from. Since v2.5 it is <strong>on by default</strong> — for new installs, and for existing users when they update to v2.5, unless they had already switched it off. Switching it off in the dashboard deletes the list immediately, and it stays off. It stays on your device either way and is never sent anywhere.</li>
         <li><strong>An administrator policy</strong>, if one has been deployed to your machine by a school or employer. That is read-only, read locally, and nothing is reported back to the administrator by this extension.</li>
       </ul>
-      <p>Everything above can be cleared from the extension itself — the savings counter has a Reset control, and the site list has its own separate Clear control.</p>
+      <p>Everything above can be cleared from the extension itself — the savings counter has a Reset control, and the dashboard's Clear history control deletes the daily history, the data-used totals and the site list.</p>
+      <p>Two things are kept only briefly, in memory, while you use them (since v2.5):</p>
+      <ul>
+        <li><strong>An image you asked to load.</strong> Pressing "Load image" on a blocked image creates a rule for that one image's address in that one tab, so Chrome lets it through. The rule is removed as soon as the image loads, and within about a minute in any case.</li>
+        <li><strong>A tab where you allowed video.</strong> Pressing "Play on this page" remembers that tab and the site it is on, so videos keep playing there. It is forgotten when the tab leaves that site or is closed, and when the browser closes.</li>
+      </ul>
+      <p>Neither is written to disk or sent anywhere.</p>
   
       <h3>Optional features that act on the page</h3>
       <p>Two features do more than block requests. Since v2.5 both are on by default — for new installs, and for existing users when they update, unless they had already switched them off. Either can be switched off in the dashboard, and stays off:</p>
@@ -92,7 +98,7 @@
           </tr>
           <tr>
             <td class="perm-name">scripting</td>
-            <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio, clean up broken-image placeholders left behind by blocked images, and count how many requests were blocked so the popup can show you your own total. Two further scripts &mdash; answering cookie banners and blocking unrequested pop-ups &mdash; are registered only if you switch those features on.</td>
+            <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio (and, when you press play on a stopped video, offer to play it on that page), show a placeholder with a "Load image" button where an image was blocked, and count how many requests were blocked so the popup can show you your own total. Two further scripts &mdash; answering cookie banners and blocking unrequested pop-ups &mdash; run while those features are on (on by default since v2.5; either can be switched off in the dashboard).</td>
           </tr>
           <tr>
             <td class="perm-name">webRequest</td>
