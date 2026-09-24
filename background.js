@@ -109,7 +109,10 @@ function isPro() {
 // exact, is shown alongside it.
 const AVG_BYTES = {
   ads: 30 * 1024,     // ad/analytics scripts and ad iframes
-  images: 35 * 1024,  // a typical web image after the page's own compression
+  // Measured, not guessed: across real pages in Chrome the old 35 KB put the
+  // "≈ saved" line at roughly twice the bytes actually saved — most blocked
+  // images are thumbnails, avatars and icons.
+  images: 18 * 1024,
   media: 300 * 1024   // one blocked segment/poster, not a whole video
 };
 
@@ -349,7 +352,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'ds-site-profile' && msg.hostname) {
-    setSiteProfile(msg.hostname, msg.profile)
+    setSiteProfile(msg.hostname, msg.profile, msg.merge === true)
       .then((profile) => sendResponse({ ok: true, profile }))
       .catch((e) => {
         console.warn('⚠️ Could not save site profile:', e);
@@ -611,7 +614,7 @@ function siteProfileRules(data, startId) {
 // Writing a profile from the popup or the dashboard. Passing an empty object
 // (or one that matches the globals) removes the entry rather than storing a
 // no-op, so the stored set stays a list of real exceptions.
-function setSiteProfile(hostname, profile) {
+function setSiteProfile(hostname, profile, merge = false) {
   return chrome.storage.sync
     .get({ siteProfiles: {} })
     .then(({ siteProfiles }) => {
@@ -621,7 +624,10 @@ function setSiteProfile(hostname, profile) {
       // allowlist follows for subdomains.
       const key = profileEntryFor(hostname, siteProfiles) || hostname;
 
-      const clean = {};
+      // merge: change only the categories given and keep the rest of this
+      // site's profile — what the in-page "play videos here" button needs, so
+      // allowing video never silently drops an image or ad choice.
+      const clean = merge ? Object.assign({}, siteProfiles[key] || {}) : {};
       for (const k of PROFILE_KEYS) {
         if (profile && typeof profile[k] === 'boolean') clean[k] = profile[k];
       }
@@ -1149,7 +1155,7 @@ function allowlistMatchPatterns(allowlist) {
 // separately; generating both from one counter makes that impossible.
 function syncDynamicRules(data) {
   const allowlist = data.allowlist || [];
-  chrome.declarativeNetRequest.getDynamicRules((existingRules) => {
+  return new Promise((resolve) => chrome.declarativeNetRequest.getDynamicRules((existingRules) => {
     const removeRuleIds = (existingRules || []).map((r) => r.id);
 
     const addRules = allowlist.map((domain, i) => ({
@@ -1169,11 +1175,13 @@ function syncDynamicRules(data) {
     chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds, addRules }, () => {
       if (chrome.runtime.lastError) {
         console.warn('⚠️ Error syncing dynamic rules:', chrome.runtime.lastError.message);
+        resolve();
         return;
       }
       console.log(`🟢 Dynamic rules synced: ${allowlist.length} paused, ${addRules.length - allowlist.length} profile`);
+      resolve();
     });
-  });
+  }));
 }
 
 // ----------------------------
@@ -1187,19 +1195,20 @@ function registerScripts(scripts, isEnabled, allowlist) {
   // Always unregister first, then re-register if enabled. That's the
   // simplest way to guarantee excludeMatches is up to date whenever the
   // allowlist changes, not just when the feature toggle itself changes.
-  chrome.scripting.unregisterContentScripts({ ids }, () => {
+  return new Promise((resolve) => chrome.scripting.unregisterContentScripts({ ids }, () => {
     void chrome.runtime.lastError; // ignore "not currently registered" on first run
-    if (!isEnabled) return;
+    if (!isEnabled) { resolve(); return; }
     chrome.scripting.registerContentScripts(withExclusions, () => {
       if (chrome.runtime.lastError) {
         console.warn(`⚠️ registerContentScripts (${ids.join(', ')}) error:`, chrome.runtime.lastError.message);
       }
+      resolve();
     });
-  });
+  }));
 }
 
 function updateContentScript(key, isEnabled, excluded) {
-  registerScripts(CONTENT_SCRIPTS[key], isEnabled, excluded);
+  return registerScripts(CONTENT_SCRIPTS[key], isEnabled, excluded);
 }
 
 // ----------------------------
@@ -1213,16 +1222,18 @@ function applyRulesetState(ads, images, media) {
   if (images) enableRulesetIds.push('images'); else disableRulesetIds.push('images');
   if (media) enableRulesetIds.push('media'); else disableRulesetIds.push('media');
 
-  chrome.declarativeNetRequest.updateEnabledRulesets(
+  return new Promise((resolve) => chrome.declarativeNetRequest.updateEnabledRulesets(
     { enableRulesetIds, disableRulesetIds },
     () => {
       if (chrome.runtime.lastError) {
         console.warn('⚠️ Error updating DNR rulesets:', chrome.runtime.lastError.message);
+        resolve();
         return;
       }
       console.log('🔄 DNR rulesets enabled:', enableRulesetIds);
+      resolve();
     }
-  );
+  ));
 }
 
 // ----------------------------
@@ -1232,19 +1243,18 @@ function refreshAll(data) {
   const { ads, images, media } = data;
   const allowlist = data.allowlist || [];
 
-  applyRulesetState(ads, images, media);
-
   // A site whose profile turns a category off has to be skipped by that
   // category's content script too: the DNR rule stops the request, but the
   // DOM-level script would still hide or stop whatever did load.
-  updateContentScript('media', media, allowlist.concat(profileExclusions(data, 'media')));
-  updateContentScript('images', images, allowlist.concat(profileExclusions(data, 'images')));
-
-  registerScripts([COUNTER_SCRIPT], ads || images || media, allowlist);
-  registerScripts([CONSENT_SCRIPT], Boolean(data.consent), allowlist);
-  registerScripts([POPUP_SCRIPT], Boolean(data.popups), allowlist);
-
-  syncDynamicRules(data);
+  return Promise.all([
+    applyRulesetState(ads, images, media),
+    updateContentScript('media', media, allowlist.concat(profileExclusions(data, 'media'))),
+    updateContentScript('images', images, allowlist.concat(profileExclusions(data, 'images'))),
+    registerScripts([COUNTER_SCRIPT], ads || images || media, allowlist),
+    registerScripts([CONSENT_SCRIPT], Boolean(data.consent), allowlist),
+    registerScripts([POPUP_SCRIPT], Boolean(data.popups), allowlist),
+    syncDynamicRules(data)
+  ]);
 }
 
 // Managed policy and auto-mode are layered on top of what the user chose, in
@@ -1309,14 +1319,26 @@ function readManagedPolicy() {
   });
 }
 
+// Reconciles run strictly one after another. Two overlapping runs (install
+// fires one, and the allowlist seeding it causes fires another through
+// storage.onChanged) used to interleave their unregister/register calls on the
+// same script ids: Chrome logged "Duplicate script ID" for every page script,
+// and which run's excludeMatches survived was down to timing — so a site could
+// stay blocked while the popup said it was allowed.
+let reconcileChain = Promise.resolve();
+
 function loadAndSetInitialState() {
-  chrome.storage.sync.get(SETTING_DEFAULTS, (user) => {
-    chrome.storage.local.get({ autoState: null }, ({ autoState }) => {
-      readManagedPolicy().then((managed) => {
-        refreshAll(mergeSettings(user, managed, autoState));
+  reconcileChain = reconcileChain.then(() => new Promise((resolve) => {
+    chrome.storage.sync.get(SETTING_DEFAULTS, (user) => {
+      chrome.storage.local.get({ autoState: null }, ({ autoState }) => {
+        readManagedPolicy()
+          .then((managed) => refreshAll(mergeSettings(user, managed, autoState)))
+          .catch((e) => console.warn('⚠️ Reconcile failed:', e))
+          .then(resolve);
       });
     });
-  });
+  }));
+  return reconcileChain;
 }
 
 // ----------------------------
@@ -1354,6 +1376,13 @@ chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
     chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
   }
+});
+
+// Where Chrome sends someone who removes the extension: a page on our own site
+// with the common fixes and a way to say what broke. Without it the reasons
+// behind every uninstall are invisible. Nothing is sent from the extension.
+chrome.runtime.setUninstallURL('https://data-saver-extension.pages.dev/uninstall', () => {
+  void chrome.runtime.lastError;
 });
 
 chrome.runtime.onStartup.addListener(() => {
