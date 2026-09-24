@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "Blockiert stärker, je weiter Ihr Abrechnungszeitraum fortschreitet. Es kann nicht messen, wie viele Daten Sie tatsächlich verbraucht haben — das kann keine Erweiterung — und nennt deshalb nie eine Zahl. Es richtet sich allein nach Ihrem Volumen und dem Datum und verstärkt immer nur die Blockierung.",
+    "message": "Blockiert stärker, je mehr von deinem Volumen verbraucht ist, und fügt nur Blockierungen hinzu. Ein Tagestarif richtet sich danach, was Chrome heute geladen hat, ein Monatstarif nach dem Datum. Andere Apps teilen sich dein Volumen – stell es also etwas niedriger ein als deinen Tarif.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "Gelockert",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "Tarif wird zurückgesetzt",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "Jeden Tag",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "Jeden Monat",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "Tagesvolumen (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "Heute: etwa $USED$ von $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "Chrome hat heute etwa $USED$ verbraucht",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Von Chrome verbrauchte Daten",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "Heute",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Geschätzt aus der Größe jedes Downloads von Chrome. Andere Apps und Browser auf diesem Gerät sind nicht enthalten.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "Pausiert – nichts blockiert",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "Video- und Anruf-Websites, die freigegeben ausgeliefert werden ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "Blockiert $WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "Erlaubt $WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "Bild laden",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "Wird geladen…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "Laden fehlgeschlagen – erneut versuchen",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "Data Saver hat dieses Video gestoppt, um Daten zu sparen.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "Auf dieser Seite abspielen",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "Immer auf dieser Website",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "Schließen",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

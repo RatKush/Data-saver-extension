@@ -156,12 +156,41 @@ function renderBar(stats, total) {
 function initSavings() {
   const EMPTY = { ads: 0, images: 0, media: 0, bytes: 0, since: null };
 
-  chrome.storage.local.get({ stats: EMPTY }, ({ stats }) => renderSavings(stats));
+  chrome.storage.local.get({ stats: EMPTY, usage: {} }, ({ stats, usage }) => {
+    renderSavings(stats);
+    renderUsage(usage);
+  });
 
   // The popup can be open while pages in other tabs keep blocking, so keep it live.
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === 'local' && changes.stats) renderSavings(changes.stats.newValue || EMPTY);
+    if (areaName === 'local' && changes.usage) renderUsage(changes.usage.newValue || {});
   });
+}
+
+// LOCAL date, matching background.js localDayKey.
+function localDayKey(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function bytesText(bytes) {
+  const [value, suffix] = formatBytes(bytes || 0);
+  return `${value} ${suffix}`;
+}
+
+function renderUsage(usage) {
+  const line = document.getElementById('usageLine');
+  if (!line) return;
+  const today = (usage || {})[localDayKey(Date.now())] || 0;
+  // Nothing yet today (a fresh install, or just after midnight): say nothing
+  // rather than a "0 B" that reads as broken.
+  // A daily budget already shows the same figure against the allowance.
+  const dailyBar = document.getElementById('budgetBar');
+  if (!today || (dailyBar && dailyBar.dataset.daily === '1')) { line.hidden = true; return; }
+  const used = bytesText(today);
+  line.textContent = t('usageToday', used) || `Chrome used about ${used} today`;
+  line.hidden = false;
 }
 
 // ----------------------------
@@ -238,7 +267,10 @@ function initSiteToggle() {
             const blocking = isOverride ? profile[k] : data[k];
 
             el.textContent = t(PILL_LABEL[k]) || el.dataset.key;
-            el.classList.toggle('on', blocking);
+            // Lit = ALLOWED on this site, grey = blocked. Blocking is the
+            // default, so the pills light up for the exceptions you made.
+            el.classList.toggle('on', !blocking);
+            el.setAttribute('aria-pressed', String(!blocking));
             el.classList.toggle('override', isOverride);
             el.title = blocking
               ? (t('pillBlocking') || 'Blocking here — click to allow on this site')
@@ -369,8 +401,18 @@ function initBudget() {
     if (!res || !res.enabled) return; // stays hidden, which is the resting state
 
     const stage = t(BUDGET_STAGE_LABEL[res.stage]) || res.stage;
-    text.textContent = t('dashBudgetNow', String(res.day), String(res.days), stage)
-      || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
+    if (res.period === 'day' && res.allowanceBytes > 0) {
+      const used = bytesText(res.usedBytes);
+      const allowance = bytesText(res.allowanceBytes);
+      text.textContent = t('dashBudgetToday', used, allowance, stage)
+        || `Today: about ${used} of ${allowance} \u00b7 ${stage}`;
+      bar.dataset.daily = '1';
+      const line = document.getElementById('usageLine');
+      if (line) line.hidden = true;
+    } else {
+      text.textContent = t('dashBudgetNow', String(res.day), String(res.days), stage)
+        || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
+    }
 
     // Already eased this cycle — show the state, but there is nothing left to
     // press. Easing twice would just be a second stage down by another name.

@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "Chặn mạnh hơn khi chu kỳ thanh toán sắp hết. Tiện ích không thể đo bạn đã dùng thực sự bao nhiêu dữ liệu — không tiện ích nào làm được — nên nó không bao giờ đưa ra con số. Nó chỉ điều chỉnh nhịp theo hạn mức và ngày tháng, và luôn chỉ tăng thêm việc chặn.",
+    "message": "Chặn mạnh hơn khi bạn dùng dần hạn mức, và chỉ thêm việc chặn. Gói theo ngày được điều chỉnh theo lượng Chrome đã tải hôm nay; gói theo tháng theo ngày trong chu kỳ. Ứng dụng khác cũng dùng chung hạn mức, nên hãy đặt thấp hơn gói của bạn một chút.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "Đã nới lỏng",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "Gói đặt lại",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "Mỗi ngày",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "Mỗi tháng",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "Hạn mức mỗi ngày (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "Hôm nay: khoảng $USED$ / $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "Hôm nay Chrome đã dùng khoảng $USED$",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Dữ liệu Chrome đã dùng",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "Hôm nay",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Ước tính từ kích thước mỗi lần tải xuống của Chrome. Không gồm ứng dụng và trình duyệt khác trên thiết bị này.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "Tạm dừng — không chặn gì",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "Trang video và gọi điện không bị chặn từ đầu ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "Đang chặn $WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "Đang cho phép $WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "Tải hình ảnh",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "Đang tải…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "Không tải được — thử lại",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "Data Saver đã dừng video này để tiết kiệm dữ liệu.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "Phát trên trang này",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "Luôn trên trang web này",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "Đóng",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

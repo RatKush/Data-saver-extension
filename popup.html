@@ -272,7 +272,9 @@
     .pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .pill:disabled { opacity: 0.45; cursor: default; }
 
-    /* Blocking here — the active, working state. */
+    /* ALLOWED here — the category loads on this site. Blocking is the resting
+       state and stays grey; lighting a pill up means "let this through", the
+       way a switched-on image or video looks. */
     .pill.on {
       background: var(--accent-soft);
       border-color: var(--accent-line);
@@ -280,8 +282,10 @@
     }
 
     /* An explicit per-site exception, so it is visibly different from simply
-       inheriting a global switch that is off. */
+       inheriting a global switch. Dashed either way; an allowed exception
+       keeps its bright colours rather than being washed back to grey. */
     .pill.override { border-style: dashed; border-color: var(--border-2); color: var(--text); }
+    .pill.on.override { border-color: var(--accent-line); color: var(--accent); }
 
     /* Data budget. Escalation is automatic, so it has to be visible and
        reversible in one tap — a silently tightening extension is exactly the
@@ -471,6 +475,19 @@
     .savings-stat:nth-child(1) span::before { background: var(--ramp-1); }
     .savings-stat:nth-child(2) span::before { background: var(--ramp-2); }
     .savings-stat:nth-child(3) span::before { background: var(--ramp-3); }
+
+    /* What Chrome actually downloaded today — the other side of the ledger
+       from what was blocked, and the number a daily plan runs out of. */
+    .usage-line {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .usage-line[hidden] { display: none; }
 
     /* ---------- Review prompt ---------- */
     /* Asked in the popup rather than injected into the page: it appears only
@@ -806,6 +823,7 @@
           <span data-i18n="savingsVideos">videos</span>
         </div>
       </div>
+      <div class="usage-line" id="usageLine" hidden></div>
     </div>
 
     <div class="card review" id="reviewCard" hidden>

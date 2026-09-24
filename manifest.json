@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "2.4",
+  "version": "2.5",
   "default_locale": "en",
   "minimum_chrome_version": "111",
   "description": "__MSG_appDesc__",
@@ -9,7 +9,8 @@
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
     "storage",
-    "scripting"
+    "scripting",
+    "webRequest"
   ],
   "host_permissions": [
     "<all_urls>"

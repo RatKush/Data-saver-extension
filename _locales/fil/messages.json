@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "Mas mahigpit na nagba-block habang lumalapit sa katapusan ang iyong billing cycle. Hindi nito masusukat kung gaano karaming data ang talagang nagamit mo — walang extension na kaya — kaya hindi ito kailanman nagsasabi ng numero. Batay lang ito sa iyong limitasyon at petsa, at palaging nagdaragdag lang ng pag-block.",
+    "message": "Mas humihigpit ang pag-block habang nauubos ang allowance mo, at nagdaragdag lang ito ng pag-block. Ang araw-araw na plan ay sinusukat sa na-download ng Chrome ngayong araw; ang buwanan ay sa petsa. Kahati ng ibang app ang allowance mo, kaya itakda ito nang kaunting mas mababa sa plan mo.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "Niluwagan",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "Nagre-reset ang plan",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "Araw-araw",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "Buwan-buwan",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "Araw-araw na limitasyon (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "Ngayon: mga $USED$ sa $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "Gumamit ang Chrome ng mga $USED$ ngayong araw",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Data na ginamit ng Chrome",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "Ngayon",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Tantiya mula sa laki ng bawat download ng Chrome. Hindi kasama ang ibang app at browser sa device na ito.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "Naka-pause — walang bina-block",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "Mga video at call site na hindi naka-block mula simula ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "Bina-block ang $WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "Pinapayagan ang $WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "I-load ang larawan",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "Naglo-load…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "Hindi ma-load — subukan ulit",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "Itinigil ng Data Saver ang video na ito para makatipid ng data.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "I-play sa page na ito",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "Palagi sa site na ito",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "Isara",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

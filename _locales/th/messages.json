@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "บล็อกเข้มขึ้นเมื่อรอบบิลใกล้หมด ส่วนขยายไม่สามารถวัดได้ว่าคุณใช้ข้อมูลไปจริงเท่าไร — ไม่มีส่วนขยายใดทำได้ — จึงไม่เคยระบุตัวเลขใด ๆ มันกำหนดจังหวะจากโควตาและวันที่เท่านั้น และเพิ่มการบล็อกเพียงอย่างเดียวเสมอ",
+    "message": "บล็อกเข้มขึ้นเมื่อใช้โควตาไปมากขึ้น และเพิ่มการบล็อกเท่านั้น แพ็กเกจรายวันปรับตามปริมาณที่ Chrome ดาวน์โหลดวันนี้ ส่วนรายเดือนปรับตามวันที่ แอปอื่นก็ใช้โควตาเดียวกัน จึงควรตั้งให้ต่ำกว่าแพ็กเกจเล็กน้อย",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "ผ่อนแล้ว",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "แพ็กเกจรีเซ็ต",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "ทุกวัน",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "ทุกเดือน",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "โควตารายวัน (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "วันนี้: ประมาณ $USED$ จาก $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "วันนี้ Chrome ใช้ไปประมาณ $USED$",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "ข้อมูลที่ Chrome ใช้",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "วันนี้",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "ประมาณจากขนาดของการดาวน์โหลดแต่ละครั้งของ Chrome ไม่รวมแอปและเบราว์เซอร์อื่นในอุปกรณ์นี้",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "หยุดชั่วคราว — ไม่บล็อกอะไร",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "เว็บวิดีโอและการโทรที่ไม่บล็อกตั้งแต่แรก ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "กำลังบล็อก$WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "อนุญาต$WHAT$",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "โหลดรูปภาพ",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "กำลังโหลด…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "โหลดไม่ได้ — ลองอีกครั้ง",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "Data Saver หยุดวิดีโอนี้เพื่อประหยัดข้อมูล",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "เล่นในหน้านี้",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "เสมอในเว็บนี้",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "ปิด",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

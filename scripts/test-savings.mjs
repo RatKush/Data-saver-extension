@@ -83,6 +83,7 @@ function makeChrome() {
     storage: {
       local,
       sync,
+      session: makeStorageArea(),
       onChanged: { addListener: (f) => listeners.changed.push(f) }
     },
     scripting: {
@@ -90,6 +91,9 @@ function makeChrome() {
       unregisterContentScripts: (_o, cb) => cb && cb()
     },
     commands: { onCommand: { addListener: (f) => listeners.command.push(f) } },
+    webRequest: {
+      onCompleted: { addListener: (f, filter, spec) => { listeners.completed = f; listeners.completedSpec = { filter, spec }; } }
+    },
     action: {
       _badge: {}, _title: {},
       setBadgeText({ tabId, text }) { this._badge[tabId] = text; },
@@ -100,7 +104,13 @@ function makeChrome() {
       _rulesets: [],
       updateEnabledRulesets(o, cb) { this._rulesets.push(o); cb && cb(); },
       getDynamicRules: (cb) => cb([]),
-      updateDynamicRules: (_o, cb) => cb && cb()
+      updateDynamicRules: (_o, cb) => cb && cb(),
+      _session: [],
+      getSessionRules() { return Promise.resolve(this._session.slice()); },
+      updateSessionRules({ removeRuleIds = [], addRules = [] }) {
+        this._session = this._session.filter((r) => !removeRuleIds.includes(r.id)).concat(addRules);
+        return Promise.resolve();
+      }
     },
     tabs: {
       _tabs: [{ id: 7, url: 'https://news.example.com/article', active: true }],
@@ -110,7 +120,8 @@ function makeChrome() {
       get(id, cb) { cb(this._tabs.find((t) => t.id === id)); },
       reload(id) { this._reloaded.push(id); },
       onActivated: { addListener: () => {} },
-      onUpdated: { addListener: () => {} }
+      onUpdated: { addListener: () => {} },
+      onRemoved: { addListener: () => {} }
     }
   };
 }
@@ -1174,6 +1185,244 @@ await test('the stage is only re-applied when it actually moves', async () => {
   assert.equal(again, null, 'reconciled again despite the stage being unchanged');
   const moved = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 27).getTime());
   assert.equal(moved, 'strict');
+});
+
+console.log('\nbackground.js — data used');
+
+const MB = 1024 * 1024;
+const resp = (over) => Object.assign({ url: 'https://example.com/a.js', type: 'script', fromCache: false, responseHeaders: [] }, over);
+
+await test('a response counts its Content-Length plus headers', async () => {
+  const { ctx } = loadBackground();
+  const bytes = vm.runInContext('responseBytes', ctx)(resp({ responseHeaders: [{ name: 'Content-Length', value: '50000' }] }));
+  assert.equal(bytes, 50000 + vm.runInContext('HEADER_BYTES', ctx));
+});
+
+await test('a response without Content-Length falls back to the typical size for its type', async () => {
+  const { ctx } = loadBackground();
+  const fallback = plain(vm.runInContext('NO_LENGTH_BYTES', ctx));
+  const header = vm.runInContext('HEADER_BYTES', ctx);
+  const bytes = vm.runInContext('responseBytes', ctx);
+  assert.equal(bytes(resp({ type: 'main_frame' })), fallback.main_frame + header);
+  assert.equal(bytes(resp({ type: 'websocket' })), fallback.other + header, 'unknown types use "other"');
+});
+
+await test('a response served from cache used no data', async () => {
+  const { ctx } = loadBackground();
+  const bytes = vm.runInContext('responseBytes', ctx)(resp({ fromCache: true, responseHeaders: [{ name: 'content-length', value: '9999' }] }));
+  assert.equal(bytes, 0);
+});
+
+await test('usage is bucketed by LOCAL day and pruned to 60 days', async () => {
+  const { ctx } = loadBackground();
+  const add = vm.runInContext('addUsage', ctx);
+  // 23:30 and 00:30 local are different days, whatever the UTC offset.
+  let usage = add({}, 100, new Date(2026, 8, 24, 23, 30).getTime());
+  usage = add(usage, 50, new Date(2026, 8, 25, 0, 30).getTime());
+  assert.deepEqual(plain(usage), { '2026-09-24': 100, '2026-09-25': 50 });
+
+  for (let i = 0; i < 70; i++) usage = add(usage, 1, new Date(2026, 9, 1 + i).getTime());
+  assert.equal(Object.keys(usage).length, 60);
+});
+
+await test('completed requests are summed in memory and written once', async () => {
+  const { chrome, ctx } = loadBackground();
+  const onCompleted = chrome._listeners.completed;
+  assert.ok(onCompleted, 'no webRequest.onCompleted listener was registered');
+  assert.deepEqual(plain(chrome._listeners.completedSpec.spec), ['responseHeaders']);
+
+  const header = vm.runInContext('HEADER_BYTES', ctx);
+  for (let i = 0; i < 3; i++) onCompleted(resp({ responseHeaders: [{ name: 'content-length', value: '1000' }] }));
+  onCompleted(resp({ url: 'chrome-extension://abc/blank.gif', type: 'image' }));   // not network traffic
+  onCompleted(resp({ url: 'data:image/gif;base64,R0lG', type: 'image' }));
+  await vm.runInContext('flushUsage', ctx)();
+  await settle();
+
+  const today = vm.runInContext('localDayKey', ctx)(Date.now());
+  assert.equal(chrome._local._dump().usage[today], 3 * (1000 + header));
+});
+
+console.log('\nbackground.js — daily budget');
+
+function dailyStage(ctx, over) {
+  return plain(vm.runInContext('budgetStage', ctx)(Object.assign({
+    budgetPeriod: 'day', budgetDailyMB: 1536, usedBytes: 0, budgetEase: null,
+    now: new Date(2026, 8, 24, 14, 0).getTime()
+  }, over))).stage;
+}
+
+await test('a daily budget tightens as Chrome uses the allowance', async () => {
+  const { ctx } = loadBackground();
+  const at = (usedMB) => dailyStage(ctx, { usedBytes: usedMB * MB });
+  assert.equal(at(0), 'relaxed');
+  assert.equal(at(700), 'relaxed');    // under half of 1.5 GB
+  assert.equal(at(800), 'normal');     // past half
+  assert.equal(at(1300), 'tight');     // past 80%
+  assert.equal(at(1536), 'strict');    // allowance reached
+  assert.equal(at(5000), 'strict');
+});
+
+await test('a daily budget ignores the calendar and the monthly allowance', async () => {
+  const { ctx } = loadBackground();
+  // Day 28 of the month with a tiny MONTHLY allowance would be strict on a
+  // monthly plan. On a daily plan with nothing used yet it must not be.
+  assert.equal(dailyStage(ctx, { budgetMB: 500, budgetResetDay: 1, now: new Date(2026, 8, 28, 9).getTime() }), 'relaxed');
+});
+
+await test('a daily budget with no allowance set behaves like a normal day', async () => {
+  const { ctx } = loadBackground();
+  assert.equal(dailyStage(ctx, { budgetDailyMB: 0, usedBytes: 10 * 1024 * MB }), 'normal');
+});
+
+await test('easing off a daily budget lasts until midnight only', async () => {
+  const { ctx } = loadBackground();
+  const now = new Date(2026, 8, 24, 20, 0).getTime();
+  const today = new Date(2026, 8, 24).getTime();
+  const used = 1300 * MB;
+  assert.equal(dailyStage(ctx, { now, usedBytes: used }), 'tight');
+  assert.equal(dailyStage(ctx, { now, usedBytes: used, budgetEase: { cycleStart: today } }), 'normal');
+  // Yesterday's ease has no effect today.
+  assert.equal(dailyStage(ctx, { now, usedBytes: used, budgetEase: { cycleStart: today - 86400000 } }), 'tight');
+});
+
+await test('easeBudget stamps today on a daily plan', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ budgetEnabled: true, budgetPeriod: 'day', budgetDailyMB: 1536 });
+  const now = new Date(2026, 8, 24, 20, 0).getTime();
+  await vm.runInContext('easeBudget', ctx)(now);
+  const { budgetEase } = await chrome.storage.sync.get({ budgetEase: null });
+  assert.equal(budgetEase.cycleStart, new Date(2026, 8, 24).getTime());
+});
+
+await test('mergeSettings applies the daily stage from today\'s usage', async () => {
+  const { ctx } = loadBackground();
+  const merge = vm.runInContext('mergeSettings', ctx);
+  const user = { ads: false, images: false, media: false, allowlist: ['youtube.com'], userChoices: {},
+    budgetEnabled: true, budgetPeriod: 'day', budgetDailyMB: 1024 };
+  const now = new Date(2026, 8, 24, 12).getTime();
+  const early = plain(merge(user, {}, null, now, 100 * MB));
+  assert.deepEqual([early.ads, early.images, early.media, early.budgetStage], [true, false, false, 'relaxed']);
+  const spent = plain(merge(user, {}, null, now, 1100 * MB));
+  assert.equal(spent.budgetStage, 'strict');
+  assert.deepEqual(spent.allowlist, [], 'strict should trim the shipped video sites');
+});
+
+await test('recorded usage moves the daily stage and triggers one reconcile', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ budgetEnabled: true, budgetPeriod: 'day', budgetDailyMB: 1 });
+  const now = Date.now();
+  const ensure = vm.runInContext('ensureBudgetStage', ctx);
+  assert.equal(await ensure(now), 'relaxed');
+  // 1 MB allowance; a 2 MB response pushes it past the cap.
+  chrome._listeners.completed(resp({ responseHeaders: [{ name: 'content-length', value: String(2 * MB) }] }));
+  await vm.runInContext('flushUsage', ctx)(now);
+  await settle(12);
+  const { appliedBudgetStage } = await chrome.storage.local.get({ appliedBudgetStage: null });
+  assert.equal(appliedBudgetStage, 'strict');
+});
+
+await test('an existing monthly budget is untouched by the upgrade', async () => {
+  const { ctx } = loadBackground();
+  // A 2.4 profile has no budgetPeriod at all; it must stay monthly.
+  const stage = plain(vm.runInContext('budgetStage', ctx)({
+    budgetMB: 5 * GB, budgetResetDay: 1, budgetEase: null, usedBytes: 99 * 1024 * MB,
+    now: new Date(2026, 8, 2).getTime()
+  })).stage;
+  assert.equal(stage, 'relaxed', 'monthly pacing must not react to measured usage');
+});
+
+console.log('\nbackground.js — load one image / play one page');
+
+await test('loading one image adds a one-off redirect and an exact allow, both scoped to the tab', async () => {
+  const { chrome, ctx } = loadBackground();
+  const url = 'https://i.guim.co.uk/img/media/abc/960.jpg?width=98&dpr=1&s=f00';
+  const res = plain(await vm.runInContext('allowImageOnce', ctx)(7, url));
+  const once = new URL(res.url);
+  assert.equal(once.searchParams.get('s'), 'f00', 'the original query must survive');
+  assert.ok(once.searchParams.get('ds-load'), 'the one-off URL needs its own marker');
+
+  const rules = plain(chrome.declarativeNetRequest._session);
+  assert.equal(rules.length, 2);
+  const [redirect, allow] = rules;
+  assert.equal(redirect.action.redirect.url, url, 'the server must see the untouched URL');
+  assert.equal(redirect.condition.urlFilter, `|${res.url}|`);
+  assert.equal(allow.condition.urlFilter, `|${url}|`);
+  for (const r of rules) {
+    assert.deepEqual(r.condition.tabIds, [7]);
+    assert.deepEqual(r.condition.resourceTypes, ['image']);
+  }
+  assert.ok(allow.priority > 1 && allow.priority < 5, 'must beat the image redirect but not the ad rules');
+});
+
+await test('a URL with urlFilter syntax in it is matched by an escaped regex', async () => {
+  const { ctx } = loadBackground();
+  const cond = plain(vm.runInContext('exactUrlCondition', ctx)('https://cdn.example.com/a*b^c.jpg'));
+  assert.equal(cond.urlFilter, undefined);
+  assert.ok(new RegExp(cond.regexFilter).test('https://cdn.example.com/a*b^c.jpg'));
+  assert.ok(!new RegExp(cond.regexFilter).test('https://cdn.example.com/aXXb^c.jpg'));
+});
+
+await test('only http(s) images from a real tab can be allowed', async () => {
+  const { ctx } = loadBackground();
+  const allow = vm.runInContext('allowImageOnce', ctx);
+  assert.equal(await allow(7, 'data:image/png;base64,AAAA'), null);
+  assert.equal(await allow(7, 'chrome://settings'), null);
+  assert.equal(await allow(-1, 'https://example.com/a.jpg'), null, 'tab -1 is not a page');
+  assert.equal(await allow(null, 'https://example.com/a.jpg'), null);
+});
+
+await test('image rules are removed when done, and stale ones are swept', async () => {
+  const { chrome, ctx } = loadBackground();
+  const allow = vm.runInContext('allowImageOnce', ctx);
+  const t0 = 1_000_000;
+  const first = plain(await allow(7, 'https://example.com/a.jpg', t0));
+  await vm.runInContext('dropImageRules', ctx)(first.ids);
+  assert.equal(chrome.declarativeNetRequest._session.length, 0);
+
+  // Never reported done (tab closed mid-load): swept by a later request.
+  await allow(7, 'https://example.com/b.jpg', t0);
+  await allow(7, 'https://example.com/c.jpg', t0 + 2 * 60 * 1000);
+  assert.equal(chrome.declarativeNetRequest._session.length, 2, 'the old pair should have been swept');
+  // Someone else's id is never touched.
+  await vm.runInContext('dropImageRules', ctx)([1, 2, 3]);
+  assert.equal(chrome.declarativeNetRequest._session.length, 2);
+});
+
+await test('"play on this page" mirrors the media rules as allow rules for the tab only', async () => {
+  const { chrome, ctx } = loadBackground();
+  assert.equal(await vm.runInContext('allowMediaOnce', ctx)(7, 'news.example.com'), true);
+  const rules = plain(chrome.declarativeNetRequest._session);
+  assert.ok(rules.length > 0);
+  for (const r of rules) {
+    assert.equal(r.action.type, 'allow');
+    assert.deepEqual(r.condition.tabIds, [7]);
+    assert.ok(r.priority > 5, 'must outrank media.json');
+  }
+  const allowed = vm.runInContext('mediaAllowedFor', ctx);
+  assert.equal(await allowed(7, 'https://news.example.com/story'), true);
+  assert.equal(await allowed(7, 'https://www.news.example.com/other'), true, 'a subdomain is the same site');
+  assert.equal(await allowed(8, 'https://news.example.com/story'), false, 'another tab is not allowed');
+  assert.equal(await allowed(7, 'https://elsewhere.org/'), false);
+});
+
+await test('the page allowance ends with the tab, and granting twice does not stack rules', async () => {
+  const { chrome, ctx } = loadBackground();
+  const grant = vm.runInContext('allowMediaOnce', ctx);
+  await grant(7, 'news.example.com');
+  const n = chrome.declarativeNetRequest._session.length;
+  await grant(7, 'news.example.com');
+  assert.equal(chrome.declarativeNetRequest._session.length, n);
+  await vm.runInContext('endMediaOnce', ctx)(7);
+  assert.equal(chrome.declarativeNetRequest._session.length, 0);
+  assert.equal(await vm.runInContext('mediaAllowedFor', ctx)(7, 'https://news.example.com/'), false);
+});
+
+await test('same-site check does not lump every .co.uk site together', async () => {
+  const { ctx } = loadBackground();
+  const same = vm.runInContext('sameSite', ctx);
+  assert.equal(same('www.bbc.co.uk', 'bbc.co.uk'), true);
+  assert.equal(same('www.bbc.co.uk', 'evil.co.uk'), false);
+  assert.equal(same('a.example.com', 'b.example.com'), false);
 });
 
 console.log('\nbackground.js — export / import');

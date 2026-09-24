@@ -42,7 +42,7 @@ ALLOWED = {
 # abbreviations (Japanese, Korean, Chinese and the Indic languages all keep
 # "GB" as-is, while ru/uk/ar/fa do translate it), and the borrowed term
 # "cookie", which is what Google's own ru/uk UI uses.
-ALLOW_WORDS = ['Data Saver', 'Data', 'Saver', 'JSON', 'Premium',
+ALLOW_WORDS = ['Data Saver', 'Data', 'Saver', 'Chrome', 'JSON', 'Premium',
                'cookie', 'Cookie', 'GB', 'MB', 'KB']
 
 PLACEHOLDER = re.compile(r'\$[A-Za-z0-9_]+\$')

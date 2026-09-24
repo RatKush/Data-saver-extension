@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "బిల్లింగ్ చక్రం ముగింపుకు వస్తున్న కొద్దీ బ్లాకింగ్ కఠినమవుతుంది. మీరు నిజంగా ఎంత డేటా వాడారో ఇది కొలవలేదు — ఏ పొడిగింపూ కొలవలేదు — కాబట్టి ఇది ఎప్పుడూ ఏ సంఖ్యనూ చెప్పదు. మీ పరిమితి, తేదీ ఆధారంగా మాత్రమే వేగాన్ని నిర్ణయిస్తుంది, ఎప్పుడూ బ్లాకింగ్‌ను మాత్రమే పెంచుతుంది.",
+    "message": "మీ పరిమితి ఖర్చయ్యే కొద్దీ ఎక్కువగా బ్లాక్ చేస్తుంది, బ్లాకింగ్‌ను మాత్రమే పెంచుతుంది. రోజువారీ ప్లాన్ ఈరోజు Chrome డౌన్‌లోడ్ చేసినదాన్ని బట్టి, నెలవారీ ప్లాన్ తేదీని బట్టి నడుస్తుంది. ఇతర యాప్‌లు కూడా ఈ పరిమితినే వాడతాయి, కాబట్టి మీ ప్లాన్ కంటే కొంచెం తక్కువగా పెట్టండి.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "సడలించబడింది",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "ప్లాన్ రీసెట్ అవుతుంది",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "ప్రతిరోజూ",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "ప్రతినెలా",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "రోజువారీ పరిమితి (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "ఈరోజు: సుమారు $USED$ / $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "ఈరోజు Chrome సుమారు $USED$ వాడింది",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Chrome వాడిన డేటా",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "ఈరోజు",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Chrome చేసే ప్రతి డౌన్‌లోడ్ పరిమాణం నుండి అంచనా. ఈ పరికరంలోని ఇతర యాప్‌లు, బ్రౌజర్‌లు చేర్చబడలేదు.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "పాజ్ చేయబడింది — ఏదీ బ్లాక్ కాదు",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "మొదటి నుండే బ్లాక్ చేయని వీడియో, కాల్ సైట్‌లు ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "$WHAT$ బ్లాక్ అవుతున్నాయి",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "$WHAT$ అనుమతించబడ్డాయి",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "చిత్రాన్ని లోడ్ చేయండి",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "లోడ్ అవుతోంది…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "లోడ్ కాలేదు — మళ్లీ ప్రయత్నించండి",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "డేటా ఆదా చేయడానికి Data Saver ఈ వీడియోను ఆపింది.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "ఈ పేజీలో ప్లే చేయండి",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "ఈ సైట్‌లో ఎప్పుడూ",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "మూసివేయండి",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

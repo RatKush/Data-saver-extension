@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "청구 주기가 진행될수록 더 강하게 차단합니다. 실제로 데이터를 얼마나 썼는지는 측정할 수 없으며, 어떤 확장 프로그램도 할 수 없습니다. 그래서 수치를 제시하지 않습니다. 한도와 날짜만으로 속도를 조절하고, 차단을 더하기만 합니다.",
+    "message": "한도를 쓸수록 더 많이 차단하며, 차단을 추가하기만 합니다. 일일 요금제는 오늘 Chrome이 다운로드한 양에 따라, 월 요금제는 날짜에 따라 조절됩니다. 다른 앱도 한도를 함께 쓰므로 요금제보다 조금 낮게 설정하세요.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "완화됨",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "요금제 초기화",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "매일",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "매월",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "일일 한도 (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "오늘: 약 $USED$ / $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "오늘 Chrome이 약 $USED$ 사용함",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Chrome 데이터 사용량",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "오늘",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Chrome의 각 다운로드 크기로 추정합니다. 이 기기의 다른 앱과 브라우저는 포함되지 않습니다.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "일시중지됨 — 차단 없음",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "기본으로 차단하지 않는 동영상·통화 사이트 ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "$WHAT$ 차단 중",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "$WHAT$ 허용 중",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "이미지 불러오기",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "불러오는 중…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "불러오지 못함 — 다시 시도",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "Data Saver가 데이터를 아끼려고 이 동영상을 멈췄습니다.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "이 페이지에서 재생",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "이 사이트에서 항상",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "닫기",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

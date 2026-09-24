@@ -224,6 +224,109 @@ function recordBlocked(counts, host, now = Date.now()) {
 }
 
 // ----------------------------
+// 📶 Data used
+// ----------------------------
+// Everything above counts what was BLOCKED. This counts what Chrome actually
+// DOWNLOADED, which is what a daily-capped plan runs out of.
+//
+// HOW. A non-blocking webRequest listener reads each completed response's
+// Content-Length. Observing is all MV3 allows here and all this needs; the
+// permission adds no install warning beyond the site access the extension
+// already has (checked with management.getPermissionWarningsByManifest in
+// Chrome 154), so the update does not disable anyone's copy.
+//
+// HOW GOOD. Measured in real Chrome against DevTools' own byte counts on 17
+// sites: Content-Length alone caught ~90% of the bytes, because compressed
+// HTML, scripts and styles often arrive without one. Filling those in with
+// the median size of such a response, by type, brought the total to within
+// ~5%. Individual sites still ranged from 0.3x (x.com) to 1.4x (aajtak.in),
+// so the figure is always shown as "about".
+//
+// WHAT IT CANNOT SEE. Other apps on the device, other browsers, and Chrome's
+// own updates. The carrier's cap covers all of them, so the budget's copy tells
+// the user to leave headroom rather than implying this is the whole picture.
+//
+// PRIVACY. One number per day. No URLs, no hostnames.
+const USAGE_DAYS = 60;
+const USAGE_FLUSH_MS = 5000;
+const NO_LENGTH_BYTES = {
+  main_frame: 68 * 1024,
+  sub_frame: 0,
+  script: 9 * 1024,
+  stylesheet: 2 * 1024,
+  image: 1024,
+  xmlhttprequest: 512,
+  ping: 0,
+  other: 2 * 1024
+};
+const HEADER_BYTES = 150;
+
+// LOCAL date, unlike dayKey above: a daily plan resets at the user's midnight,
+// not at UTC's, which is 05:30 in the morning in India.
+function localDayKey(now) {
+  const d = new Date(now);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function responseBytes(details) {
+  if (!details || details.fromCache) return 0;
+  const header = (details.responseHeaders || []).find((h) => h.name.toLowerCase() === 'content-length');
+  const length = header ? parseInt(header.value, 10) : NaN;
+  const body = Number.isFinite(length) && length >= 0
+    ? length
+    : (NO_LENGTH_BYTES[details.type] ?? NO_LENGTH_BYTES.other);
+  return body + HEADER_BYTES;
+}
+
+// Pure, for the same reason addToHistory is.
+function addUsage(usage, bytes, now) {
+  const out = Object.assign({}, usage);
+  const key = localDayKey(now);
+  out[key] = (out[key] || 0) + bytes;
+  const keys = Object.keys(out).sort();
+  for (const k of keys.slice(0, Math.max(0, keys.length - USAGE_DAYS))) delete out[k];
+  return out;
+}
+
+function usedToday(usage, now) {
+  return (usage && usage[localDayKey(now)]) || 0;
+}
+
+// A busy page completes hundreds of requests a second, so bytes are summed in
+// memory and written every few seconds. A worker stopped before the timer
+// fires loses at most that window, which is noise next to the estimate itself.
+let pendingUsage = 0;
+let usageTimer = null;
+
+function flushUsage(now = Date.now()) {
+  usageTimer = null;
+  const bytes = pendingUsage;
+  pendingUsage = 0;
+  if (!bytes) return statsQueue;
+
+  // Same queue as the blocked counts, so the two writes never interleave.
+  statsQueue = statsQueue.then(async () => {
+    const { usage } = await chrome.storage.local.get({ usage: {} });
+    await chrome.storage.local.set({ usage: addUsage(usage, bytes, now) });
+  }).catch((e) => console.warn('⚠️ Could not record data used:', e));
+
+  // A daily budget moves with usage, so this is when its stage can change.
+  statsQueue.then(() => ensureBudgetStage(now))
+    .catch((e) => console.warn('⚠️ Could not re-check the data budget:', e));
+  return statsQueue;
+}
+
+function onResponseCompleted(details) {
+  if (!/^https?:/i.test(details.url || '')) return;
+  const bytes = responseBytes(details);
+  if (!bytes) return;
+  pendingUsage += bytes;
+  if (usageTimer === null) usageTimer = setTimeout(() => flushUsage(), USAGE_FLUSH_MS);
+}
+
+chrome.webRequest.onCompleted.addListener(onResponseCompleted, { urls: ['<all_urls>'] }, ['responseHeaders']);
+
+// ----------------------------
 // ⭐ Review prompt
 // ----------------------------
 // The listing has no ratings at all, which suppresses both search ranking and
@@ -361,6 +464,41 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
+  if (msg.type === 'ds-load-image' && typeof msg.url === 'string') {
+    allowImageOnce(sender && sender.tab && sender.tab.id, msg.url)
+      .then((res) => sendResponse(res ? { ok: true, url: res.url, ids: res.ids } : { ok: false }))
+      .catch((e) => {
+        console.warn('⚠️ Could not allow the image:', e);
+        sendResponse({ ok: false });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-load-image-done') {
+    dropImageRules(msg.ids).catch(() => {});
+    sendResponse({ ok: true });
+    return false;
+  }
+
+  if (msg.type === 'ds-media-once') {
+    const tab = sender && sender.tab;
+    allowMediaOnce(tab && tab.id, hostnameOf(tab && tab.url))
+      .then((ok) => sendResponse({ ok }))
+      .catch((e) => {
+        console.warn('⚠️ Could not allow video on this page:', e);
+        sendResponse({ ok: false });
+      });
+    return true;
+  }
+
+  if (msg.type === 'ds-media-state') {
+    const tab = sender && sender.tab;
+    mediaAllowedFor(tab && tab.id, tab && tab.url)
+      .then((allowed) => sendResponse({ allowed }))
+      .catch(() => sendResponse({ allowed: false }));
+    return true;
+  }
+
   if (msg.type === 'ds-export') {
     exportPolicy()
       .then((policy) => sendResponse({ ok: true, policy }))
@@ -382,21 +520,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'ds-budget-state') {
-    chrome.storage.sync
-      .get({ budgetEnabled: false, budgetMB: 0, budgetResetDay: 1, budgetEase: null })
+    readBudget()
       .then((cfg) => {
         if (!cfg.budgetEnabled) { sendResponse({ enabled: false }); return; }
-        const { stage, cycle } = budgetStage({
-          budgetMB: cfg.budgetMB,
-          budgetResetDay: cfg.budgetResetDay,
-          budgetEase: cfg.budgetEase,
-          now: Date.now()
-        });
+        const { stage, cycle } = budgetStage(cfg);
         sendResponse({
           enabled: true,
           stage,
+          period: cfg.budgetPeriod === 'day' ? 'day' : 'month',
           day: cycle.dayIndex,
           days: cycle.days,
+          usedBytes: cfg.usedBytes,
+          allowanceBytes: (cfg.budgetPeriod === 'day' ? cfg.budgetDailyMB : cfg.budgetMB) * 1024 * 1024,
           eased: Boolean(cfg.budgetEase && cfg.budgetEase.cycleStart === cycle.start)
         });
       })
@@ -644,20 +779,19 @@ function setSiteProfile(hostname, profile, merge = false) {
 // ----------------------------
 // 🪫 Data budget
 // ----------------------------
-// WHAT THIS IS NOT: a meter. The extension cannot measure data consumption
-// and must never pretend to.
+// WHAT THIS IS NOT: a carrier meter.
 //   - stats.bytes is what we BLOCKED, inferred from AVG_BYTES, not what was used.
-//   - Chrome exposes no production API for real byte counts (getMatchedRules
-//     costs a permission warning and covers 5 minutes; onRuleMatchedDebug is
-//     unpacked-only).
-//   - Resource Timing reports transferSize 0 for cross-origin resources
-//     without Timing-Allow-Origin, so any total built from it undercounts badly.
+//   - "Data used" (above) is an estimate of what CHROME downloaded, from
+//     response headers. Good to ~5% in aggregate, but it cannot see other apps.
 //   - The carrier's cap covers the whole DEVICE. We see one browser.
-// So the UI never says "1.2 GB remaining". It says what it actually did.
+// So the UI never says "1.2 GB remaining". It says what it actually did, and
+// on a daily plan, about how much Chrome has used against the allowance.
 //
-// WHAT THIS IS: a pacing policy. The allowance sets where on the ladder the
-// cycle starts; the calendar walks it up from there. Every input is something
-// the user told us, and every output is something we control.
+// WHAT THIS IS: a pacing policy. On a monthly plan the allowance sets where on
+// the ladder the cycle starts and the calendar walks it up from there — a
+// month is too long for one browser's share of it to mean much. On a daily
+// plan Chrome's own usage walks it up (see dayInfo). Every output is
+// something we control.
 const BUDGET_STAGES = ['relaxed', 'normal', 'tight', 'strict'];
 
 // Where a cycle starts, by allowance. A tiny plan begins cautious; a very
@@ -688,18 +822,46 @@ function cycleInfo(resetDay, now) {
   };
 }
 
+// DAILY PLANS. Most prepaid plans in India, and many elsewhere, are a daily
+// cap — 1.5 or 2 GB that resets at midnight — and pacing one of those from the
+// calendar means nothing: the day is the whole cycle. So a daily budget is
+// paced from what Chrome has downloaded today (see "Data used" above) instead.
+// That is a measurement of ONE browser, not of the device, and the dashboard
+// says so; the thresholds sit early enough that other apps have headroom.
+function dayInfo(now) {
+  const d = new Date(now);
+  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  return { start, days: 1, dayIndex: 1, fraction: 0 };
+}
+
+function dailyBaseStage(budgetDailyMB, usedBytes) {
+  if (!budgetDailyMB || budgetDailyMB <= 0) return 1; // unset — behave like a normal day
+  const share = (usedBytes || 0) / (budgetDailyMB * 1024 * 1024);
+  if (share >= 1) return 3;
+  if (share >= 0.8) return 2;
+  if (share >= 0.5) return 1;
+  return 0;
+}
+
 // Pure: the stage this cycle is on right now.
-function budgetStage({ budgetMB, budgetResetDay, budgetEase, now }) {
-  const cycle = cycleInfo(budgetResetDay, now);
+function budgetStage({ budgetPeriod, budgetMB, budgetResetDay, budgetDailyMB, usedBytes, budgetEase, now }) {
+  const daily = budgetPeriod === 'day';
+  const cycle = daily ? dayInfo(now) : cycleInfo(budgetResetDay, now);
 
-  let index = budgetBaseStage(budgetMB);
-  if (cycle.fraction >= 0.5) index += 1;
-  if (cycle.fraction >= 0.8) index += 1;
+  let index;
+  if (daily) {
+    index = dailyBaseStage(budgetDailyMB, usedBytes);
+    cycle.fraction = budgetDailyMB > 0 ? Math.min((usedBytes || 0) / (budgetDailyMB * 1024 * 1024), 1) : 0;
+  } else {
+    index = budgetBaseStage(budgetMB);
+    if (cycle.fraction >= 0.5) index += 1;
+    if (cycle.fraction >= 0.8) index += 1;
 
-  // A generous allowance never reaches the stage that trims the video
-  // allowlist — at 20 GB the cap is not what is going to bite.
-  const ceiling = (budgetMB && budgetMB >= 20 * 1024) ? 1 : BUDGET_STAGES.length - 1;
-  index = Math.min(index, ceiling);
+    // A generous allowance never reaches the stage that trims the video
+    // allowlist — at 20 GB the cap is not what is going to bite.
+    const ceiling = (budgetMB && budgetMB >= 20 * 1024) ? 1 : BUDGET_STAGES.length - 1;
+    index = Math.min(index, ceiling);
+  }
 
   // "Ease off" drops one stage for the REST OF THIS CYCLE only, so the choice
   // does not silently persist into a month the user never agreed to.
@@ -743,36 +905,42 @@ function applyBudgetStage(data, stage) {
 // this rides on traffic the extension already sees: the counter reports
 // blocked requests constantly while browsing, which is exactly when a stage
 // change matters. One local read, and a reconcile only when it actually moved.
-function ensureBudgetStage(now = Date.now()) {
-  return chrome.storage.sync
-    .get({ budgetEnabled: false, budgetMB: 0, budgetResetDay: 1, budgetEase: null })
-    .then((cfg) => {
-      if (!cfg.budgetEnabled) return null;
-      const { stage } = budgetStage({
-        budgetMB: cfg.budgetMB,
-        budgetResetDay: cfg.budgetResetDay,
-        budgetEase: cfg.budgetEase,
-        now
-      });
-      return chrome.storage.local.get({ appliedBudgetStage: null }).then(({ appliedBudgetStage }) => {
-        if (appliedBudgetStage === stage) return null;
-        return chrome.storage.local
-          .set({ appliedBudgetStage: stage })
-          .then(() => { loadAndSetInitialState(); return stage; });
-      });
-    });
+const BUDGET_DEFAULTS = {
+  budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1,
+  budgetDailyMB: 0, budgetEase: null
+};
+
+// Everything budgetStage needs, read from where it lives: the plan is a synced
+// preference, today's usage is a local observation.
+function readBudget(now = Date.now()) {
+  return Promise.all([
+    chrome.storage.sync.get(BUDGET_DEFAULTS),
+    chrome.storage.local.get({ usage: {} })
+  ]).then(([cfg, { usage }]) => Object.assign({}, cfg, { usedBytes: usedToday(usage, now), now }));
 }
 
-// "Ease off" steps the stage down for the rest of THIS cycle only. Stamped
-// with the cycle start so it expires on its own at the next reset rather than
-// quietly persisting into a month the user never agreed to.
-function easeBudget(now = Date.now()) {
-  return chrome.storage.sync
-    .get({ budgetResetDay: 1 })
-    .then(({ budgetResetDay }) => {
-      const cycle = cycleInfo(budgetResetDay, now);
-      return chrome.storage.sync.set({ budgetEase: { cycleStart: cycle.start } });
+function ensureBudgetStage(now = Date.now()) {
+  return readBudget(now).then((cfg) => {
+    if (!cfg.budgetEnabled) return null;
+    const { stage } = budgetStage(cfg);
+    return chrome.storage.local.get({ appliedBudgetStage: null }).then(({ appliedBudgetStage }) => {
+      if (appliedBudgetStage === stage) return null;
+      return chrome.storage.local
+        .set({ appliedBudgetStage: stage })
+        .then(() => { loadAndSetInitialState(); return stage; });
     });
+  });
+}
+
+// "Ease off" steps the stage down for the rest of THIS cycle only — this
+// month, or today on a daily plan. Stamped with the cycle start so it expires
+// on its own at the next reset rather than quietly persisting into a cycle
+// the user never agreed to.
+function easeBudget(now = Date.now()) {
+  return readBudget(now).then((cfg) => {
+    const { cycle } = budgetStage(cfg);
+    return chrome.storage.sync.set({ budgetEase: { cycleStart: cycle.start } });
+  });
 }
 
 // ----------------------------
@@ -1003,6 +1171,189 @@ function seedDefaultAllowlist() {
       });
     });
 }
+
+// ----------------------------
+// 👆 Load one image, play one page's video
+// ----------------------------
+// Blocking everything is what saves the data, and it is also what makes a page
+// look broken. These are the smallest ways out: one image the user asked for,
+// or the videos on the page they are reading — not the whole site.
+//
+// ONE IMAGE. Re-requesting a blocked image does not work: Chrome keeps the
+// blank.gif it was redirected to in its memory cache under the image's URL,
+// so setting the same src again never reaches the network (tried in Chrome
+// 154: no request at all). So the page asks for the image under a one-off URL
+// Chrome has never seen, and two session rules for that tab turn it back into
+// the real one: the one-off URL redirects to the original, and the original is
+// allowed past the image redirect. The server sees the untouched URL, which is
+// what makes signed image URLs (the Guardian's, for one) still work, and the
+// page loads the image itself as an ordinary <img> — the extension never
+// fetches it or hands its bytes to the page.
+const IMAGE_RULE_BASE = 700000;          // session rule ids, clear of the dynamic range
+const IMAGE_RULE_SPAN = 50000;
+const IMAGE_RULE_TTL_MS = 60 * 1000;
+const IMAGE_ONCE_PARAM = 'ds-load';
+let imageRuleSeq = 0;
+const imageRuleAt = new Map();           // rule id -> time added
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// An exact-URL condition. urlFilter is cheaper, but treats * ^ | as syntax,
+// so a URL containing any of them is matched with an escaped regex instead.
+function exactUrlCondition(url) {
+  if (!/[*^|]/.test(url)) return { urlFilter: `|${url}|`, isUrlFilterCaseSensitive: true };
+  const rx = `^${escapeRegex(url)}$`;
+  return rx.length <= 1000 ? { regexFilter: rx, isUrlFilterCaseSensitive: true } : null;
+}
+
+function onceUrl(url) {
+  const u = new URL(url);
+  u.searchParams.append(IMAGE_ONCE_PARAM, Math.random().toString(36).slice(2, 10));
+  return u.href;
+}
+
+function allowImageOnce(tabId, url, now = Date.now()) {
+  let original;
+  try {
+    original = new URL(url);
+  } catch (e) {
+    return Promise.resolve(null);
+  }
+  if (!/^https?:$/.test(original.protocol) || url.length > 2000 || tabId == null || tabId < 0) {
+    return Promise.resolve(null);
+  }
+  const busted = onceUrl(url);
+  const from = exactUrlCondition(busted);
+  const to = exactUrlCondition(original.href);
+  if (!from || !to) return Promise.resolve(null);
+
+  return chrome.declarativeNetRequest.getSessionRules().then((existing) => {
+    // Rules outlive a worker restart but this map does not, so an unknown id
+    // in our range is a leftover and goes too.
+    const removeRuleIds = existing
+      .map((r) => r.id)
+      .filter((id) => id >= IMAGE_RULE_BASE && id < IMAGE_RULE_BASE + IMAGE_RULE_SPAN)
+      .filter((id) => !imageRuleAt.has(id) || now - imageRuleAt.get(id) > IMAGE_RULE_TTL_MS);
+    for (const id of removeRuleIds) imageRuleAt.delete(id);
+
+    const ids = [0, 1].map(() => IMAGE_RULE_BASE + (imageRuleSeq++ % IMAGE_RULE_SPAN));
+    const addRules = [
+      {
+        id: ids[0],
+        priority: 3,
+        action: { type: 'redirect', redirect: { url: original.href } },
+        condition: Object.assign({ resourceTypes: ['image'], tabIds: [tabId] }, from)
+      },
+      {
+        // Above the image redirect (1), below the ad rules (5 and up), so an
+        // ad image stays blocked even when someone clicks it.
+        id: ids[1],
+        priority: 2,
+        action: { type: 'allow' },
+        condition: Object.assign({ resourceTypes: ['image'], tabIds: [tabId] }, to)
+      }
+    ];
+    return chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds, addRules }).then(() => {
+      for (const id of ids) imageRuleAt.set(id, now);
+      return { url: busted, ids };
+    });
+  });
+}
+
+function dropImageRules(ids) {
+  const own = (ids || []).filter((id) => Number.isInteger(id)
+    && id >= IMAGE_RULE_BASE && id < IMAGE_RULE_BASE + IMAGE_RULE_SPAN);
+  if (!own.length) return Promise.resolve();
+  for (const id of own) imageRuleAt.delete(id);
+  return chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds: own });
+}
+
+// VIDEOS ON ONE PAGE. The in-page notice already offers "always on this site",
+// a permanent profile. This is the one-off: videos play in THIS tab until it
+// leaves the site. The network side is a copy of the media ruleset's own
+// conditions as allow rules scoped to the tab — not a blanket allow, so ad
+// requests stay blocked — and stop_all_media.js asks on load whether its tab
+// has one, which is what makes it survive the reload a stalled player needs.
+const MEDIA_RULE_BASE = 760000;
+const MEDIA_RULE_SPAN = 40000;
+const MEDIA_ONCE_PRIORITY = 6;           // above media.json (1 and 5)
+let mediaRuleSeq = 0;
+let mediaConditions = null;
+
+function loadMediaConditions() {
+  if (mediaConditions) return Promise.resolve(mediaConditions);
+  return fetch(chrome.runtime.getURL('rules/media.json'))
+    .then((r) => r.json())
+    .then((rules) => (mediaConditions = rules.map((r) => r.condition)));
+}
+
+function mediaOnceState() {
+  return chrome.storage.session.get({ mediaOnce: {} }).then(({ mediaOnce }) => mediaOnce || {});
+}
+
+function allowMediaOnce(tabId, host) {
+  if (tabId == null || tabId < 0 || !host) return Promise.resolve(false);
+  return Promise.all([loadMediaConditions(), mediaOnceState()]).then(([conditions, state]) => {
+    const previous = (state[tabId] && state[tabId].ids) || [];
+    const ids = conditions.map(() => MEDIA_RULE_BASE + (mediaRuleSeq++ % MEDIA_RULE_SPAN));
+    const addRules = conditions.map((condition, i) => ({
+      id: ids[i],
+      priority: MEDIA_ONCE_PRIORITY,
+      action: { type: 'allow' },
+      condition: Object.assign({}, condition, { tabIds: [tabId] })
+    }));
+    return chrome.declarativeNetRequest
+      .updateSessionRules({ removeRuleIds: previous, addRules })
+      .then(() => {
+        const next = Object.assign({}, state, { [tabId]: { host, ids } });
+        return chrome.storage.session.set({ mediaOnce: next });
+      })
+      .then(() => true);
+  });
+}
+
+function endMediaOnce(tabId) {
+  return mediaOnceState().then((state) => {
+    const entry = state[tabId];
+    if (!entry) return;
+    const next = Object.assign({}, state);
+    delete next[tabId];
+    return chrome.declarativeNetRequest
+      .updateSessionRules({ removeRuleIds: entry.ids || [] })
+      .then(() => chrome.storage.session.set({ mediaOnce: next }));
+  });
+}
+
+// The tab is still "on the site" if it moved to a subdomain of it or back up
+// from one (example.com <-> www.example.com). Not "same last two labels":
+// that would make every .co.uk site one site.
+function sameSite(a, b) {
+  if (!a || !b) return false;
+  return a === b || a.endsWith('.' + b) || b.endsWith('.' + a);
+}
+
+function mediaAllowedFor(tabId, url) {
+  return mediaOnceState().then((state) => {
+    const entry = state[tabId];
+    return Boolean(entry && sameSite(entry.host, hostnameOf(url)));
+  });
+}
+
+// "Until it leaves the site": a navigation elsewhere in the tab ends it, and
+// so does closing the tab. Session rules die with the browser on their own.
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (!changeInfo.url) return;
+  mediaOnceState().then((state) => {
+    const entry = state[tabId];
+    if (entry && !sameSite(entry.host, hostnameOf(changeInfo.url))) return endMediaOnce(tabId);
+  }).catch(() => {});
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  endMediaOnce(tabId).catch(() => {});
+});
 
 // ----------------------------
 // 🖼️ Blocked-frame lookup
@@ -1260,18 +1611,13 @@ function refreshAll(data) {
 // Managed policy and auto-mode are layered on top of what the user chose, in
 // that order, and the result is what everything downstream sees. Pure so the
 // precedence can be tested without a browser.
-function mergeSettings(user, managed, autoState, now = Date.now()) {
+function mergeSettings(user, managed, autoState, now = Date.now(), usedBytes = 0) {
   let out = Object.assign({}, user);
 
   // 1. The data budget sets the baseline for this point in the cycle. It can
   //    only add blocking, never remove it.
   if (out.budgetEnabled) {
-    const { stage, cycle } = budgetStage({
-      budgetMB: out.budgetMB,
-      budgetResetDay: out.budgetResetDay,
-      budgetEase: out.budgetEase,
-      now
-    });
+    const { stage, cycle } = budgetStage(Object.assign({}, out, { usedBytes, now }));
     out = applyBudgetStage(out, stage);
     out.budgetCycle = cycle;
   }
@@ -1304,7 +1650,8 @@ const SETTING_DEFAULTS = {
   ads: true, images: true, media: true,
   allowlist: [], siteProfiles: {},
   autoMode: false, consent: false, popups: false, siteHistory: false,
-  budgetEnabled: false, budgetMB: 0, budgetResetDay: 1, budgetEase: null
+  budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1,
+  budgetDailyMB: 0, budgetEase: null
 };
 
 function readManagedPolicy() {
@@ -1330,9 +1677,10 @@ let reconcileChain = Promise.resolve();
 function loadAndSetInitialState() {
   reconcileChain = reconcileChain.then(() => new Promise((resolve) => {
     chrome.storage.sync.get(SETTING_DEFAULTS, (user) => {
-      chrome.storage.local.get({ autoState: null }, ({ autoState }) => {
+      chrome.storage.local.get({ autoState: null, usage: {} }, ({ autoState, usage }) => {
+        const now = Date.now();
         readManagedPolicy()
-          .then((managed) => refreshAll(mergeSettings(user, managed, autoState)))
+          .then((managed) => refreshAll(mergeSettings(user, managed, autoState, now, usedToday(usage, now))))
           .catch((e) => console.warn('⚠️ Reconcile failed:', e))
           .then(resolve);
       });
@@ -1405,7 +1753,7 @@ chrome.runtime.onStartup.addListener(() => {
 // ----------------------------
 const RECONCILE_KEYS = [
   'ads', 'images', 'media', 'allowlist', 'siteProfiles', 'autoMode', 'consent', 'popups',
-  'budgetEnabled', 'budgetMB', 'budgetResetDay', 'budgetEase'
+  'budgetEnabled', 'budgetPeriod', 'budgetMB', 'budgetResetDay', 'budgetDailyMB', 'budgetEase'
 ];
 
 chrome.storage.onChanged.addListener((changes, areaName) => {

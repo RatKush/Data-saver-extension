@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "பில்லிங் சுழற்சி முடிவை நெருங்கும்போது தடுப்பு கடுமையாகிறது. நீங்கள் உண்மையில் எவ்வளவு டேட்டா பயன்படுத்தினீர்கள் என்பதை இது அளக்க முடியாது — எந்த நீட்டிப்பாலும் முடியாது — எனவே இது எந்த எண்ணையும் கூறுவதில்லை. உங்கள் வரம்பு மற்றும் தேதியை வைத்து மட்டுமே வேகத்தை நிர்ணயிக்கிறது, எப்போதும் தடுப்பை மட்டுமே அதிகரிக்கிறது.",
+    "message": "உங்கள் வரம்பு செலவாகும்போது அதிகம் தடுக்கும்; தடுப்பை மட்டுமே சேர்க்கும். தினசரி திட்டம் இன்று Chrome பதிவிறக்கியதைப் பொறுத்தும், மாதாந்திரத் திட்டம் தேதியைப் பொறுத்தும் இயங்கும். பிற ஆப்களும் இதே வரம்பைப் பயன்படுத்துவதால், உங்கள் திட்டத்தைவிடச் சற்றுக் குறைவாக அமைக்கவும்.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "தளர்த்தப்பட்டது",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "திட்டம் மீட்டமைவு",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "தினமும்",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "மாதந்தோறும்",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "தினசரி வரம்பு (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "இன்று: சுமார் $USED$ / $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "இன்று Chrome சுமார் $USED$ பயன்படுத்தியது",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Chrome பயன்படுத்திய டேட்டா",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "இன்று",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Chrome-இன் ஒவ்வொரு பதிவிறக்கத்தின் அளவிலிருந்து மதிப்பிடப்பட்டது. இந்தச் சாதனத்தின் பிற ஆப்களும் உலாவிகளும் சேர்க்கப்படவில்லை.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "இடைநிறுத்தம் — எதுவும் தடுக்கப்படவில்லை",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "முதலிலிருந்தே தடுக்கப்படாத வீடியோ, அழைப்புத் தளங்கள் ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "$WHAT$ தடுக்கப்படுகின்றன",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "$WHAT$ அனுமதிக்கப்படுகின்றன",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "படத்தை ஏற்று",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "ஏற்றுகிறது…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "ஏற்ற முடியவில்லை — மீண்டும் முயலவும்",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "டேட்டாவைச் சேமிக்க Data Saver இந்த வீடியோவை நிறுத்தியது.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "இந்தப் பக்கத்தில் இயக்கு",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "இந்தத் தளத்தில் எப்போதும்",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "மூடு",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

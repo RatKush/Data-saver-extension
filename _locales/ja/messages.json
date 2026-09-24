@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "請求サイクルが進むほどブロックを強めます。実際にどれだけ通信したかを測ることはできません（どの拡張機能にもできません）。そのため数値を示すことは一切ありません。上限と日付だけを手がかりにペースを決め、ブロックを強める方向にしか働きません。",
+    "message": "上限の消費に合わせてブロックを強め、ブロックを追加するだけです。日単位のプランは今日 Chrome がダウンロードした量で、月単位のプランは日付で調整します。ほかのアプリも同じ上限を使うので、プランより少し低めに設定してください。",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "ゆるめました",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "プランのリセット",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "毎日",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "毎月",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "1日の上限（GB）",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "今日：約 $USED$ / $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "今日 Chrome は約 $USED$ 使用しました",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Chrome のデータ使用量",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "今日",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Chrome の各ダウンロードのサイズから推定しています。このデバイスのほかのアプリやブラウザは含まれません。",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "一時停止中 — ブロックなし",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "最初からブロックしない動画・通話サイト（$COUNT$）",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "$WHAT$をブロック中",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "$WHAT$を許可中",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "画像を読み込む",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "読み込み中…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "読み込めませんでした — 再試行",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "Data Saver はデータ節約のためこの動画を停止しました。",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "このページで再生",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "このサイトで常に許可",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "閉じる",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

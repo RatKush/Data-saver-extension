@@ -38,7 +38,8 @@
   
     
       <h2>What this extension does</h2>
-      <p>Data Saver blocks advertising and tracking requests, blocks images, and stops video/audio from autoplaying or streaming, using Chrome's built-in <code>declarativeNetRequest</code> API. Blocking decisions are made by Chrome itself, evaluating rule files bundled inside the extension package — Data Saver's own code never inspects, reads, or otherwise has access to the content of your browsing.</p>
+      <p>Data Saver blocks advertising and tracking requests, blocks images, and stops video/audio from autoplaying or streaming, using Chrome's built-in <code>declarativeNetRequest</code> API. Blocking decisions are made by Chrome itself, evaluating rule files bundled inside the extension package — Data Saver's own code never reads the content of the pages you visit.</p>
+      <p>Since v2.5 the extension also adds up how much data Chrome downloads, so it can show "data used today" and pace a daily data budget. To do that, Chrome passes it the details of each download as it finishes, including its address and its size. The extension reads the size, adds it to one running total for the day, and keeps nothing else — not the address, not the site, not the content. Nothing is sent anywhere.</p>
     
   
     
@@ -55,6 +56,7 @@
       <ul>
         <li><strong>Your settings</strong> — the on/off preference for each blocking category, sites you've chosen not to block on, any per-site rules you've created, and the optional data-budget figures. Held in Chrome's <code>storage.sync</code>, under your own Google account if Chrome Sync is enabled, never accessible to us.</li>
         <li><strong>Blocked-request counts</strong> — how many ads, images and videos have been blocked, an estimated byte total, and a per-day tally for the last 60 days, so the extension can show you your own savings. Numbers only; no addresses, no page content.</li>
+        <li><strong>Data used</strong> — one estimated byte total per day for the last 60 days (since v2.5). Numbers only; no addresses, no sites, no page content.</li>
         <li><strong>A list of sites where something was blocked — only if you switch it on.</strong> This is the one thing the extension records that resembles browsing history, so it is <strong>off by default</strong>. Turning on "Remember which sites" in the dashboard stores a capped list of hostnames so the dashboard can show where your savings came from. Switching it back off deletes that list immediately. It stays on your device either way.</li>
         <li><strong>An administrator policy</strong>, if one has been deployed to your machine by a school or employer. That is read-only, read locally, and nothing is reported back to the administrator by this extension.</li>
       </ul>
@@ -91,6 +93,10 @@
           <tr>
             <td class="perm-name">scripting</td>
             <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio, clean up broken-image placeholders left behind by blocked images, and count how many requests were blocked so the popup can show you your own total. Two further scripts &mdash; answering cookie banners and blocking unrequested pop-ups &mdash; are registered only if you switch those features on.</td>
+          </tr>
+          <tr>
+            <td class="perm-name">webRequest</td>
+            <td class="perm-why">Lets the extension <em>observe</em> — not change or block — each download as it finishes, so it can add its size to the day's "data used" total. Only the size is kept, as part of one number per day. Blocking is still done by <code>declarativeNetRequest</code> above.</td>
           </tr>
         </tbody>
       </table></div>

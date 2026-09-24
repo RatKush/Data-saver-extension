@@ -144,11 +144,77 @@ const LABELS = {
   media: () => t('savingsVideos') || 'videos'
 };
 
-function renderProfiles(siteProfiles) {
+// A paused site is the strongest per-site rule there is — nothing is blocked
+// there at all — but it lives in the allowlist rather than siteProfiles, so
+// this page used to show "No per-site rules yet" while sites were paused. They
+// are listed first now, each with a way to resume. The sites that ship paused
+// (video platforms and calls) are grouped and folded away: thirty rows of
+// defaults would bury the few the user chose.
+function pausedRow(host, locked) {
+  const el = document.createElement('div');
+  el.className = 'prof';
+  const left = document.createElement('div');
+  const name = document.createElement('div');
+  name.className = 'prof-host';
+  name.textContent = host;
+  const chips = document.createElement('div');
+  chips.className = 'chips';
+  const chip = document.createElement('span');
+  chip.className = 'chip on';
+  chip.textContent = t('dashPausedChip') || 'Paused — nothing blocked';
+  chips.appendChild(chip);
+  left.append(name, chips);
+  el.appendChild(left);
+
+  if (!locked) {
+    const resume = document.createElement('button');
+    resume.className = 'quiet';
+    resume.type = 'button';
+    resume.textContent = t('siteResume') || 'Resume blocking here';
+    resume.addEventListener('click', () => {
+      resume.disabled = true;
+      // The same path the popup and the shortcut use, so the choice is
+      // remembered in userChoices and a shipped default stays resumed.
+      chrome.runtime.sendMessage({ type: 'ds-toggle-site', hostname: host }, () => {
+        void chrome.runtime.lastError;
+        load();
+      });
+    });
+    el.appendChild(resume);
+  }
+  return el;
+}
+
+function renderPaused(box, sync, managedKeys) {
+  const locked = managedKeys.includes('allowlist');
+  const offered = new Set(sync.seededDefaults || []);
+  const choices = sync.userChoices || {};
+  const all = (sync.allowlist || []).slice().sort();
+  const shipped = all.filter((d) => offered.has(d) && choices[d] !== true);
+  const chosen = all.filter((d) => !shipped.includes(d));
+
+  for (const host of chosen) box.appendChild(pausedRow(host, locked));
+
+  if (shipped.length) {
+    const group = document.createElement('details');
+    group.className = 'shipped';
+    const summary = document.createElement('summary');
+    summary.textContent = t('dashShippedPaused', String(shipped.length))
+      || `Video and call sites that ship unblocked (${shipped.length})`;
+    group.appendChild(summary);
+    for (const host of shipped) group.appendChild(pausedRow(host, locked));
+    box.appendChild(group);
+  }
+  return all.length;
+}
+
+function renderProfiles(siteProfiles, sync, managedKeys) {
   const box = document.getElementById('profiles');
   box.textContent = '';
 
+  const paused = renderPaused(box, sync || {}, managedKeys || []);
   const hosts = Object.keys(siteProfiles).sort();
+  if (!hosts.length && paused) return;
   if (!hosts.length) {
     const p = document.createElement('p');
     p.className = 'empty';
@@ -173,8 +239,11 @@ function renderProfiles(siteProfiles) {
       if (typeof profile[key] !== 'boolean') continue;
       const chip = document.createElement('span');
       chip.className = profile[key] ? 'chip on' : 'chip';
-      // "blocking ads" vs "allowing ads" — say which way the exception runs.
-      chip.textContent = (profile[key] ? '✓ ' : '✕ ') + LABELS[key]();
+      // Say which way the exception runs in words. The old "✕ images" read as
+      // "images blocked" when it meant the opposite.
+      chip.textContent = profile[key]
+        ? (t('dashChipBlocked', LABELS[key]()) || `Blocking ${LABELS[key]()}`)
+        : (t('dashChipAllowed', LABELS[key]()) || `Allowing ${LABELS[key]()}`);
       chips.appendChild(chip);
     }
     left.append(name, chips);
@@ -226,17 +295,33 @@ const STAGE_LABEL = {
 };
 
 function renderBudget(settings) {
+  const period = document.getElementById('budgetPeriod');
+  const dailyGb = document.getElementById('budgetDailyGB');
   const gb = document.getElementById('budgetGB');
   const day = document.getElementById('budgetResetDay');
   const badge = document.getElementById('budgetStage');
   const on = Boolean(settings.budgetEnabled);
+  const daily = settings.budgetPeriod === 'day';
 
   // Stored in MB so the pacing maths has no fractions; shown in GB because
   // that is the unit every carrier quotes.
+  period.value = daily ? 'day' : 'month';
+  dailyGb.value = settings.budgetDailyMB ? (settings.budgetDailyMB / 1024) : '';
   gb.value = settings.budgetMB ? (settings.budgetMB / 1024) : '';
   day.value = settings.budgetResetDay || 1;
-  gb.disabled = day.disabled = !on;
+  period.disabled = dailyGb.disabled = gb.disabled = day.disabled = !on;
 
+  // Only the fields for the chosen plan are shown. Both allowances are kept,
+  // so switching back and forth never loses what was typed.
+  document.getElementById('dailyField').hidden = !daily;
+  document.getElementById('monthlyField').hidden = daily;
+  document.getElementById('resetField').hidden = daily;
+
+  period.onchange = () => chrome.storage.sync.set({ budgetPeriod: period.value }, load);
+  dailyGb.onchange = () => {
+    const value = Math.max(0, parseFloat(dailyGb.value) || 0);
+    chrome.storage.sync.set({ budgetDailyMB: Math.round(value * 1024) }, load);
+  };
   gb.onchange = () => {
     const value = Math.max(0, parseFloat(gb.value) || 0);
     chrome.storage.sync.set({ budgetMB: Math.round(value * 1024) }, load);
@@ -254,11 +339,65 @@ function renderBudget(settings) {
   chrome.runtime.sendMessage({ type: 'ds-budget-state' }, (res) => {
     void chrome.runtime.lastError;
     if (!res || !res.enabled) { badge.hidden = true; return; }
-    const stage = t(STAGE_LABEL[res.stage]) || res.stage;
-    badge.textContent = t('dashBudgetNow', String(res.day), String(res.days), stage)
-      || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
+    badge.textContent = budgetLine(res);
     badge.hidden = false;
   });
+}
+
+// Shared shape with popup.js: "Day 3 of 30 \u00b7 Normal" on a monthly plan,
+// "Today: about 820 MB of 1.5 GB \u00b7 Normal" on a daily one.
+function budgetLine(res) {
+  const stage = t(STAGE_LABEL[res.stage]) || res.stage;
+  if (res.period === 'day' && res.allowanceBytes > 0) {
+    const used = formatBytes(res.usedBytes);
+    const allowance = formatBytes(res.allowanceBytes);
+    return t('dashBudgetToday', used, allowance, stage) || `Today: about ${used} of ${allowance} \u00b7 ${stage}`;
+  }
+  return t('dashBudgetNow', String(res.day), String(res.days), stage)
+    || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
+}
+
+// ---------------------------------------------------------------------------
+// Data used
+// ---------------------------------------------------------------------------
+function formatBytes(bytes) {
+  const n = bytes || 0;
+  if (n >= 1024 ** 3) return `${(n / 1024 ** 3).toFixed(n >= 10 * 1024 ** 3 ? 0 : 1)} GB`;
+  if (n >= 1024 ** 2) return `${Math.round(n / 1024 ** 2)} MB`;
+  if (n >= 1024) return `${Math.round(n / 1024)} KB`;
+  return `${n} B`;
+}
+
+// Usage keys are LOCAL dates (background.js localDayKey) \u2014 a daily plan
+// resets at the user's midnight \u2014 unlike the savings history, which is UTC.
+function localDayKey(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function renderUsage(usage) {
+  const now = Date.now();
+  const on = (i) => usage[localDayKey(now - i * DAY_MS)] || 0;
+  const sum = (n) => { let out = 0; for (let i = 0; i < n; i++) out += on(i); return out; };
+
+  document.getElementById('uToday').textContent = formatBytes(on(0));
+  document.getElementById('u7').textContent = formatBytes(sum(7));
+  document.getElementById('u30').textContent = formatBytes(sum(30));
+
+  const trend = document.getElementById('usageTrend');
+  trend.textContent = '';
+  const days = [];
+  for (let i = 13; i >= 0; i--) days.push({ ts: now - i * DAY_MS, bytes: on(i) });
+  const peak = Math.max(1, ...days.map((d) => d.bytes));
+  for (const day of days) {
+    const bar = document.createElement('div');
+    bar.style.height = `${Math.max((day.bytes / peak) * 100, 2)}%`;
+    bar.title = `${shortDate(day.ts)} \u2014 ${formatBytes(day.bytes)}`;
+    if (!day.bytes) bar.style.opacity = '0.25';
+    trend.appendChild(bar);
+  }
+  document.getElementById('usageFrom').textContent = shortDate(days[0].ts);
+  document.getElementById('usageTo').textContent = shortDate(days[days.length - 1].ts);
 }
 
 // ---------------------------------------------------------------------------
@@ -323,12 +462,13 @@ function initBackup() {
 function load() {
   chrome.storage.sync.get(
     { siteProfiles: {}, autoMode: false, consent: false, popups: false, siteHistory: false,
-      budgetEnabled: false, budgetMB: 0, budgetResetDay: 1 },
+      budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1, budgetDailyMB: 0,
+      allowlist: [], seededDefaults: [], userChoices: {} },
     (settings) => {
-      renderProfiles(settings.siteProfiles || {});
       renderBudget(settings);
 
-      chrome.storage.local.get({ stats: {}, history: {}, siteStats: {} }, (local) => {
+      chrome.storage.local.get({ stats: {}, history: {}, siteStats: {}, usage: {} }, (local) => {
+        renderUsage(local.usage || {});
         renderHistory(local.history || {}, local.stats || {});
         // Read together, because whether the list should appear at all is a
         // sync setting while the list itself is local.
@@ -336,10 +476,18 @@ function load() {
       });
 
       const managed = chrome.storage.managed;
-      if (!managed) { bindSwitches(settings, []); return; }
+      const withPolicy = (policy) => {
+        const keys = Object.keys(policy || {});
+        // A managed allowlist replaces the user's, so show what is enforced.
+        const sync = Array.isArray(policy && policy.allowlist)
+          ? Object.assign({}, settings, { allowlist: policy.allowlist }) : settings;
+        renderProfiles(settings.siteProfiles || {}, sync, keys);
+        bindSwitches(settings, keys);
+      };
+      if (!managed) { withPolicy({}); return; }
       managed.get(null, (policy) => {
         void chrome.runtime.lastError;
-        bindSwitches(settings, Object.keys(policy || {}));
+        withPolicy(policy);
       });
     }
   );

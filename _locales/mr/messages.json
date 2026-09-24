@@ -271,7 +271,7 @@
     "description": "Dashboard / data budget string."
   },
   "dashBudgetSub": {
-    "message": "बिलिंग चक्र संपत आल्यावर ब्लॉकिंग अधिक कडक होते. तुम्ही प्रत्यक्षात किती डेटा वापरला हे हे मोजू शकत नाही — कोणतेही विस्तार मोजू शकत नाही — म्हणून ते कधीही आकडा सांगत नाही. ते फक्त तुमची मर्यादा आणि तारखेनुसार वेग ठरवते, आणि नेहमी फक्त ब्लॉकिंग वाढवते.",
+    "message": "तुमची मर्यादा जशी खर्च होते तसे अधिक ब्लॉक करते, आणि फक्त ब्लॉकिंग वाढवते. दैनिक प्लॅन आज Chrome ने किती डाउनलोड केले त्यानुसार चालतो; मासिक प्लॅन तारखेनुसार. इतर अ‍ॅप्सही हीच मर्यादा वापरतात, म्हणून ती तुमच्या प्लॅनपेक्षा थोडी कमी ठेवा.",
     "description": "Dashboard / data budget string."
   },
   "dashBudgetAllowance": {
@@ -323,5 +323,123 @@
   "budgetEased": {
     "message": "सैल केले",
     "description": "Dashboard / data budget string."
+  },
+  "dashBudgetPeriod": {
+    "message": "प्लॅन रीसेट होतो",
+    "description": "Dashboard / data budget string."
+  },
+  "budgetPeriodDay": {
+    "message": "दररोज",
+    "description": "Dashboard / data budget string. Option: the data plan resets every day at midnight."
+  },
+  "budgetPeriodMonth": {
+    "message": "दरमहा",
+    "description": "Dashboard / data budget string. Option: the data plan resets once a month."
+  },
+  "dashBudgetDailyAllowance": {
+    "message": "दैनिक मर्यादा (GB)",
+    "description": "Dashboard / data budget string."
+  },
+  "dashBudgetToday": {
+    "message": "आज: सुमारे $USED$ / $ALLOWANCE$ · $STAGE$",
+    "description": "Dashboard / data budget string. USED and ALLOWANCE are sizes like '820 MB' and '1.5 GB'; STAGE is Relaxed/Normal/Tight/Strict.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "820 MB"
+      },
+      "allowance": {
+        "content": "$2",
+        "example": "1.5 GB"
+      },
+      "stage": {
+        "content": "$3",
+        "example": "Normal"
+      }
+    }
+  },
+  "usageToday": {
+    "message": "आज Chrome ने सुमारे $USED$ वापरले",
+    "description": "Popup: estimated data Chrome downloaded today.",
+    "placeholders": {
+      "used": {
+        "content": "$1",
+        "example": "312 MB"
+      }
+    }
+  },
+  "dashUsage": {
+    "message": "Chrome ने वापरलेला डेटा",
+    "description": "Dashboard section title."
+  },
+  "dashUsageToday": {
+    "message": "आज",
+    "description": "Dashboard / data used: label under today's total."
+  },
+  "dashUsageNote": {
+    "message": "Chrome च्या प्रत्येक डाउनलोडच्या आकारावरून अंदाज. या डिव्हाइसवरील इतर अ‍ॅप्स आणि ब्राउझर समाविष्ट नाहीत.",
+    "description": "Dashboard / data used note."
+  },
+  "dashPausedChip": {
+    "message": "थांबवले — काहीही ब्लॉक नाही",
+    "description": "Dashboard / per-site rules: chip on a site where blocking is paused."
+  },
+  "dashShippedPaused": {
+    "message": "सुरुवातीपासून ब्लॉक न होणाऱ्या व्हिडिओ आणि कॉल साइट्स ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default paused sites.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "dashChipBlocked": {
+    "message": "$WHAT$ ब्लॉक होत आहेत",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "dashChipAllowed": {
+    "message": "$WHAT$ ला परवानगी",
+    "description": "Dashboard / per-site rules chip. WHAT is 'ads', 'images' or 'videos'.",
+    "placeholders": {
+      "what": {
+        "content": "$1",
+        "example": "images"
+      }
+    }
+  },
+  "imgLoad": {
+    "message": "प्रतिमा लोड करा",
+    "description": "In-page control (shown on the website itself). Button over a blocked image; loads just that one image."
+  },
+  "imgLoading": {
+    "message": "लोड होत आहे…",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "imgFailed": {
+    "message": "लोड झाले नाही — पुन्हा प्रयत्न करा",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoStopped": {
+    "message": "डेटा वाचवण्यासाठी Data Saver ने हा व्हिडिओ थांबवला.",
+    "description": "In-page control (shown on the website itself)."
+  },
+  "videoPlayPage": {
+    "message": "या पेजवर चालवा",
+    "description": "In-page control (shown on the website itself). Button: allow videos in this tab until the user leaves the site."
+  },
+  "videoPlaySite": {
+    "message": "या साइटवर नेहमी",
+    "description": "In-page control (shown on the website itself). Button: always allow videos on this website."
+  },
+  "dismiss": {
+    "message": "बंद करा",
+    "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
   }
 }

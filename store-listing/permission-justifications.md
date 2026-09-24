@@ -5,11 +5,14 @@ each sensitive permission. Paste these in as a starting point — adjust
 tone/wording if you want, but keep them accurate to what the code
 actually does (reviewers do check).
 
-**Current as of 2.3.** No new permissions were added since 2.1: everything
-below is still `declarativeNetRequest`, `declarativeNetRequestWithHostAccess`,
-`storage`, `scripting` and `<all_urls>`. The managed-policy support added in
-2.3 uses a manifest key (`storage.managed_schema`) under the existing
-`storage` permission and produces no additional install-time warning.
+**Current as of 2.5.** 2.5 adds ONE permission, `webRequest`, for the
+"data used" meter and the daily budget. It adds no install-time warning
+on top of the `<all_urls>` site access the extension already has
+(checked with `chrome.management.getPermissionWarningsByManifest` in
+Chrome 154: the warning list is identical with and without it), so
+existing users are not disabled by the update. Everything else is still
+`declarativeNetRequest`, `declarativeNetRequestWithHostAccess`,
+`storage`, `scripting` and `<all_urls>`.
 
 ---
 
@@ -83,6 +86,20 @@ collect or transmit data off the device.
 
 ---
 
+## Permission: webRequest
+
+Used only to OBSERVE finished network responses — never to block,
+redirect or modify them (blocking is still done entirely by
+declarativeNetRequest). For each completed response the extension
+reads its size from the Content-Length header, adds it to one running
+total for the day, and discards everything else. The stored result is a
+single number per day for the last 60 days, kept in
+chrome.storage.local on the user's device. No URLs, hostnames, headers
+or page content are stored or transmitted. The total powers the "data
+used today" figure in the popup and dashboard, and the optional daily
+data budget, which blocks progressively harder as Chrome's usage
+approaches the allowance the user entered.
+
 ## Note on the savings counter
 
 The popup shows how many ads, images and videos have been blocked and
@@ -119,12 +136,14 @@ the page.
 
 ## Note on the data budget (optional, off by default)
 
-The user can enter a monthly allowance and a billing reset day, and
-the extension blocks progressively harder as the cycle runs down.
-**It does not measure the user's data consumption and never displays a
-figure for it** — Chrome exposes no such API, and the user's real cap
-covers their whole device rather than one browser. The feature works
-only from the two numbers the user typed in and the current date.
+The user enters an allowance and chooses whether their plan resets
+monthly (with a reset day) or daily. On a MONTHLY plan the extension
+blocks progressively harder as the billing cycle runs down, paced from
+the date. On a DAILY plan it is paced from how much Chrome has
+downloaded today (see webRequest above). Either way it only ever ADDS
+blocking, and it never claims to know the user's remaining data: the
+carrier's cap covers the whole device, and the dashboard tells the user
+other apps are not counted.
 
 ## Note on managed deployment (enterprise/education)
 
