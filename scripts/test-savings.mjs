@@ -75,7 +75,9 @@ function makeChrome() {
       onMessage: { addListener: (f) => listeners.message.push(f) },
       onInstalled: { addListener: (f) => listeners.installed.push(f) },
       onStartup: { addListener: (f) => listeners.startup.push(f) },
-      setUninstallURL: (url, cb) => { cb && cb(); },
+      getManifest: () => ({ version: '2.4' }),
+      _uninstallURL: null,
+      setUninstallURL(url, cb) { this._uninstallURL = url; cb && cb(); },
       sendMessage: () => {}
     },
     storage: {
@@ -240,6 +242,11 @@ await test('welcome tab opens on install only, never on update', async () => {
   onInstalled({ reason: 'install' });
   assert.equal(opened.length, 1);
   assert.match(opened[0], /welcome\.html$/);
+});
+
+await test('uninstall page is told which version was removed', async () => {
+  const { chrome } = loadBackground();
+  assert.equal(chrome.runtime._uninstallURL, 'https://data-saver-extension.pages.dev/uninstall?v=2.4');
 });
 
 // ---------------------------------------------------------------------------

@@ -18,24 +18,50 @@
     <a class="item" href="/privacy-policy">Privacy</a>
   </nav>
 
+  <!-- Chrome opens this page after an uninstall (setUninstallURL in
+       background.js, which appends ?v=<version>). Each reason is a plain
+       submit button: one tap posts it to functions/uninstall-thanks.js on
+       this same site, which records it and redirects to the thank-you page
+       with the fix for that reason. No JavaScript — see docs/_headers. -->
   <header>
     <p class="eyebrow">Data Saver was removed</p>
-    <h1>Sorry it didn't work out</h1>
-    <p class="dek">If one of these was the reason, there is usually a one-click fix — and if not, tell us what broke. It is the only way we find out.</p>
+    <h1>What went wrong?</h1>
+    <p class="dek">One tap tells us — no email, no account. It is the only way we find out what to fix.</p>
   </header>
 
-  <section>
-    <h2>A site looked broken or wouldn't work</h2>
-    <p>Data Saver blocks images and video by default, which is where most of the data goes. On any site you need in full, open Data Saver and press <strong>Don't block on this site</strong> (or <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>). Everywhere else keeps saving.</p>
+  <form class="reasons" method="post" action="/uninstall-thanks">
+    <button class="reason" type="submit" name="reason" value="site-broke">
+      <span class="reason-title">A site looked broken</span>
+      <span class="reason-sub">Missing images or a messed-up page</span>
+    </button>
+    <button class="reason" type="submit" name="reason" value="video">
+      <span class="reason-title">Videos wouldn&rsquo;t play</span>
+      <span class="reason-sub">Pressing play did nothing</span>
+    </button>
+    <button class="reason" type="submit" name="reason" value="login">
+      <span class="reason-title">I couldn&rsquo;t sign in or pay</span>
+      <span class="reason-sub">Login, captcha or checkout failed</span>
+    </button>
+    <button class="reason" type="submit" name="reason" value="slow">
+      <span class="reason-title">A tab froze or felt slow</span>
+      <span class="reason-sub">Pages or Chrome got sluggish</span>
+    </button>
+    <button class="reason" type="submit" name="reason" value="no-savings">
+      <span class="reason-title">I couldn&rsquo;t tell it saved data</span>
+      <span class="reason-sub">Nothing seemed different</span>
+    </button>
+    <button class="reason" type="submit" name="reason" value="other">
+      <span class="reason-title">Something else</span>
+      <span class="reason-sub">Tell us on the next screen</span>
+    </button>
+  </form>
 
-    <h2>Videos wouldn't play</h2>
-    <p>YouTube, Netflix, Instagram, Twitch and other video sites are never blocked. On other sites, press <strong>Play videos on this site</strong> when the notice appears, or switch off <strong>Block Videos</strong> in the popup.</p>
+  <p class="back">Changed your mind? <a href="https://chromewebstore.google.com/detail/cjijlgnefahbmcogbhacnnnlnaeolmjg">Reinstall Data Saver</a></p>
 
-    <h2>Something else</h2>
-    <p>Tell us on the <a href="https://chromewebstore.google.com/detail/cjijlgnefahbmcogbhacnnnlnaeolmjg/support">Chrome Web Store support page</a> — which site, and what happened. Every report is read.</p>
-
-    <p><a href="https://chromewebstore.google.com/detail/cjijlgnefahbmcogbhacnnnlnaeolmjg">Reinstall Data Saver</a></p>
-  </section>
+  <footer>
+    <span>Data Saver — an independent browser extension, not affiliated with Google or Chrome.</span>
+    <span><a href="https://github.com/RatKush/Data-saver-extension">Source</a> · <a href="https://github.com/RatKush/Data-saver-extension/issues">Contact</a></span>
+  </footer>
 
 </div>
 </body>

@@ -17,3 +17,6 @@ Weekly users over time*.xlsx
 
 # Created when make-screenshots.py imports the CDP client out of e2e-edge.py
 __pycache__/
+
+# Local wrangler pages dev state
+.wrangler/

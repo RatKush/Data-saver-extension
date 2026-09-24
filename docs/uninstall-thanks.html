@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Thanks for telling us — Data Saver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav">
+    <a class="mark" href="/"><img src="/assets/icon48.png" alt="">Data Saver</a>
+    <a class="item" href="/privacy-policy">Privacy</a>
+  </nav>
+
+  <!-- Reached by a redirect from functions/uninstall-thanks.js:
+         ?id=<row>#<reason>  after a reason was recorded
+         #noted              after the optional note was recorded
+         #failed             when the database could not be written
+       The fragment picks what shows, with :target in site.css — this site
+       runs no JavaScript. The note form has no action, so it posts back to
+       this URL, id included. -->
+  <header>
+    <p class="eyebrow">Data Saver</p>
+    <h1 class="thanks-title">Thank you — that&rsquo;s been sent</h1>
+  </header>
+
+  <div class="state failed" id="failed">
+    <p><strong>That didn&rsquo;t go through.</strong> Please tell us on the <a href="https://chromewebstore.google.com/detail/cjijlgnefahbmcogbhacnnnlnaeolmjg/support">Chrome Web Store support page</a> instead — which site, and what happened.</p>
+  </div>
+
+  <div class="state noted" id="noted">
+    <p><strong>Got it. Thank you for taking the time.</strong> Every note is read.</p>
+  </div>
+
+  <section class="tip" id="site-broke">
+    <h2>There is a one-click fix for that</h2>
+    <p>Data Saver blocks images and video by default, which is where most of the data goes. On any site you need in full, open Data Saver and press <strong>Don&rsquo;t block on this site</strong> (or <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>). Everywhere else keeps saving.</p>
+  </section>
+
+  <section class="tip" id="video">
+    <h2>There is a one-click fix for that</h2>
+    <p>YouTube, Netflix, Instagram, Twitch and other video sites are never blocked. On other sites, press <strong>Play videos on this site</strong> when the notice appears, or switch off <strong>Block Videos</strong> in the popup.</p>
+  </section>
+
+  <section class="tip" id="login">
+    <h2>Sorry about that</h2>
+    <p>On a sign-in or checkout page that misbehaves, open Data Saver and press <strong>Don&rsquo;t block on this site</strong>. It remembers the site, so that page works normally from then on.</p>
+  </section>
+
+  <section class="tip" id="slow">
+    <h2>Sorry about that</h2>
+    <p>We found and fixed a bug that could freeze a tab when a video was played. The fix is in version 2.4.</p>
+  </section>
+
+  <section class="tip" id="no-savings">
+    <h2>It works quietly</h2>
+    <p>The saving shows on the Data Saver icon and in its popup. It is largest on image-heavy pages such as news and shopping sites, and small on pages that are mostly text.</p>
+  </section>
+
+  <form class="note-form" method="post">
+    <label class="note-label" for="note">Which site was it, or what happened? (optional)</label>
+    <textarea id="note" name="note" rows="3" maxlength="1000" required></textarea>
+    <button class="btn big" type="submit">Send</button>
+  </form>
+
+  <p class="back">Changed your mind? <a href="https://chromewebstore.google.com/detail/cjijlgnefahbmcogbhacnnnlnaeolmjg">Reinstall Data Saver</a></p>
+
+  <footer>
+    <span>Data Saver — an independent browser extension, not affiliated with Google or Chrome.</span>
+    <span><a href="https://github.com/RatKush/Data-saver-extension">Source</a> · <a href="https://github.com/RatKush/Data-saver-extension/issues">Contact</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
