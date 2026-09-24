@@ -1,0 +1,17 @@
+# Cloudflare Pages configuration for data-saver-extension.pages.dev.
+#
+# Pages treats this file as the source of truth for the project's settings,
+# so bindings are edited here, not in the dashboard. Before it existed the
+# project had no bindings or variables at all (checked with
+# `wrangler pages download config`), so nothing was overwritten by adding it.
+name = "data-saver-extension"
+pages_build_output_dir = "docs"
+compatibility_date = "2026-09-15"
+
+# Uninstall feedback (functions/uninstall-thanks.js). The table is shared
+# with the ad blocker's licence server and created by its
+# backend/migrations/005-feedback.sql; rows here are product = 'data-saver'.
+[[d1_databases]]
+binding = "DB"
+database_name = "ad-interceptor-licenses"
+database_id = "1ce6f390-10e7-43f7-930e-413bb53c1cff"

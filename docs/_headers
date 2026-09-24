@@ -4,9 +4,13 @@
 # licensing conversation, so the site itself should stand up to the same
 # scrutiny the extension does. There is no JavaScript anywhere in this site,
 # which is what makes script-src 'none' honest rather than aspirational.
+#
+# form-action 'self': the uninstall page's reason buttons are a plain form
+# that posts to this same site (functions/uninstall-thanks.js). Nothing can
+# be submitted anywhere else.
 
 /*
-  Content-Security-Policy: default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; script-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; script-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Cross-Origin-Opener-Policy: same-origin

@@ -1381,7 +1381,8 @@ chrome.runtime.onInstalled.addListener((details) => {
 // Where Chrome sends someone who removes the extension: a page on our own site
 // with the common fixes and a way to say what broke. Without it the reasons
 // behind every uninstall are invisible. Nothing is sent from the extension.
-chrome.runtime.setUninstallURL('https://data-saver-extension.pages.dev/uninstall', () => {
+chrome.runtime.setUninstallURL('https://data-saver-extension.pages.dev/uninstall?v=' +
+  encodeURIComponent(chrome.runtime.getManifest().version), () => {
   void chrome.runtime.lastError;
 });
 
