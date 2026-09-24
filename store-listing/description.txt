@@ -28,7 +28,9 @@ CONTROL, NOT ALL-OR-NOTHING
 
 ▶️ Streaming sites work out of the box. YouTube, Netflix, Instagram, TikTok, Twitch and others ship unblocked — you already know those use data, and blocking them just breaks them. Want to save data on one anyway? One tap turns blocking on for it.
 
-📞 Calls and remote desktop are never interrupted. Google Meet, Zoom, Teams, Webex, Jitsi, Chrome Remote Desktop, AnyDesk and TeamViewer ship unblocked, and even the strictest data-budget stage leaves them alone.
+📞 Calls and remote desktop are never interrupted. Google Meet, Zoom, Teams, Webex, JioMeet, Jitsi, RingCentral, Chrome Remote Desktop, AnyDesk, TeamViewer and Splashtop ship unblocked, and even the strictest data-budget stage leaves them alone.
+
+💬 WhatsApp Web, Discord and Slack ship unblocked too, so voice notes, huddles and calls just work.
 
 ⚡ One tap to unblock any site. The first control in the popup stops all blocking on the page you are on, without touching your settings anywhere else. Or press Alt+Shift+D on any page. The toolbar icon shows OFF where you have unblocked, and your choice sticks.
 

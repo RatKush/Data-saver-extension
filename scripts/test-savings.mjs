@@ -1154,6 +1154,22 @@ await test('every call and remote-desktop site ships unblocked, and is a bare ho
   assert.equal(new Set(defaults).size, defaults.length, 'duplicate default entry');
 });
 
+await test('a strict budget keeps a site the user paused, through the real settings read', async () => {
+  const { chrome, ctx } = loadBackground();
+  // Exactly what storage holds after the user paused their own site.
+  chrome.storage.sync._reset({
+    allowlist: ['youtube.com', 'zoom.us', 'mybank.example'],
+    userChoices: { 'mybank.example': true },
+    budgetEnabled: true, budgetMB: 500, budgetResetDay: 1
+  });
+  // The reconcile reads settings with SETTING_DEFAULTS; read them the same way.
+  const user = await chrome.storage.sync.get(plain(vm.runInContext('SETTING_DEFAULTS', ctx)));
+  const out = plain(vm.runInContext('mergeSettings', ctx)(user, {}, null, new Date(2026, 8, 27).getTime()));
+  assert.equal(out.budgetStage, 'strict');
+  assert.deepEqual(out.allowlist.sort(), ['mybank.example', 'zoom.us'],
+    'the strict stage re-blocked a site the user paused themselves');
+});
+
 await test('a call site is never trimmed, even at the strictest stage', async () => {
   const { ctx } = loadBackground();
   const calls = plain(vm.runInContext('CALL_SITES', ctx));

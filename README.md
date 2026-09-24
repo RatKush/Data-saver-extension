@@ -13,7 +13,7 @@ For the biggest savings keep all three blocks on (ads, images and video). Measur
 
 - **Three independent toggles** — ads and trackers, images, video and audio.
 - **One tap to unblock the current site**, from the top of the popup or with `Alt+Shift+D`. The toolbar badge reads `OFF` where blocking is paused.
-- **Video, call and remote-desktop sites ship unblocked** — YouTube, Netflix, Instagram, Twitch and other video platforms; Google Meet, Zoom, Teams, Webex and other meeting apps; Chrome Remote Desktop, AnyDesk and TeamViewer. Blocking them just breaks them, and a data budget never re-blocks a call or a remote session.
+- **Video, call and remote-desktop sites ship unblocked** — YouTube, Netflix, Instagram, Twitch and other video platforms; Google Meet, Zoom, Teams, Webex, JioMeet and other meeting apps; Chrome Remote Desktop, AnyDesk, TeamViewer and Splashtop; and WhatsApp Web, Discord and Slack, so voice notes and calls play. Blocking them just breaks them, and a data budget never re-blocks a call or a remote session.
 - **Per-site rules** — block ads on a site but let its images through, or the reverse. Subdomain-aware.
 - **Savings meter** — the exact number of blocked requests, with an estimate of the data that saved beside it.
 - **Dashboard** — a 14-day trend, your per-site rules, and everything below. Open it from the popup.

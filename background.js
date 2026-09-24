@@ -663,7 +663,7 @@ function pruneOldest(map, max, protectedKeys) {
     delete out[k];
   }
   // Only if the protected set alone still exceeds the cap — it cannot today,
-  // DEFAULT_ALLOWLIST is 40 entries — fall back to dropping oldest outright.
+  // DEFAULT_ALLOWLIST is 47 entries — fall back to dropping oldest outright.
   for (const k of Object.keys(out)) {
     if (Object.keys(out).length <= max) break;
     delete out[k];
@@ -1081,13 +1081,27 @@ const DEFAULT_ALLOWLIST = [
   'meet.goto.com',
   'meeting.zoho.com',
   'meeting.zoho.in',
+  'jiomeetpro.jio.com',      // JioMeet; jiomeet.com and jiomeet.jio.com redirect here
+  'app.ringcentral.com',
+  'v.ringcentral.com',       // RingCentral Video (video.ringcentral.com is retired)
 
   // --- Remote desktop and screen sharing. Same reasoning as calls: blocking
   // images or media breaks the remote screen itself, and a support session
   // is exactly when someone cannot afford the page to half-work.
   'remotedesktop.google.com',
   'anydesk.com',
-  'teamviewer.com'
+  'teamviewer.com',
+  'my.splashtop.com',
+
+  // --- Messaging with calls and voice notes. These do NOT pass the test at
+  // the top of this list — their chat still works with blocking on — and
+  // were added on the owner's call (2.5): voice notes on WhatsApp Web and
+  // voice/video in Discord and Slack huddles stop working with media
+  // blocked, and people read that as the extension being broken. Unlike
+  // calls, the strictest budget stage may still re-block them.
+  'web.whatsapp.com',
+  'discord.com',
+  'app.slack.com'
 ];
 
 // Never trimmed, whatever the data budget says. Dropping a meeting — or a
@@ -1096,7 +1110,8 @@ const DEFAULT_ALLOWLIST = [
 const CALL_SITES = [
   'meet.google.com', 'zoom.us', 'teams.microsoft.com', 'teams.live.com', 'whereby.com',
   'webex.com', 'meet.jit.si', 'app.goto.com', 'meet.goto.com', 'meeting.zoho.com', 'meeting.zoho.in',
-  'remotedesktop.google.com', 'anydesk.com', 'teamviewer.com'
+  'jiomeetpro.jio.com', 'app.ringcentral.com', 'v.ringcentral.com',
+  'remotedesktop.google.com', 'anydesk.com', 'teamviewer.com', 'my.splashtop.com'
 ];
 
 function hostnameOf(url) {
@@ -1666,9 +1681,13 @@ function mergeSettings(user, managed, autoState, now = Date.now(), usedBytes = 0
   return out;
 }
 
+// userChoices is read here because the budget's strict stage needs it: it
+// keeps the sites the user paused themselves and trims only shipped defaults
+// (applyBudgetStage). Without it in this list the reconcile read no choices at
+// all, so a strict budget silently re-blocked every site the user had paused.
 const SETTING_DEFAULTS = {
   ads: true, images: true, media: true,
-  allowlist: [], siteProfiles: {},
+  allowlist: [], siteProfiles: {}, userChoices: {},
   autoMode: false, consent: false, popups: false, siteHistory: false,
   budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1,
   budgetDailyMB: 0, budgetEase: null
