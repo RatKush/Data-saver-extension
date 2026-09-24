@@ -75,6 +75,7 @@ function makeChrome() {
       onMessage: { addListener: (f) => listeners.message.push(f) },
       onInstalled: { addListener: (f) => listeners.installed.push(f) },
       onStartup: { addListener: (f) => listeners.startup.push(f) },
+      setUninstallURL: (url, cb) => { cb && cb(); },
       sendMessage: () => {}
     },
     storage: {
@@ -151,7 +152,7 @@ await test('accumulates counts and estimated bytes from one message', async () =
   assert.equal(stats.ads, 2);
   assert.equal(stats.images, 4);
   assert.equal(stats.media, 1);
-  assert.equal(stats.bytes, 2 * 30 * KB + 4 * 35 * KB + 1 * 300 * KB);
+  assert.equal(stats.bytes, 2 * 30 * KB + 4 * 18 * KB + 1 * 300 * KB);
   assert.ok(stats.since, 'since should be stamped on first write');
 });
 
@@ -1022,7 +1023,7 @@ await test('hostnames are recorded once the user opts in', async () => {
   const { chrome, ctx } = loadBackground();
   chrome.storage.sync.set({ siteHistory: true });
   await vm.runInContext('recordBlocked', ctx)({ ads: 3, images: 2 }, 'kept.example');
-  assert.deepEqual(plain(chrome.storage.local._dump().siteStats), { 'kept.example': { n: 5, bytes: 3 * 30 * 1024 + 2 * 35 * 1024 } });
+  assert.deepEqual(plain(chrome.storage.local._dump().siteStats), { 'kept.example': { n: 5, bytes: 3 * 30 * 1024 + 2 * 18 * 1024 } });
 });
 
 await test('switching site history off deletes what was already recorded', async () => {
@@ -1216,14 +1217,16 @@ await test('import refuses a file it does not understand', async () => {
 
 console.log('\nsavings_counter.js — classification & batching');
 
-function loadCounter() {
+function loadCounter({ images = true, siteProfiles = {}, host = 'news.example' } = {}) {
   let errorHandler = null;
+  let loadHandler = null;
   const sent = [];
   const timers = [];
 
   const doc = {
     addEventListener: (type, fn, capture) => {
       if (type === 'error' && capture === true) errorHandler = fn;
+      if (type === 'load' && capture === true) loadHandler = fn;
     },
     visibilityState: 'visible'
   };
@@ -1231,23 +1234,36 @@ function loadCounter() {
   const ctx = vm.createContext({
     document: doc,
     window: { addEventListener: () => {} },
+    location: { hostname: host, href: `https://${host}/` },
+    URL,
+    WeakSet,
     chrome: {
       runtime: {
         lastError: undefined,
         sendMessage: (msg, cb) => { sent.push(msg); cb && cb(); }
-      }
+      },
+      storage: { sync: { get: (defaults, cb) => cb({ ...defaults, images, siteProfiles }) } }
     },
     setTimeout: (fn) => { timers.push(fn); return timers.length; },
     clearTimeout: () => {}
   });
 
   vm.runInContext(readFileSync(join(ROOT, 'savings_counter.js'), 'utf8'), ctx);
-  return { fire: (tag, src = 'https://x/y') => errorHandler({ target: { nodeType: 1, tagName: tag, src, getAttribute: () => src } }), sent, flush: () => timers.forEach((f) => f()) };
+  // A redirected (blocked) image loads as our 1x1 blank.gif.
+  const img = (src = 'https://cdn.example/photo.jpg', w = 1, h = 1) => ({ nodeType: 1, tagName: 'IMG', src, currentSrc: src, naturalWidth: w, naturalHeight: h, getAttribute: () => src });
+  return {
+    fire: (tag, src = 'https://x/y') => errorHandler({ target: { nodeType: 1, tagName: tag, src, getAttribute: () => src } }),
+    loadImg: (el) => loadHandler({ target: el }),
+    img,
+    sent,
+    flush: () => timers.forEach((f) => f())
+  };
 }
 
 await test('classifies elements into ads / images / media', async () => {
   const c = loadCounter();
-  c.fire('IMG'); c.fire('IMG');
+  // Blocked images are redirected to a 1x1 blank.gif and fire 'load'.
+  c.loadImg(c.img('https://cdn.example/a.jpg')); c.loadImg(c.img('https://cdn.example/b.jpg'));
   // SCRIPT and OBJECT both fire 'error' when blocked; IFRAME does not and is
   // handled by the background lookup instead.
   c.fire('SCRIPT'); c.fire('OBJECT');
@@ -1255,6 +1271,50 @@ await test('classifies elements into ads / images / media', async () => {
   c.flush();
   assert.equal(c.sent.length, 1, 'should batch into a single message');
   assert.deepEqual(plain(c.sent[0].counts), { ads: 2, images: 2, media: 3 });
+});
+
+await test('a failed <img> is a broken site image, not ours — not counted', async () => {
+  const c = loadCounter();
+  c.fire('IMG'); c.fire('IMG');
+  c.flush();
+  assert.equal(c.sent.length, 0);
+});
+
+await test('a real (non-1x1) image load is not counted', async () => {
+  const c = loadCounter();
+  c.loadImg(c.img('https://cdn.example/photo.jpg', 640, 480));
+  c.flush();
+  assert.equal(c.sent.length, 0);
+});
+
+await test('the same element is counted once, however often it reloads', async () => {
+  const c = loadCounter();
+  const el = c.img();
+  for (let i = 0; i < 50; i++) c.loadImg(el);
+  c.flush();
+  assert.equal(c.sent[0].counts.images, 1, 'a lazy-loader retry loop must not inflate the meter');
+});
+
+await test('one page can add at most 1500 to the meter', async () => {
+  const c = loadCounter();
+  for (let i = 0; i < 5000; i++) c.fire('SCRIPT', `https://ads.example/${i}.js`);
+  c.flush();
+  const total = c.sent.reduce((n, m) => n + m.counts.ads, 0);
+  assert.equal(total, 1500);
+});
+
+await test('images are not counted where a site profile allows them', async () => {
+  const c = loadCounter({ siteProfiles: { 'example': { images: false } }, host: 'news.example' });
+  c.loadImg(c.img());
+  c.flush();
+  assert.equal(c.sent.length, 0);
+});
+
+await test('images are not counted when image blocking is off', async () => {
+  const c = loadCounter({ images: false });
+  c.loadImg(c.img());
+  c.flush();
+  assert.equal(c.sent.length, 0);
 });
 
 await test('an error on an IFRAME is ignored — frames go through the lookup', async () => {

@@ -31,8 +31,13 @@ OUT_PATH = pathlib.Path(__file__).resolve().parent.parent / "rules" / "ad-domain
 # looser "cdn|static|assets|..." safety allowlist.
 RULE_PRIORITY = 30
 
+# No "main_frame". Blocking whole-page navigations turned a user's own click
+# into a dead end: t.co (every outbound link on X/Twitter) and the affiliate
+# redirectors behind review sites' "buy" links (Skimlinks, CJ, Rakuten, Awin…)
+# are all on this list. Ads embedded in pages are still blocked through every
+# other type.
 RESOURCE_TYPES = [
-    "main_frame", "sub_frame", "stylesheet", "script", "image", "font",
+    "sub_frame", "stylesheet", "script", "image", "font",
     "object", "xmlhttprequest", "ping", "csp_report", "media",
     "websocket", "webtransport", "webbundle", "other",
 ]

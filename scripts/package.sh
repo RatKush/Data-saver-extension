@@ -39,6 +39,7 @@ INCLUDE=(
   rules/ad-domains.json
   rules/images.json
   rules/media.json
+  blank.gif
 )
 
 # Locales are discovered rather than listed: there are 25 and growing, and a

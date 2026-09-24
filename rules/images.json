@@ -1,10 +1,107 @@
 [
   {
+    "id": 10,
+    "priority": 5,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "||google.com/recaptcha/",
+      "resourceTypes": [
+        "image"
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "priority": 5,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "||gstatic.com/recaptcha/",
+      "resourceTypes": [
+        "image"
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "priority": 5,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "requestDomains": [
+        "recaptcha.net",
+        "hcaptcha.com",
+        "challenges.cloudflare.com",
+        "arkoselabs.com",
+        "funcaptcha.com"
+      ],
+      "resourceTypes": [
+        "image"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 5,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "requestDomains": [
+        "tile.openstreetmap.org",
+        "tile.openstreetmap.de",
+        "tile.openstreetmap.fr",
+        "tile.opentopomap.org",
+        "basemaps.cartocdn.com",
+        "tiles.stadiamaps.com",
+        "tile.thunderforest.com",
+        "server.arcgisonline.com",
+        "services.arcgisonline.com",
+        "tiles.arcgis.com",
+        "api.mapbox.com",
+        "tiles.mapbox.com",
+        "maps.wikimedia.org",
+        "maps.hereapi.com",
+        "khms0.google.com",
+        "khms1.google.com",
+        "khms2.google.com",
+        "khms3.google.com"
+      ],
+      "resourceTypes": [
+        "image"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "priority": 5,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "regexFilter": "(?i)/(favicon|apple-touch-icon)[^/?#]*\\.(ico|png|svg|webp)([?#]|$)",
+      "resourceTypes": [
+        "image"
+      ]
+    }
+  },
+  {
     "id": 2,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/blank.gif"
+      }
+    },
     "condition": {
-      "resourceTypes": ["image"]
+      "resourceTypes": [
+        "image"
+      ]
     }
   }
 ]
