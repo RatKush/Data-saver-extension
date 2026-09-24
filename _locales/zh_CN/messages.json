@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "保存发生拦截的站点列表，以便本页显示你的流量节省来自何处。仅存储在本设备上，绝不发送到任何地方。默认关闭 — 再次关闭会删除已记录的内容。",
+    "message": "保存发生拦截的站点列表，以便本页显示你的流量节省来自何处。仅存储在本设备上，绝不发送到任何地方。关闭后会删除已记录的内容。",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

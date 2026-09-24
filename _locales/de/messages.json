@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Führt eine Liste der Websites, auf denen etwas blockiert wurde, damit diese Seite zeigen kann, woher Ihre Einsparung stammt. Wird nur auf diesem Gerät gespeichert und nirgendwohin gesendet. Standardmäßig aus — erneutes Ausschalten löscht das Erfasste.",
+    "message": "Führt eine Liste der Websites, auf denen etwas blockiert wurde, damit diese Seite zeigen kann, woher Ihre Einsparung stammt. Wird nur auf diesem Gerät gespeichert und nirgendwohin gesendet. Ausschalten löscht das Erfasste.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

@@ -54,11 +54,11 @@ preference for each blocking category (ads/images/video), the list of
 sites they've chosen not to block on, any per-site exceptions they've
 created, the optional data-budget settings, and a local tally of how
 many requests have been blocked so the extension can show them their
-own savings total. If the user switches on the optional "Remember
-which sites" setting, a capped list of the sites where something was
-blocked is also stored locally so the dashboard can show where the
-savings came from; that setting is OFF by default and switching it
-off again deletes the list. Nothing here is transmitted anywhere, and
+own savings total. While the "Remember which sites" setting is on
+(on by default since 2.5 — for new installs, and for existing users
+on the update unless they had switched it off), a capped list of the sites where
+something was blocked is also stored locally so the dashboard can show
+where the savings came from; switching it off deletes the list. Nothing here is transmitted anywhere, and
 there is no server to transmit it to.
 >
 The same permission is what lets the extension read an administrator
@@ -81,7 +81,7 @@ opens without a user gesture.
 Script (d) observes only load-failure events on the page's own
 images, scripts and media elements; it reads no page content, and
 reports nothing but counts to the extension's own background script.
-Scripts (e) and (f) are both OFF by default. None of these scripts
+Scripts (e) and (f) are on by default since 2.5 (a user who had switched one off keeps it off) and can each be switched off in the dashboard. None of these scripts
 collect or transmit data off the device.
 
 ---
@@ -111,9 +111,9 @@ ESTIMATE derived from the number of blocked requests, and the UI
 labels it as such, because Chrome exposes no per-request transfer size
 to extensions in a production build.
 
-## Note on cookie banner handling (optional, off by default)
+## Note on cookie banner handling (on by default, can be switched off)
 
-When the user switches this on, the extension looks for a consent
+While this is on, the extension looks for a consent
 banner and presses the option that preserves the most privacy — the
 platform's own "reject all" or "necessary only" control, or a button
 whose text says the same inside something identifiable as a consent
@@ -125,9 +125,9 @@ and no consent of any kind is recorded. The extension reads nothing
 from the page other than the text of candidate buttons, and transmits
 nothing.
 
-## Note on pop-up blocking (optional, off by default)
+## Note on pop-up blocking (on by default, can be switched off)
 
-When the user switches this on, the extension replaces window.open on
+While this is on, the extension replaces window.open on
 the page so that a window opened without a genuine user gesture
 returns null — the same result Chrome's own pop-up blocker produces,
 which sites already handle. Windows opened as a result of the user
@@ -177,7 +177,8 @@ before, and neither changes the answer:
 Both are written to `chrome.storage.local` on the user's own machine.
 The extension makes no network requests of its own, has no server, no
 analytics and no telemetry, so nothing can leave the device. The
-hostname list is additionally **off by default**, capped, clearable by
+hostname list is additionally capped, can be switched off (it is on by
+default since 2.5), clearable by
 its own control, and deleted outright when the setting is switched off.
 
 If the dashboard asks you to certify compliance with the Developer

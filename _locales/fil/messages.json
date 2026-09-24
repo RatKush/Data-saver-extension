@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Nagtatago ng listahan ng mga site kung saan may na-block, para maipakita ng pahinang ito kung saan nanggagaling ang natitipid mo. Nakaimbak sa device na ito lamang at hindi kailanman ipinapadala kahit saan. Naka-off bilang default — kapag na-off itong muli, buburahin ang naitala.",
+    "message": "Nagtatago ng listahan ng mga site kung saan may na-block, para maipakita ng pahinang ito kung saan nanggagaling ang natitipid mo. Nakaimbak sa device na ito lamang at hindi kailanman ipinapadala kahit saan. Kapag na-off ito, buburahin ang naitala.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

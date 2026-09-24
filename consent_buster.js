@@ -1,5 +1,5 @@
 // -------------------------------------
-// 🍪 CONSENT HANDLER  (premium, off by default)
+// 🍪 CONSENT HANDLER  (on by default since 2.5; switchable off)
 //
 // Cookie walls cost real bandwidth — a consent platform is typically a few
 // hundred KB of third-party JavaScript — but the reason this exists is the

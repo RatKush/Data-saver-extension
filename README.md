@@ -13,12 +13,12 @@ For the biggest savings keep all three blocks on (ads, images and video). Measur
 
 - **Three independent toggles** — ads and trackers, images, video and audio.
 - **One tap to unblock the current site**, from the top of the popup or with `Alt+Shift+D`. The toolbar badge reads `OFF` where blocking is paused.
-- **Video platforms ship unblocked** — YouTube, Netflix, Instagram, Twitch and 26 others. You already know those cost data; blocking them just breaks them.
+- **Video, call and remote-desktop sites ship unblocked** — YouTube, Netflix, Instagram, Twitch and other video platforms; Google Meet, Zoom, Teams, Webex and other meeting apps; Chrome Remote Desktop, AnyDesk and TeamViewer. Blocking them just breaks them, and a data budget never re-blocks a call or a remote session.
 - **Per-site rules** — block ads on a site but let its images through, or the reverse. Subdomain-aware.
 - **Savings meter** — the exact number of blocked requests, with an estimate of the data that saved beside it.
 - **Dashboard** — a 14-day trend, your per-site rules, and everything below. Open it from the popup.
-- **Cookie banners** (off by default) — answers them with "reject" or "necessary only". It never accepts on your behalf.
-- **Pop-up blocking** (off by default) — stops windows a page opens on its own; ones you click still work.
+- **Cookie banners** (on by default) — answers them with "reject" or "necessary only". It never accepts on your behalf.
+- **Pop-up blocking** (on by default) — stops windows a page opens on its own; ones you click still work.
 - **Adapt to connection speed** (off by default) — stops blocking images on a fast connection.
 - **Load one image, play one video** — a blocked image shows a faint placeholder with a *Load image* button, and a stopped video offers *Play on this page*. Nothing else on the site is unblocked.
 - **Data used** — about how much Chrome downloaded today, this week and this month, measured from the size of each download.
@@ -28,7 +28,7 @@ For the biggest savings keep all three blocks on (ads, images and video). Measur
 
 Two things to know: the savings figure in bytes is an **estimate** derived from blocked-request counts, because Chrome exposes no size for a request that never happened; and "data used" counts **Chrome only** — other apps on the device share your carrier's allowance, so it never claims to know how much data you have left.
 
-**Privacy:** there is no server, no analytics and no telemetry. Everything is stored on your own device. The data-used meter keeps one number per day — no addresses, no sites. The optional site-history list is off by default and is deleted when you switch it off.
+**Privacy:** there is no server, no analytics and no telemetry. Everything is stored on your own device. The data-used meter keeps one number per day — no addresses, no sites. The site-history list (on by default since 2.5) stays on your device and is deleted when you switch it off.
 
 | **Category** | **Typical Percentage of Total Page Weight** | **Notes** |
 |--------------|---------------------------------------------|------------|

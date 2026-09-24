@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Tiene un elenco dei siti in cui qualcosa è stato bloccato, così questa pagina può mostrare da dove arriva il tuo risparmio. Memorizzato solo su questo dispositivo e mai inviato altrove. Disattivato per impostazione predefinita: disattivarlo di nuovo cancella quanto registrato.",
+    "message": "Tiene un elenco dei siti in cui qualcosa è stato bloccato, così questa pagina può mostrare da dove arriva il tuo risparmio. Memorizzato solo su questo dispositivo e mai inviato altrove. Disattivarlo cancella quanto registrato.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

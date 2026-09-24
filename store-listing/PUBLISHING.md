@@ -147,7 +147,7 @@ unrelated features bolted on.
 
 The answer, if it comes up: both reduce data. Consent platforms are
 typically hundreds of kilobytes of third-party JavaScript, and a pop-up loads
-an entire additional page. Both are off by default and both are described in
+an entire additional page. Both are on by default since 2.5 (switchable off) and both are described in
 `permission-justifications.md` in those terms. Do not argue that they are
 "privacy features" — that framing is what makes them look like a second
 purpose.

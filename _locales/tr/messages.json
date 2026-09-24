@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Bir şeylerin engellendiği sitelerin listesini tutar; böylece bu sayfa tasarrufunuzun nereden geldiğini gösterebilir. Yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Varsayılan olarak kapalı — tekrar kapatmak kaydedilenleri siler.",
+    "message": "Bir şeylerin engellendiği sitelerin listesini tutar; böylece bu sayfa tasarrufunuzun nereden geldiğini gösterebilir. Yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Kapatmak kaydedilenleri siler.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

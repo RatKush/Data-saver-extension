@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Mantém uma lista dos sites onde algo foi bloqueado, para que esta página possa mostrar de onde vem sua economia. Guardado somente neste dispositivo e nunca enviado a lugar nenhum. Desativado por padrão — desativar de novo apaga o que foi registrado.",
+    "message": "Mantém uma lista dos sites onde algo foi bloqueado, para que esta página possa mostrar de onde vem sua economia. Guardado somente neste dispositivo e nunca enviado a lugar nenhum. Desativar apaga o que foi registrado.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

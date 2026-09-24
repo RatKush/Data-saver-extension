@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Guarda una lista de los sitios donde se bloqueó algo, para que esta página pueda mostrar de dónde viene tu ahorro. Se almacena solo en este dispositivo y nunca se envía a ninguna parte. Desactivado por defecto: volver a desactivarlo borra lo registrado.",
+    "message": "Guarda una lista de los sitios donde se bloqueó algo, para que esta página pueda mostrar de dónde viene tu ahorro. Se almacena solo en este dispositivo y nunca se envía a ninguna parte. Desactivarlo borra lo registrado.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

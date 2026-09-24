@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Menyimpan senarai tapak tempat sesuatu disekat, supaya halaman ini boleh menunjukkan dari mana penjimatan anda datang. Disimpan pada peranti ini sahaja dan tidak pernah dihantar ke mana-mana. Dimatikan secara lalai — mematikannya semula memadam apa yang direkodkan.",
+    "message": "Menyimpan senarai tapak tempat sesuatu disekat, supaya halaman ini boleh menunjukkan dari mana penjimatan anda datang. Disimpan pada peranti ini sahaja dan tidak pernah dihantar ke mana-mana. Mematikannya memadam apa yang direkodkan.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

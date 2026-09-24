@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Conserve la liste des sites où quelque chose a été bloqué, afin que cette page puisse montrer d'où viennent vos économies. Stockée uniquement sur cet appareil et jamais envoyée nulle part. Désactivé par défaut — le désactiver à nouveau supprime ce qui a été enregistré.",
+    "message": "Conserve la liste des sites où quelque chose a été bloqué, afin que cette page puisse montrer d'où viennent vos économies. Stockée uniquement sur cet appareil et jamais envoyée nulle part. Le désactiver supprime ce qui a été enregistré.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

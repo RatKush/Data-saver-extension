@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Menyimpan daftar situs tempat sesuatu diblokir, agar halaman ini bisa menunjukkan dari mana penghematan Anda berasal. Disimpan hanya di perangkat ini dan tidak pernah dikirim ke mana pun. Nonaktif secara bawaan — menonaktifkannya lagi akan menghapus yang sudah tercatat.",
+    "message": "Menyimpan daftar situs tempat sesuatu diblokir, agar halaman ini bisa menunjukkan dari mana penghematan Anda berasal. Disimpan hanya di perangkat ini dan tidak pernah dikirim ke mana pun. Menonaktifkannya akan menghapus yang sudah tercatat.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

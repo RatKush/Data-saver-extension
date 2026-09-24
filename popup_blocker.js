@@ -1,5 +1,5 @@
 // -------------------------------------
-// 🚪 POPUP BLOCKER  (premium, off by default)
+// 🚪 POPUP BLOCKER  (on by default since 2.5; switchable off)
 //
 // Runs in the MAIN world because window.open has to be replaced on the page's
 // own window object — the same reason force_open_shadow_dom.js runs there.

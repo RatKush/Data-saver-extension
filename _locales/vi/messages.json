@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "Lưu danh sách các trang có nội dung bị chặn, để trang này có thể cho biết phần tiết kiệm của bạn đến từ đâu. Chỉ lưu trên thiết bị này và không bao giờ được gửi đi đâu. Mặc định tắt — tắt lại sẽ xóa những gì đã ghi.",
+    "message": "Lưu danh sách các trang có nội dung bị chặn, để trang này có thể cho biết phần tiết kiệm của bạn đến từ đâu. Chỉ lưu trên thiết bị này và không bao giờ được gửi đi đâu. Tắt sẽ xóa những gì đã ghi.",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

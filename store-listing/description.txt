@@ -8,9 +8,9 @@ WHAT IT BLOCKS
 
 🚫 Ads and trackers — a maintained blocklist of known ad and tracking domains, plus rules for ad networks and analytics scripts. Everything is evaluated locally by Chrome. Nothing is sent to any server to make a blocking decision.
 
-🖼️ Images — loads pages as text only. Blocked images collapse cleanly instead of leaving broken-icon boxes behind.
+🖼️ Images — loads pages as text only. A blocked image leaves a faint placeholder instead of a broken-icon box; hover it and press Load image to fetch just that one.
 
-🎬 Video and audio — stops autoplay before it starts, and blocks the adaptive streaming (HLS and DASH) requests most video sites use, not just old-style direct video files. Streaming sites actually stop consuming bandwidth rather than merely hiding the player.
+🎬 Video and audio — stops autoplay before it starts, and blocks the adaptive streaming (HLS and DASH) requests most video sites use, not just old-style direct video files. Streaming sites actually stop consuming bandwidth rather than merely hiding the player. Want to watch one? Play on this page lets it through until you leave the site.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -18,7 +18,9 @@ SEE WHAT YOU SAVE
 
 📊 The popup shows the exact number of ads, images and videos blocked, plus an estimate of the data that saved. Counted on your device from what actually got blocked. Nothing is sent anywhere.
 
-📈 An optional dashboard adds a 14-day trend and, if you turn it on, which sites saved you the most.
+🧮 Data used — about how much Chrome downloaded today, this week and this month, measured from the size of each download. Chrome only: other apps share your plan too.
+
+📈 The dashboard adds a 14-day trend and which sites saved you the most.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -26,17 +28,19 @@ CONTROL, NOT ALL-OR-NOTHING
 
 ▶️ Streaming sites work out of the box. YouTube, Netflix, Instagram, TikTok, Twitch and others ship unblocked — you already know those use data, and blocking them just breaks them. Want to save data on one anyway? One tap turns blocking on for it.
 
+📞 Calls and remote desktop are never interrupted. Google Meet, Zoom, Teams, Webex, Jitsi, Chrome Remote Desktop, AnyDesk and TeamViewer ship unblocked, and even the strictest data-budget stage leaves them alone.
+
 ⚡ One tap to unblock any site. The first control in the popup stops all blocking on the page you are on, without touching your settings anywhere else. Or press Alt+Shift+D on any page. The toolbar icon shows OFF where you have unblocked, and your choice sticks.
 
 🎛️ Per-site rules. Block ads on a site but let its images through, or the reverse. Every site can have its own combination.
 
-🍪 Cookie banner handling (optional). Chooses "reject" or "necessary only" where a banner offers it. It never accepts on your behalf.
+🍪 Cookie banner handling (on — switch it off anytime). Chooses "reject" or "necessary only" where a banner offers it. It never accepts on your behalf.
 
-🚪 Pop-up blocking (optional). Stops windows a page opens by itself. Windows you open by clicking still work.
+🚪 Pop-up blocking (on — switch it off anytime). Stops windows a page opens by itself. Windows you open by clicking still work.
 
 📶 Adapt to connection speed (optional). Stop blocking images when your connection is fast, using the browser's own speed estimate.
 
-🪫 Data budget (optional). Enter your monthly allowance and billing date, and Data Saver blocks progressively harder as your cycle runs down.
+🪫 Data budget (optional). On a daily plan — say 1.5 GB a day — Data Saver blocks progressively harder as Chrome's usage today nears your allowance, and starts fresh at midnight. On a monthly plan it blocks harder as your billing cycle runs down.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -52,7 +56,7 @@ Is it just an ad blocker?
 No. Ad blocking is one of three switches. Most ad blockers hide ads after the page fetches them; the point here is that images, video and ads are stopped at the network layer so the bytes are never downloaded at all.
 
 Will it break websites?
-Blocking images and video changes how pages look, and some sites will need images. That is why unblocking a site takes one tap, and why per-site rules exist.
+Blocking images and video changes how pages look, and some sites will need images. That is why a single image loads with one click, unblocking a site takes one tap, and per-site rules exist.
 
 How much data does it actually save?
 It depends entirely on the sites you visit. The popup shows you your own real figure rather than a marketing number — and the byte total is labelled an estimate, because Chrome does not tell extensions the exact size of a request it blocked.
@@ -61,7 +65,7 @@ Does it work offline or on slow 2G and 3G connections?
 Yes. All blocking rules ship inside the extension and are evaluated by Chrome on your device, so nothing has to be downloaded for it to work.
 
 Does it collect my data?
-No. There is no server, no analytics and no telemetry. Your settings and counts stay on your device.
+No. There is no server, no analytics and no telemetry. Your settings, counts and the list of sites where it saved you data stay on your device, and switching that list off deletes it.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

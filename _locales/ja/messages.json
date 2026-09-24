@@ -189,7 +189,7 @@
     "description": "Dashboard (options page) string."
   },
   "dashSiteHistorySub": {
-    "message": "ブロックが発生したサイトの一覧を保持し、節約がどこから生じたかをこのページで表示できるようにします。この端末にのみ保存され、どこにも送信されません。既定ではオフで、オフに戻すと記録は削除されます。",
+    "message": "ブロックが発生したサイトの一覧を保持し、節約がどこから生じたかをこのページで表示できるようにします。この端末にのみ保存され、どこにも送信されません。オフにすると記録は削除されます。",
     "description": "Dashboard (options page) string."
   },
   "dashAuto": {

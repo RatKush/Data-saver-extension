@@ -46,9 +46,8 @@ const COUNTER_SCRIPT = {
   allFrames: true
 };
 
-// Both are off by default: consent answering touches what a site records
-// about the user, and popup blocking changes page behaviour, so neither
-// should switch itself on.
+// Both are ON by default since 2.5 (seedOnByDefault), for new installs and for
+// existing users who had never touched them; a user's own "off" is kept.
 //
 // THESE ARE FREE AND MUST STAY FREE. They shipped unlocked in 2.3, so gating
 // them now would take away capability users already have — see isPro().
@@ -193,7 +192,9 @@ function recordBlocked(counts, host, now = Date.now()) {
     });
 
     // Which sites were visited is the only browsing-shaped record this
-    // extension keeps, so it is OFF unless the user asks for it. Read here
+    // extension keeps. It is on by default since 2.5 (seedOnByDefault writes
+    // it on install and update), but the read default stays false so a
+    // missing value still means off. Read here
     // rather than at the call site so there is exactly one gate: no caller
     // can record a hostname by forgetting to check.
     const { siteHistory } = await chrome.storage.sync.get({ siteHistory: false });
@@ -662,7 +663,7 @@ function pruneOldest(map, max, protectedKeys) {
     delete out[k];
   }
   // Only if the protected set alone still exceeds the cap — it cannot today,
-  // DEFAULT_ALLOWLIST is 30 entries — fall back to dropping oldest outright.
+  // DEFAULT_ALLOWLIST is 40 entries — fall back to dropping oldest outright.
   for (const k of Object.keys(out)) {
     if (Object.keys(out).length <= max) break;
     delete out[k];
@@ -1072,12 +1073,31 @@ const DEFAULT_ALLOWLIST = [
   'meet.google.com',
   'zoom.us',
   'teams.microsoft.com',
-  'whereby.com'
+  'teams.live.com',          // Teams for personal accounts
+  'whereby.com',
+  'webex.com',
+  'meet.jit.si',
+  'app.goto.com',            // GoTo Meeting's web app; meet.goto.com links land here
+  'meet.goto.com',
+  'meeting.zoho.com',
+  'meeting.zoho.in',
+
+  // --- Remote desktop and screen sharing. Same reasoning as calls: blocking
+  // images or media breaks the remote screen itself, and a support session
+  // is exactly when someone cannot afford the page to half-work.
+  'remotedesktop.google.com',
+  'anydesk.com',
+  'teamviewer.com'
 ];
 
-// Never trimmed, whatever the data budget says. Dropping a meeting to save a
-// few megabytes is not a trade anyone wants made on their behalf.
-const CALL_SITES = ['meet.google.com', 'zoom.us', 'teams.microsoft.com', 'whereby.com'];
+// Never trimmed, whatever the data budget says. Dropping a meeting — or a
+// remote-support session — to save a few megabytes is not a trade anyone
+// wants made on their behalf.
+const CALL_SITES = [
+  'meet.google.com', 'zoom.us', 'teams.microsoft.com', 'teams.live.com', 'whereby.com',
+  'webex.com', 'meet.jit.si', 'app.goto.com', 'meet.goto.com', 'meeting.zoho.com', 'meeting.zoho.in',
+  'remotedesktop.google.com', 'anydesk.com', 'teamviewer.com'
+];
 
 function hostnameOf(url) {
   try {
@@ -1674,8 +1694,20 @@ function readManagedPolicy() {
 // stay blocked while the popup said it was allowed.
 let reconcileChain = Promise.resolve();
 
+// At most ONE reconcile waits behind the running one. It reads storage when it
+// starts, so it already sees every change made while it waited — a second
+// queued copy would redo identical work. That matters because each reconcile
+// unregisters and re-registers the page scripts, and a page that loads in that
+// gap gets none: at install, back-to-back writes (allowlist seeding, the
+// on-by-default switches) queued back-to-back reconciles, and the release
+// browser test sometimes loaded its page in one of the gaps.
+let reconcileQueued = false;
+
 function loadAndSetInitialState() {
+  if (reconcileQueued) return reconcileChain;
+  reconcileQueued = true;
   reconcileChain = reconcileChain.then(() => new Promise((resolve) => {
+    reconcileQueued = false;
     chrome.storage.sync.get(SETTING_DEFAULTS, (user) => {
       chrome.storage.local.get({ autoState: null, usage: {} }, ({ autoState, usage }) => {
         const now = Date.now();
@@ -1703,6 +1735,10 @@ chrome.runtime.onInstalled.addListener((details) => {
   // "defaults missing", never to "extension does nothing".
   seedDefaultAllowlist()
     .catch((e) => console.warn('⚠️ Could not seed default allowlist:', e))
+    // Before the first reconcile, not beside it, so that reconcile already
+    // registers the scripts these switches turn on.
+    .then(() => (details.reason === 'install' || details.reason === 'update') && seedOnByDefault())
+    .catch((e) => console.warn('⚠️ Could not set on-by-default switches:', e))
     .then(() => {
       loadAndSetInitialState();
       refreshAllBadges();
@@ -1725,6 +1761,26 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
   }
 });
+
+// ON BY DEFAULT since 2.5: site history, cookie-banner answering and pop-up
+// blocking — for new installs AND for existing users on the update to 2.5.
+// Written as explicit values on install/update rather than by flipping the
+// read-time defaults in SETTING_DEFAULTS, so a missing value still means off
+// everywhere else and the change happens in exactly one place.
+//
+// Only ABSENT keys are written. A switch is stored only once someone has
+// flipped it, so an absent key means "never touched" — that user gets the new
+// default. Anyone who deliberately switched one off has `false` stored and
+// keeps it, on this update and every later one. The privacy policy says so.
+const ON_BY_DEFAULT = ['siteHistory', 'consent', 'popups'];
+
+function seedOnByDefault() {
+  return chrome.storage.sync.get(null).then((stored) => {
+    const set = {};
+    for (const k of ON_BY_DEFAULT) if (!(k in stored)) set[k] = true;
+    return Object.keys(set).length ? chrome.storage.sync.set(set) : undefined;
+  });
+}
 
 // Where Chrome sends someone who removes the extension: a page on our own site
 // with the common fixes and a way to say what broke. Without it the reasons

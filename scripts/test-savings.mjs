@@ -45,8 +45,8 @@ function makeStorageArea(initial = {}) {
     _dump: () => ({ ...store }),
     _reset: (v = {}) => { store = { ...v }; },
     get(defaults, cb) {
-      const out = {};
-      for (const [k, d] of Object.entries(defaults)) out[k] = k in store ? store[k] : d;
+      const out = defaults === null ? { ...store } : {};
+      for (const [k, d] of Object.entries(defaults || {})) out[k] = k in store ? store[k] : d;
       if (cb) { cb(out); return; }
       return Promise.resolve(out);
     },
@@ -852,17 +852,20 @@ await test('a v2.1 user keeps a site they had already unblocked', async () => {
   assert.ok(list.includes('mybank.example'), "the user's own allowlist entry was dropped");
 });
 
-await test('every premium feature is off after an upgrade', async () => {
+await test('an upgrade turns on exactly the on-by-default switches, nothing else', async () => {
   const { chrome, ctx } = loadBackground();
   v21Profile(chrome);
   for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
-  await new Promise((r) => setTimeout(r, 0));
+  await settle(12);
 
-  // Nothing new should switch itself on for someone who upgraded into it.
+  // Since 2.5, site history, cookie banners and pop-up blocking are on by
+  // default for anyone who never touched them (seedOnByDefault). Everything
+  // else that changes behaviour must still wait to be asked for.
   const merged = plain(vm.runInContext('mergeSettings', ctx)(
     Object.assign({}, vm.runInContext('SETTING_DEFAULTS', ctx), plain(chrome.storage.sync._dump())),
     {}, null));
-  for (const k of ['consent', 'popups', 'autoMode', 'siteHistory', 'budgetEnabled']) {
+  for (const k of ['consent', 'popups', 'siteHistory']) assert.equal(merged[k], true, `${k} should be on`);
+  for (const k of ['autoMode', 'budgetEnabled']) {
     assert.ok(!merged[k], `${k} was enabled without the user asking`);
   }
 });
@@ -1139,6 +1142,16 @@ await test('strict trims shipped defaults but keeps the user\'s own choices and 
     userChoices: { 'mysite.example': true }   // the user explicitly allowed this
   }, 'strict'));
   assert.deepEqual(out.allowlist.sort(), ['mysite.example', 'zoom.us']);
+});
+
+await test('every call and remote-desktop site ships unblocked, and is a bare hostname', async () => {
+  const { ctx } = loadBackground();
+  const defaults = plain(vm.runInContext('DEFAULT_ALLOWLIST', ctx));
+  for (const d of plain(vm.runInContext('CALL_SITES', ctx))) {
+    assert.ok(defaults.includes(d), `${d} is protected from the budget but never seeded`);
+  }
+  for (const d of defaults) assert.match(d, /^[a-z0-9.-]+\.[a-z]{2,}$/, `${d} is not a bare hostname`);
+  assert.equal(new Set(defaults).size, defaults.length, 'duplicate default entry');
 });
 
 await test('a call site is never trimmed, even at the strictest stage', async () => {
@@ -1423,6 +1436,45 @@ await test('same-site check does not lump every .co.uk site together', async () 
   assert.equal(same('www.bbc.co.uk', 'bbc.co.uk'), true);
   assert.equal(same('www.bbc.co.uk', 'evil.co.uk'), false);
   assert.equal(same('a.example.com', 'b.example.com'), false);
+});
+
+console.log('\nbackground.js — first-run defaults');
+
+await test('a new install starts with site history, cookie banners and pop-up blocking on', async () => {
+  const { chrome } = loadBackground();
+  for (const f of chrome._listeners.installed) f({ reason: 'install' });
+  await settle(12);
+  const s = chrome.storage.sync._dump();
+  assert.deepEqual([s.siteHistory, s.consent, s.popups], [true, true, true]);
+  assert.equal(s.autoMode, undefined, 'connection-speed mode was not asked for');
+});
+
+await test('the update to 2.5 switches them on for an existing user who never touched them', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync._reset({ ads: true, images: true, media: true, allowlist: ['youtube.com'] });
+  for (const f of chrome._listeners.installed) f({ reason: 'update', previousVersion: '2.4' });
+  await settle(12);
+  const s = chrome.storage.sync._dump();
+  assert.deepEqual([s.siteHistory, s.consent, s.popups], [true, true, true]);
+});
+
+await test('an existing user who switched one off keeps it off', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync._reset({ siteHistory: false, popups: false });
+  for (const f of chrome._listeners.installed) f({ reason: 'update', previousVersion: '2.4' });
+  await settle(12);
+  const s = chrome.storage.sync._dump();
+  assert.deepEqual([s.siteHistory, s.consent, s.popups], [false, true, false]);
+});
+
+await test('a synced profile keeps the choices it arrives with', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync._reset({ consent: false });
+  for (const f of chrome._listeners.installed) f({ reason: 'install' });
+  await settle(12);
+  const s = chrome.storage.sync._dump();
+  assert.equal(s.consent, false, 'a deliberate "off" was overwritten');
+  assert.equal(s.popups, true);
 });
 
 console.log('\nbackground.js — export / import');
