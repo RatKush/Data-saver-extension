@@ -22,19 +22,30 @@ What it does *not* cover, and you should eyeball once:
 - The screenshots in `store-listing/screenshots/` still show the current UI.
   Regenerate with `python3 scripts/make-screenshots.py` after any visual change.
 - `store-listing/description.txt` matches the features that actually ship.
+- **No keyword stuffing** — 2.5 was rejected for it (see `description.md`).
+  No site, app or brand names in a list; no list longer than four items; no
+  single word used more than five times. Count before pasting:
+
+  ```sh
+  python3 -c "import re,collections;s=open('store-listing/description.txt').read().lower();print([(w,n) for w,n in collections.Counter(re.findall(r'[a-z]{4,}',s)).most_common(15) if n>5])"
+  ```
+
+  Ordinary verbs like "block" and "site" may go over five; "data", "chrome",
+  "images", "video" and the product name must not.
 
 ---
 
 ## 1. Upload the package first
 
 Developer Dashboard → the item → **Package** → *Upload new package* →
-`dist/data-saver-extension-v2.3.zip`
+`dist/data-saver-extension-v<version>.zip` (the version in `manifest.json`)
 
 Upload before touching any listing text. If the package is rejected for a
 manifest problem you find out immediately, rather than after retyping copy.
 
 The version in the manifest must be higher than the live one. The store
-refuses a re-upload of the same version number, and there is no way to
+refuses a re-upload of a *published* version number (a rejected draft was
+never published, so its package can be resubmitted as-is), and there is no way to
 overwrite a version once published.
 
 ---
