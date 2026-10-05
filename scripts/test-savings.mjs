@@ -54,6 +54,11 @@ function makeStorageArea(initial = {}) {
       Object.assign(store, obj);
       if (cb) { cb(); return; }
       return Promise.resolve();
+    },
+    remove(keys, cb) {
+      for (const k of [].concat(keys)) delete store[k];
+      if (cb) { cb(); return; }
+      return Promise.resolve();
     }
   };
 }
@@ -91,9 +96,6 @@ function makeChrome() {
       unregisterContentScripts: (_o, cb) => cb && cb()
     },
     commands: { onCommand: { addListener: (f) => listeners.command.push(f) } },
-    webRequest: {
-      onCompleted: { addListener: (f, filter, spec) => { listeners.completed = f; listeners.completedSpec = { filter, spec }; } }
-    },
     action: {
       _badge: {}, _title: {},
       setBadgeText({ tabId, text }) { this._badge[tabId] = text; },
@@ -783,18 +785,13 @@ await test('features released in 2.3 do not depend on isPro()', async () => {
             'pop-up blocking was taken away by the paywall');
 });
 
-await test('per-site rules and the budget ignore the paywall too', async () => {
+await test('per-site rules ignore the paywall too', async () => {
   const { ctx } = loadBackground();
   vm.runInContext('isPro = () => false;', ctx);
 
   const rules = plain(vm.runInContext('siteProfileRules', ctx)(
     { ads: true, images: true, media: true, siteProfiles: { 'example.com': { images: false } } }, 1));
   assert.equal(rules.length, 1, 'per-site rules stopped working behind the paywall');
-
-  const out = plain(vm.runInContext('mergeSettings', ctx)(
-    { ads: true, images: true, media: true, budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 },
-    {}, null, new Date(2026, 8, 27).getTime()));
-  assert.equal(out.budgetStage, 'strict', 'the data budget stopped working behind the paywall');
 });
 
 console.log('\nbackground.js — upgrade from v2.1');
@@ -865,9 +862,7 @@ await test('an upgrade turns on exactly the on-by-default switches, nothing else
     Object.assign({}, vm.runInContext('SETTING_DEFAULTS', ctx), plain(chrome.storage.sync._dump())),
     {}, null));
   for (const k of ['consent', 'popups', 'siteHistory']) assert.equal(merged[k], true, `${k} should be on`);
-  for (const k of ['autoMode', 'budgetEnabled']) {
-    assert.ok(!merged[k], `${k} was enabled without the user asking`);
-  }
+  assert.ok(!merged.autoMode, 'autoMode was enabled without the user asking');
 });
 
 await test('an upgrade stamps an install date without inventing history', async () => {
@@ -1068,296 +1063,51 @@ await test('turning site history ON does not wipe anything', async () => {
   assert.deepEqual(Object.keys(plain(chrome.storage.local._dump().siteStats)), ['a.example']);
 });
 
-console.log('\nbackground.js — data budget');
+console.log('\nbackground.js — data used and data budget, retired in 2.6');
 
-const GB = 1024;
-
-function stageOn(ctx, over) {
-  return plain(vm.runInContext('budgetStage', ctx)(Object.assign({
-    budgetMB: 5 * GB, budgetResetDay: 1, budgetEase: null,
-    now: new Date(2026, 8, 2).getTime()   // day 2 of a 30-day cycle
-  }, over))).stage;
-}
-
-await test('a cycle is anchored to its reset day, not the 1st', async () => {
+await test('nothing listens to finished downloads any more', async () => {
+  const manifest = JSON.parse(readFileSync(join(ROOT, 'manifest.json'), 'utf8'));
+  assert.ok(!manifest.permissions.includes('webRequest'), 'webRequest is still requested');
+  // makeChrome has no webRequest stub, so loading at all proves nothing calls it.
   const { ctx } = loadBackground();
-  const info = plain(vm.runInContext('cycleInfo', ctx)(10, new Date(2026, 8, 12).getTime()));
-  assert.equal(new Date(info.start).getDate(), 10);
-  assert.equal(info.dayIndex, 3, 'the 12th is day 3 of a cycle starting on the 10th');
-});
-
-await test('a reset day past the 28th is clamped so February still works', async () => {
-  const { ctx } = loadBackground();
-  const info = plain(vm.runInContext('cycleInfo', ctx)(31, new Date(2026, 1, 10).getTime()));
-  assert.equal(new Date(info.start).getDate(), 28);
-});
-
-await test('a smaller allowance starts the cycle stricter', async () => {
-  const { ctx } = loadBackground();
-  assert.equal(stageOn(ctx, { budgetMB: 500 }), 'tight');
-  assert.equal(stageOn(ctx, { budgetMB: 2 * GB }), 'normal');
-  assert.equal(stageOn(ctx, { budgetMB: 10 * GB }), 'relaxed');
-});
-
-await test('strictness escalates as the cycle runs down', async () => {
-  const { ctx } = loadBackground();
-  const at = (day) => stageOn(ctx, { budgetMB: 5 * GB, now: new Date(2026, 8, day).getTime() });
-  assert.equal(at(2), 'relaxed');   // early
-  assert.equal(at(17), 'normal');   // past halfway
-  assert.equal(at(27), 'tight');    // past 80%
-});
-
-await test('a generous allowance never reaches the stage that trims the allowlist', async () => {
-  const { ctx } = loadBackground();
-  const late = stageOn(ctx, { budgetMB: 50 * GB, now: new Date(2026, 8, 29).getTime() });
-  assert.equal(late, 'normal', 'a 50 GB plan should not be trimming video sites');
-});
-
-await test('easing off drops one stage, and expires with the cycle', async () => {
-  const { ctx } = loadBackground();
-  const now = new Date(2026, 8, 27).getTime();
-  const cycle = plain(vm.runInContext('cycleInfo', ctx)(1, now));
-  assert.equal(stageOn(ctx, { budgetMB: 5 * GB, now }), 'tight');
-  assert.equal(stageOn(ctx, { budgetMB: 5 * GB, now, budgetEase: { cycleStart: cycle.start } }), 'normal');
-  // An ease stamped for a DIFFERENT cycle must not carry over.
-  assert.equal(stageOn(ctx, { budgetMB: 5 * GB, now, budgetEase: { cycleStart: cycle.start - 999999 } }), 'tight');
-});
-
-await test('the budget can only ever add blocking', async () => {
-  const { ctx } = loadBackground();
-  const apply = vm.runInContext('applyBudgetStage', ctx);
-  const off = { ads: false, images: false, media: false };
-  assert.deepEqual(plain(apply(off, 'relaxed')).ads, true);
-  const tight = plain(apply(off, 'tight'));
-  assert.equal(tight.ads, true); assert.equal(tight.images, true); assert.equal(tight.media, true);
-  // 'relaxed' must not switch images or video on — that is what makes it relaxed.
-  assert.equal(plain(apply(off, 'relaxed')).images, false);
-});
-
-await test('strict trims shipped defaults but keeps the user\'s own choices and calls', async () => {
-  const { ctx } = loadBackground();
-  const out = plain(vm.runInContext('applyBudgetStage', ctx)({
-    ads: true, images: true, media: true,
-    allowlist: ['youtube.com', 'netflix.com', 'zoom.us', 'mysite.example'],
-    userChoices: { 'mysite.example': true }   // the user explicitly allowed this
-  }, 'strict'));
-  assert.deepEqual(out.allowlist.sort(), ['mysite.example', 'zoom.us']);
-});
-
-await test('every call and remote-desktop site ships unblocked, and is a bare hostname', async () => {
-  const { ctx } = loadBackground();
-  const defaults = plain(vm.runInContext('DEFAULT_ALLOWLIST', ctx));
-  for (const d of plain(vm.runInContext('CALL_SITES', ctx))) {
-    assert.ok(defaults.includes(d), `${d} is protected from the budget but never seeded`);
+  for (const name of ['flushUsage', 'budgetStage', 'ensureBudgetStage', 'CALL_SITES']) {
+    assert.equal(vm.runInContext(`typeof ${name}`, ctx), 'undefined', `${name} is still defined`);
   }
-  for (const d of defaults) assert.match(d, /^[a-z0-9.-]+\.[a-z]{2,}$/, `${d} is not a bare hostname`);
-  assert.equal(new Set(defaults).size, defaults.length, 'duplicate default entry');
 });
 
-await test('a strict budget keeps a site the user paused, through the real settings read', async () => {
-  const { chrome, ctx } = loadBackground();
-  // Exactly what storage holds after the user paused their own site.
-  chrome.storage.sync._reset({
-    allowlist: ['youtube.com', 'zoom.us', 'mybank.example'],
-    userChoices: { 'mybank.example': true },
-    budgetEnabled: true, budgetMB: 500, budgetResetDay: 1
-  });
-  // The reconcile reads settings with SETTING_DEFAULTS; read them the same way.
-  const user = await chrome.storage.sync.get(plain(vm.runInContext('SETTING_DEFAULTS', ctx)));
-  const out = plain(vm.runInContext('mergeSettings', ctx)(user, {}, null, new Date(2026, 8, 27).getTime()));
-  assert.equal(out.budgetStage, 'strict');
-  assert.deepEqual(out.allowlist.sort(), ['mybank.example', 'zoom.us'],
-    'the strict stage re-blocked a site the user paused themselves');
-});
-
-await test('a call site is never trimmed, even at the strictest stage', async () => {
-  const { ctx } = loadBackground();
-  const calls = plain(vm.runInContext('CALL_SITES', ctx));
-  const out = plain(vm.runInContext('applyBudgetStage', ctx)(
-    { allowlist: calls.slice(), userChoices: {} }, 'strict'));
-  assert.deepEqual(out.allowlist.sort(), calls.slice().sort());
-});
-
-await test('auto-mode outranks the budget on a fast connection', async () => {
+await test('an old budget setting no longer changes what is blocked', async () => {
   const { ctx } = loadBackground();
   const out = plain(vm.runInContext('mergeSettings', ctx)(
-    { ads: true, images: true, media: true, autoMode: true,
+    { ads: false, images: false, media: false, allowlist: ['youtube.com'],
       budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 },
-    {}, { fast: true }, new Date(2026, 8, 27).getTime()));
-  assert.equal(out.images, false, 'a fast connection is almost certainly not the metered link');
-  assert.equal(out.media, true, 'auto-mode still must not touch video');
-});
-
-await test('an enforced policy outranks the budget', async () => {
-  const { ctx } = loadBackground();
-  const out = plain(vm.runInContext('mergeSettings', ctx)(
-    { ads: true, images: true, media: true, budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 },
-    { images: false }, null, new Date(2026, 8, 27).getTime()));
-  assert.equal(out.images, false, 'the budget overrode an administrator policy');
-});
-
-await test('a disabled budget changes nothing', async () => {
-  const { ctx } = loadBackground();
-  const out = plain(vm.runInContext('mergeSettings', ctx)(
-    { ads: false, images: false, media: false, budgetEnabled: false, budgetMB: 500 },
-    {}, null, new Date(2026, 8, 27).getTime()));
+    {}, null));
   assert.deepEqual([out.ads, out.images, out.media], [false, false, false]);
-  assert.equal(out.budgetStage, undefined);
+  assert.deepEqual(out.allowlist, ['youtube.com']);
 });
 
-await test('the stage is only re-applied when it actually moves', async () => {
-  const { chrome, ctx } = loadBackground();
-  chrome.storage.sync.set({ budgetEnabled: true, budgetMB: 500, budgetResetDay: 1 });
-  const first = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 2).getTime());
-  assert.equal(first, 'tight');
-  const again = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 3).getTime());
-  assert.equal(again, null, 'reconciled again despite the stage being unchanged');
-  const moved = await vm.runInContext('ensureBudgetStage', ctx)(new Date(2026, 8, 27).getTime());
-  assert.equal(moved, 'strict');
-});
-
-console.log('\nbackground.js — data used');
-
-const MB = 1024 * 1024;
-const resp = (over) => Object.assign({ url: 'https://example.com/a.js', type: 'script', fromCache: false, responseHeaders: [] }, over);
-
-await test('a response counts its Content-Length plus headers', async () => {
-  const { ctx } = loadBackground();
-  const bytes = vm.runInContext('responseBytes', ctx)(resp({ responseHeaders: [{ name: 'Content-Length', value: '50000' }] }));
-  assert.equal(bytes, 50000 + vm.runInContext('HEADER_BYTES', ctx));
-});
-
-await test('a response without Content-Length falls back to the typical size for its type', async () => {
-  const { ctx } = loadBackground();
-  const fallback = plain(vm.runInContext('NO_LENGTH_BYTES', ctx));
-  const header = vm.runInContext('HEADER_BYTES', ctx);
-  const bytes = vm.runInContext('responseBytes', ctx);
-  assert.equal(bytes(resp({ type: 'main_frame' })), fallback.main_frame + header);
-  assert.equal(bytes(resp({ type: 'websocket' })), fallback.other + header, 'unknown types use "other"');
-});
-
-await test('a response served from cache used no data', async () => {
-  const { ctx } = loadBackground();
-  const bytes = vm.runInContext('responseBytes', ctx)(resp({ fromCache: true, responseHeaders: [{ name: 'content-length', value: '9999' }] }));
-  assert.equal(bytes, 0);
-});
-
-await test('usage is bucketed by LOCAL day and pruned to 60 days', async () => {
-  const { ctx } = loadBackground();
-  const add = vm.runInContext('addUsage', ctx);
-  // 23:30 and 00:30 local are different days, whatever the UTC offset.
-  let usage = add({}, 100, new Date(2026, 8, 24, 23, 30).getTime());
-  usage = add(usage, 50, new Date(2026, 8, 25, 0, 30).getTime());
-  assert.deepEqual(plain(usage), { '2026-09-24': 100, '2026-09-25': 50 });
-
-  for (let i = 0; i < 70; i++) usage = add(usage, 1, new Date(2026, 9, 1 + i).getTime());
-  assert.equal(Object.keys(usage).length, 60);
-});
-
-await test('completed requests are summed in memory and written once', async () => {
-  const { chrome, ctx } = loadBackground();
-  const onCompleted = chrome._listeners.completed;
-  assert.ok(onCompleted, 'no webRequest.onCompleted listener was registered');
-  assert.deepEqual(plain(chrome._listeners.completedSpec.spec), ['responseHeaders']);
-
-  const header = vm.runInContext('HEADER_BYTES', ctx);
-  for (let i = 0; i < 3; i++) onCompleted(resp({ responseHeaders: [{ name: 'content-length', value: '1000' }] }));
-  onCompleted(resp({ url: 'chrome-extension://abc/blank.gif', type: 'image' }));   // not network traffic
-  onCompleted(resp({ url: 'data:image/gif;base64,R0lG', type: 'image' }));
-  await vm.runInContext('flushUsage', ctx)();
-  await settle();
-
-  const today = vm.runInContext('localDayKey', ctx)(Date.now());
-  assert.equal(chrome._local._dump().usage[today], 3 * (1000 + header));
-});
-
-console.log('\nbackground.js — daily budget');
-
-function dailyStage(ctx, over) {
-  return plain(vm.runInContext('budgetStage', ctx)(Object.assign({
-    budgetPeriod: 'day', budgetDailyMB: 1536, usedBytes: 0, budgetEase: null,
-    now: new Date(2026, 8, 24, 14, 0).getTime()
-  }, over))).stage;
-}
-
-await test('a daily budget tightens as Chrome uses the allowance', async () => {
-  const { ctx } = loadBackground();
-  const at = (usedMB) => dailyStage(ctx, { usedBytes: usedMB * MB });
-  assert.equal(at(0), 'relaxed');
-  assert.equal(at(700), 'relaxed');    // under half of 1.5 GB
-  assert.equal(at(800), 'normal');     // past half
-  assert.equal(at(1300), 'tight');     // past 80%
-  assert.equal(at(1536), 'strict');    // allowance reached
-  assert.equal(at(5000), 'strict');
-});
-
-await test('a daily budget ignores the calendar and the monthly allowance', async () => {
-  const { ctx } = loadBackground();
-  // Day 28 of the month with a tiny MONTHLY allowance would be strict on a
-  // monthly plan. On a daily plan with nothing used yet it must not be.
-  assert.equal(dailyStage(ctx, { budgetMB: 500, budgetResetDay: 1, now: new Date(2026, 8, 28, 9).getTime() }), 'relaxed');
-});
-
-await test('a daily budget with no allowance set behaves like a normal day', async () => {
-  const { ctx } = loadBackground();
-  assert.equal(dailyStage(ctx, { budgetDailyMB: 0, usedBytes: 10 * 1024 * MB }), 'normal');
-});
-
-await test('easing off a daily budget lasts until midnight only', async () => {
-  const { ctx } = loadBackground();
-  const now = new Date(2026, 8, 24, 20, 0).getTime();
-  const today = new Date(2026, 8, 24).getTime();
-  const used = 1300 * MB;
-  assert.equal(dailyStage(ctx, { now, usedBytes: used }), 'tight');
-  assert.equal(dailyStage(ctx, { now, usedBytes: used, budgetEase: { cycleStart: today } }), 'normal');
-  // Yesterday's ease has no effect today.
-  assert.equal(dailyStage(ctx, { now, usedBytes: used, budgetEase: { cycleStart: today - 86400000 } }), 'tight');
-});
-
-await test('easeBudget stamps today on a daily plan', async () => {
-  const { chrome, ctx } = loadBackground();
-  chrome.storage.sync.set({ budgetEnabled: true, budgetPeriod: 'day', budgetDailyMB: 1536 });
-  const now = new Date(2026, 8, 24, 20, 0).getTime();
-  await vm.runInContext('easeBudget', ctx)(now);
-  const { budgetEase } = await chrome.storage.sync.get({ budgetEase: null });
-  assert.equal(budgetEase.cycleStart, new Date(2026, 8, 24).getTime());
-});
-
-await test('mergeSettings applies the daily stage from today\'s usage', async () => {
-  const { ctx } = loadBackground();
-  const merge = vm.runInContext('mergeSettings', ctx);
-  const user = { ads: false, images: false, media: false, allowlist: ['youtube.com'], userChoices: {},
-    budgetEnabled: true, budgetPeriod: 'day', budgetDailyMB: 1024 };
-  const now = new Date(2026, 8, 24, 12).getTime();
-  const early = plain(merge(user, {}, null, now, 100 * MB));
-  assert.deepEqual([early.ads, early.images, early.media, early.budgetStage], [true, false, false, 'relaxed']);
-  const spent = plain(merge(user, {}, null, now, 1100 * MB));
-  assert.equal(spent.budgetStage, 'strict');
-  assert.deepEqual(spent.allowlist, [], 'strict should trim the shipped video sites');
-});
-
-await test('recorded usage moves the daily stage and triggers one reconcile', async () => {
-  const { chrome, ctx } = loadBackground();
-  chrome.storage.sync.set({ budgetEnabled: true, budgetPeriod: 'day', budgetDailyMB: 1 });
-  const now = Date.now();
-  const ensure = vm.runInContext('ensureBudgetStage', ctx);
-  assert.equal(await ensure(now), 'relaxed');
-  // 1 MB allowance; a 2 MB response pushes it past the cap.
-  chrome._listeners.completed(resp({ responseHeaders: [{ name: 'content-length', value: String(2 * MB) }] }));
-  await vm.runInContext('flushUsage', ctx)(now);
+await test('an update deletes what the retired features stored, and nothing else', async () => {
+  const { chrome } = loadBackground();
+  chrome.storage.sync._reset({
+    ads: true, images: false, media: true, allowlist: ['mybank.example'],
+    budgetEnabled: true, budgetPeriod: 'day', budgetMB: 500, budgetResetDay: 3,
+    budgetDailyMB: 1536, budgetEase: { cycleStart: 1 }
+  });
+  chrome.storage.local._reset({
+    stats: { ads: 5, images: 0, media: 0, bytes: 1, since: 1 }, history: { '2026-09-30': {} },
+    usage: { '2026-09-30': 123 }, appliedBudgetStage: 'tight'
+  });
+  for (const fn of chrome._listeners.installed) fn({ reason: 'update' });
   await settle(12);
-  const { appliedBudgetStage } = await chrome.storage.local.get({ appliedBudgetStage: null });
-  assert.equal(appliedBudgetStage, 'strict');
-});
 
-await test('an existing monthly budget is untouched by the upgrade', async () => {
-  const { ctx } = loadBackground();
-  // A 2.4 profile has no budgetPeriod at all; it must stay monthly.
-  const stage = plain(vm.runInContext('budgetStage', ctx)({
-    budgetMB: 5 * GB, budgetResetDay: 1, budgetEase: null, usedBytes: 99 * 1024 * MB,
-    now: new Date(2026, 8, 2).getTime()
-  })).stage;
-  assert.equal(stage, 'relaxed', 'monthly pacing must not react to measured usage');
+  const sync = plain(chrome.storage.sync._dump());
+  const local = plain(chrome.storage.local._dump());
+  for (const k of Object.keys(sync)) assert.ok(!k.startsWith('budget'), `${k} survived the update`);
+  assert.ok(!('usage' in local), 'the daily data-used totals survived the update');
+  assert.ok(!('appliedBudgetStage' in local));
+  assert.equal(sync.images, false, "the update changed the user's own switch");
+  assert.ok(sync.allowlist.includes('mybank.example'));
+  assert.equal(local.stats.ads, 5, 'the savings counter was wiped');
+  assert.ok(local.history['2026-09-30'], 'the savings history was wiped');
 });
 
 console.log('\nbackground.js — load one image / play one page');

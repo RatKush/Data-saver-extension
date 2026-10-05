@@ -18,8 +18,6 @@ SEE WHAT YOU SAVE
 
 📊 The popup counts everything blocked and estimates the bytes that saved, worked out on your device.
 
-🧮 Usage — about how much Chrome downloaded today, this week and this month. Other apps on your plan are not included.
-
 📈 The dashboard adds a 14-day trend and the sites where you saved most.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -28,7 +26,7 @@ CONTROL, NOT ALL-OR-NOTHING
 
 ▶️ The big streaming and social sites work out of the box — you already know they are heavy, and blocking them just breaks them. One tap turns blocking on for any of them.
 
-📞 Calls, chat and remote desktop are never interrupted. Popular video-call, messaging and remote-desktop services are left alone, even at the strictest budget stage.
+📞 Calls, chat and remote desktop are never interrupted. Popular video-call, messaging and remote-desktop services are left alone.
 
 ⚡ One tap pauses everything on the current site without touching your other settings, or press Alt+Shift+D. The toolbar icon shows OFF there, and the choice sticks.
 
@@ -39,8 +37,6 @@ CONTROL, NOT ALL-OR-NOTHING
 🚪 Pop-up windows (on, can be switched off) — stops windows a page opens by itself. Ones you open by clicking still work.
 
 📶 Connection speed (optional) — lets pictures through when your connection is fast, using the browser's own speed estimate.
-
-🪫 Budget (optional) — on a daily plan, say 1.5 GB, blocking gets progressively stricter as today's usage nears the allowance, and resets at midnight. On a monthly plan it tightens as the billing cycle runs down.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

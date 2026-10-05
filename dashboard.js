@@ -268,7 +268,7 @@ function renderProfiles(siteProfiles, sync, managedKeys) {
 // Premium switches
 // ---------------------------------------------------------------------------
 function bindSwitches(settings, managedKeys) {
-  for (const key of ['siteHistory', 'autoMode', 'consent', 'popups', 'budgetEnabled']) {
+  for (const key of ['siteHistory', 'autoMode', 'consent', 'popups']) {
     const el = document.getElementById(key);
     el.checked = Boolean(settings[key]);
     // A managed setting is shown at its enforced value and locked, rather
@@ -280,124 +280,10 @@ function bindSwitches(settings, managedKeys) {
     el.onchange = () => chrome.storage.sync.set({ [key]: el.checked }, () => {
       // background.js clears the recorded sites when this goes off; re-read
       // so the page shows that straight away rather than stale rows.
-      if (key === 'siteHistory' || key === 'budgetEnabled') load();
+      if (key === 'siteHistory') load();
     });
   }
   document.getElementById('managedNotice').classList.toggle('visible', managedKeys.length > 0);
-}
-
-// ---------------------------------------------------------------------------
-// Data budget
-// ---------------------------------------------------------------------------
-const STAGE_LABEL = {
-  relaxed: 'budgetRelaxed', normal: 'budgetNormal',
-  tight: 'budgetTight', strict: 'budgetStrict'
-};
-
-function renderBudget(settings) {
-  const period = document.getElementById('budgetPeriod');
-  const dailyGb = document.getElementById('budgetDailyGB');
-  const gb = document.getElementById('budgetGB');
-  const day = document.getElementById('budgetResetDay');
-  const badge = document.getElementById('budgetStage');
-  const on = Boolean(settings.budgetEnabled);
-  const daily = settings.budgetPeriod === 'day';
-
-  // Stored in MB so the pacing maths has no fractions; shown in GB because
-  // that is the unit every carrier quotes.
-  period.value = daily ? 'day' : 'month';
-  dailyGb.value = settings.budgetDailyMB ? (settings.budgetDailyMB / 1024) : '';
-  gb.value = settings.budgetMB ? (settings.budgetMB / 1024) : '';
-  day.value = settings.budgetResetDay || 1;
-  period.disabled = dailyGb.disabled = gb.disabled = day.disabled = !on;
-
-  // Only the fields for the chosen plan are shown. Both allowances are kept,
-  // so switching back and forth never loses what was typed.
-  document.getElementById('dailyField').hidden = !daily;
-  document.getElementById('monthlyField').hidden = daily;
-  document.getElementById('resetField').hidden = daily;
-
-  period.onchange = () => chrome.storage.sync.set({ budgetPeriod: period.value }, load);
-  dailyGb.onchange = () => {
-    const value = Math.max(0, parseFloat(dailyGb.value) || 0);
-    chrome.storage.sync.set({ budgetDailyMB: Math.round(value * 1024) }, load);
-  };
-  gb.onchange = () => {
-    const value = Math.max(0, parseFloat(gb.value) || 0);
-    chrome.storage.sync.set({ budgetMB: Math.round(value * 1024) }, load);
-  };
-  day.onchange = () => {
-    // Clamped to 28 for the same reason cycleInfo clamps it: the anchor has
-    // to exist in February.
-    const value = Math.min(Math.max(parseInt(day.value, 10) || 1, 1), 28);
-    day.value = value;
-    chrome.storage.sync.set({ budgetResetDay: value }, load);
-  };
-
-  if (!on) { badge.hidden = true; return; }
-
-  chrome.runtime.sendMessage({ type: 'ds-budget-state' }, (res) => {
-    void chrome.runtime.lastError;
-    if (!res || !res.enabled) { badge.hidden = true; return; }
-    badge.textContent = budgetLine(res);
-    badge.hidden = false;
-  });
-}
-
-// Shared shape with popup.js: "Day 3 of 30 \u00b7 Normal" on a monthly plan,
-// "Today: about 820 MB of 1.5 GB \u00b7 Normal" on a daily one.
-function budgetLine(res) {
-  const stage = t(STAGE_LABEL[res.stage]) || res.stage;
-  if (res.period === 'day' && res.allowanceBytes > 0) {
-    const used = formatBytes(res.usedBytes);
-    const allowance = formatBytes(res.allowanceBytes);
-    return t('dashBudgetToday', used, allowance, stage) || `Today: about ${used} of ${allowance} \u00b7 ${stage}`;
-  }
-  return t('dashBudgetNow', String(res.day), String(res.days), stage)
-    || `Day ${res.day} of ${res.days} \u00b7 ${stage}`;
-}
-
-// ---------------------------------------------------------------------------
-// Data used
-// ---------------------------------------------------------------------------
-function formatBytes(bytes) {
-  const n = bytes || 0;
-  if (n >= 1024 ** 3) return `${(n / 1024 ** 3).toFixed(n >= 10 * 1024 ** 3 ? 0 : 1)} GB`;
-  if (n >= 1024 ** 2) return `${Math.round(n / 1024 ** 2)} MB`;
-  if (n >= 1024) return `${Math.round(n / 1024)} KB`;
-  return `${n} B`;
-}
-
-// Usage keys are LOCAL dates (background.js localDayKey) \u2014 a daily plan
-// resets at the user's midnight \u2014 unlike the savings history, which is UTC.
-function localDayKey(ts) {
-  const d = new Date(ts);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function renderUsage(usage) {
-  const now = Date.now();
-  const on = (i) => usage[localDayKey(now - i * DAY_MS)] || 0;
-  const sum = (n) => { let out = 0; for (let i = 0; i < n; i++) out += on(i); return out; };
-
-  document.getElementById('uToday').textContent = formatBytes(on(0));
-  document.getElementById('u7').textContent = formatBytes(sum(7));
-  document.getElementById('u30').textContent = formatBytes(sum(30));
-
-  const trend = document.getElementById('usageTrend');
-  trend.textContent = '';
-  const days = [];
-  for (let i = 13; i >= 0; i--) days.push({ ts: now - i * DAY_MS, bytes: on(i) });
-  const peak = Math.max(1, ...days.map((d) => d.bytes));
-  for (const day of days) {
-    const bar = document.createElement('div');
-    bar.style.height = `${Math.max((day.bytes / peak) * 100, 2)}%`;
-    bar.title = `${shortDate(day.ts)} \u2014 ${formatBytes(day.bytes)}`;
-    if (!day.bytes) bar.style.opacity = '0.25';
-    trend.appendChild(bar);
-  }
-  document.getElementById('usageFrom').textContent = shortDate(days[0].ts);
-  document.getElementById('usageTo').textContent = shortDate(days[days.length - 1].ts);
 }
 
 // ---------------------------------------------------------------------------
@@ -462,13 +348,9 @@ function initBackup() {
 function load() {
   chrome.storage.sync.get(
     { siteProfiles: {}, autoMode: false, consent: false, popups: false, siteHistory: false,
-      budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1, budgetDailyMB: 0,
       allowlist: [], seededDefaults: [], userChoices: {} },
     (settings) => {
-      renderBudget(settings);
-
-      chrome.storage.local.get({ stats: {}, history: {}, siteStats: {}, usage: {} }, (local) => {
-        renderUsage(local.usage || {});
+      chrome.storage.local.get({ stats: {}, history: {}, siteStats: {} }, (local) => {
         renderHistory(local.history || {}, local.stats || {});
         // Read together, because whether the list should appear at all is a
         // sync setting while the list itself is local.
@@ -508,10 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clearHistory').addEventListener('click', () => {
     // Deliberately separate from the popup's Reset: this clears the record of
     // WHICH SITES were visited, which is the only browsing-shaped data the
-    // extension keeps, and a user should be able to drop it on its own. The
-    // daily data-used totals go with it — the privacy policy promises that
-    // everything the extension stores can be cleared from the extension.
-    chrome.storage.local.set({ history: {}, siteStats: {}, usage: {} }, load);
+    // extension keeps, and a user should be able to drop it on its own.
+    chrome.storage.local.set({ history: {}, siteStats: {} }, load);
   });
 
   load();

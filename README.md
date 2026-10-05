@@ -13,7 +13,7 @@ For the biggest savings keep all three blocks on (ads, images and video). Measur
 
 - **Three independent toggles** — ads and trackers, images, video and audio.
 - **One tap to unblock the current site**, from the top of the popup or with `Alt+Shift+D`. The toolbar badge reads `OFF` where blocking is paused.
-- **Video, call and remote-desktop sites ship unblocked** — YouTube, Netflix, Instagram, Twitch and other video platforms; Google Meet, Zoom, Teams, Webex, JioMeet and other meeting apps; Chrome Remote Desktop, AnyDesk, TeamViewer and Splashtop; and WhatsApp Web, Discord and Slack, so voice notes and calls play. Blocking them just breaks them, and a data budget never re-blocks a call or a remote session.
+- **Video, call and remote-desktop sites ship unblocked** — YouTube, Netflix, Instagram, Twitch and other video platforms; Google Meet, Zoom, Teams, Webex, JioMeet and other meeting apps; Chrome Remote Desktop, AnyDesk, TeamViewer and Splashtop; and WhatsApp Web, Discord and Slack, so voice notes and calls play. Blocking them just breaks them.
 - **Per-site rules** — block ads on a site but let its images through, or the reverse. Subdomain-aware.
 - **Savings meter** — the exact number of blocked requests, with an estimate of the data that saved beside it.
 - **Dashboard** — a 14-day trend, your per-site rules, and everything below. Open it from the popup.
@@ -21,14 +21,12 @@ For the biggest savings keep all three blocks on (ads, images and video). Measur
 - **Pop-up blocking** (on by default) — stops windows a page opens on its own; ones you click still work.
 - **Adapt to connection speed** (off by default) — stops blocking images on a fast connection.
 - **Load one image, play one video** — a blocked image shows a faint placeholder with a *Load image* button, and a stopped video offers *Play on this page*. Nothing else on the site is unblocked.
-- **Data used** — about how much Chrome downloaded today, this week and this month, measured from the size of each download.
-- **Data budget** (off by default) — for a **daily** plan (e.g. 1.5 GB a day) it blocks harder as Chrome's usage today nears the allowance; for a **monthly** plan it blocks harder as the billing cycle runs down.
 - **Managed policy** — settings can be pinned by an administrator, and any configuration exports as a file.
 - Ships in **25 languages**.
 
-Two things to know: the savings figure in bytes is an **estimate** derived from blocked-request counts, because Chrome exposes no size for a request that never happened; and "data used" counts **Chrome only** — other apps on the device share your carrier's allowance, so it never claims to know how much data you have left.
+One thing to know: the savings figure in bytes is an **estimate** derived from blocked-request counts, because Chrome exposes no size for a request that never happened.
 
-**Privacy:** there is no server, no analytics and no telemetry. Everything is stored on your own device. The data-used meter keeps one number per day — no addresses, no sites. The site-history list (on by default since 2.5) stays on your device and is deleted when you switch it off.
+**Privacy:** there is no server, no analytics and no telemetry. Everything is stored on your own device. The site-history list (on by default since 2.5) stays on your device and is deleted when you switch it off.
 
 | **Category** | **Typical Percentage of Total Page Weight** | **Notes** |
 |--------------|---------------------------------------------|------------|

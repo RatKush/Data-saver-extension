@@ -340,14 +340,13 @@ def main():
         dash = probe("dashboard.html", """(() => {
           const t7 = document.getElementById('t7');
           const trend = document.getElementById('trend');
-          const gb = document.getElementById('budgetGB');
 
           // The switches are 0x0 invisible inputs behind a styled slider. If
           // the slider is not inside a label the click lands on nothing and
           // the control is decorative — which is exactly what shipped once.
           // Rendering proves nothing here; only clicking does.
           const clickable = {};
-          for (const id of ['siteHistory','autoMode','consent','popups','budgetEnabled']) {
+          for (const id of ['siteHistory','autoMode','consent','popups']) {
             const input = document.getElementById(id);
             if (!input) { clickable[id] = 'missing'; continue; }
             const slider = input.parentElement.querySelector('.slider');
@@ -360,7 +359,6 @@ def main():
           return JSON.stringify({
             totals: (t7 && t7.textContent || '').trim(),
             trendBars: trend ? trend.children.length : 0,
-            budgetField: !!gb,
             topSites: !!document.getElementById('topSites').textContent.trim(),
             clickable
           });
@@ -380,8 +378,6 @@ def main():
             print("  ✗ popup: savings figure stayed hidden despite counted blocks"); ui_ok = False
         if da.get("trendBars") != 14:
             print(f"  ✗ dashboard: expected a 14-day trend, saw {da.get('trendBars')} bars"); ui_ok = False
-        if not da.get("budgetField"):
-            print("  ✗ dashboard: data budget controls missing"); ui_ok = False
         for name, result in (da.get("clickable") or {}).items():
             if result is not True:
                 print(f"  ✗ dashboard: the {name} switch does not respond to a click ({result})")

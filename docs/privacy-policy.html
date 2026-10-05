@@ -26,7 +26,7 @@
     <p class="dek">A browser extension that blocks ads, images, and autoplaying video to reduce bandwidth use.</p>
   
     <dl class="facts">
-      <div><dt>Effective</dt><dd>September 25, 2026</dd></div>
+      <div><dt>Effective</dt><dd>October 5, 2026</dd></div>
       <div><dt>Applies to</dt><dd>Data Saver v2.3+</dd></div>
       <div><dt>Data collected</dt><dd>None</dd></div>
     </dl>
@@ -39,7 +39,7 @@
     
       <h2>What this extension does</h2>
       <p>Data Saver blocks advertising and tracking requests, blocks images, and stops video/audio from autoplaying or streaming, using Chrome's built-in <code>declarativeNetRequest</code> API. Blocking decisions are made by Chrome itself, evaluating rule files bundled inside the extension package — Data Saver's own code never reads the content of the pages you visit.</p>
-      <p>Since v2.5 the extension also adds up how much data Chrome downloads, so it can show "data used today" and pace a daily data budget. To do that, Chrome passes it the details of each download as it finishes, including its address and its size. The extension reads the size, adds it to one running total for the day, and keeps nothing else — not the address, not the site, not the content. Nothing is sent anywhere.</p>
+      <p>Version 2.5 also added up how much data Chrome downloaded, to show "data used today" and pace an optional data budget. Chrome passed it the details of each download as it finished, including its address and its size; the extension read the size, added it to one running total for the day, and kept nothing else — not the address, not the site, not the content. Nothing was sent anywhere. Both features were removed in v2.6, and updating to v2.6 deletes the stored totals and any budget settings.</p>
     
   
     
@@ -54,13 +54,13 @@
       <h3>What is stored on your own device</h3>
       <p>Being precise about this matters more than the sentence above, because the extension does keep things — it just keeps them where only you can see them.</p>
       <ul>
-        <li><strong>Your settings</strong> — the on/off preference for each blocking category, sites you've chosen not to block on, any per-site rules you've created, and the optional data-budget figures. Held in Chrome's <code>storage.sync</code>, under your own Google account if Chrome Sync is enabled, never accessible to us.</li>
+        <li><strong>Your settings</strong> — the on/off preference for each blocking category, sites you've chosen not to block on, and any per-site rules you've created. Held in Chrome's <code>storage.sync</code>, under your own Google account if Chrome Sync is enabled, never accessible to us.</li>
         <li><strong>Blocked-request counts</strong> — how many ads, images and videos have been blocked, an estimated byte total, and a per-day tally for the last 60 days, so the extension can show you your own savings. Numbers only; no addresses, no page content.</li>
-        <li><strong>Data used</strong> — one estimated byte total per day for the last 60 days (since v2.5). Numbers only; no addresses, no sites, no page content.</li>
+        <li><strong>Data used (v2.5 only)</strong> — one estimated byte total per day for the last 60 days, and the data-budget settings if you set one. Numbers only; no addresses, no sites, no page content. Deleted when the extension updates to v2.6.</li>
         <li><strong>A list of sites where something was blocked — unless you switch it off.</strong> This is the one thing the extension records that resembles browsing history. "Remember which sites" stores a capped list of hostnames so the dashboard can show where your savings came from. Since v2.5 it is <strong>on by default</strong> — for new installs, and for existing users when they update to v2.5, unless they had already switched it off. Switching it off in the dashboard deletes the list immediately, and it stays off. It stays on your device either way and is never sent anywhere.</li>
         <li><strong>An administrator policy</strong>, if one has been deployed to your machine by a school or employer. That is read-only, read locally, and nothing is reported back to the administrator by this extension.</li>
       </ul>
-      <p>Everything above can be cleared from the extension itself — the savings counter has a Reset control, and the dashboard's Clear history control deletes the daily history, the data-used totals and the site list.</p>
+      <p>Everything above can be cleared from the extension itself — the savings counter has a Reset control, and the dashboard's Clear history control deletes the daily history and the site list (and, in v2.5, the data-used totals).</p>
       <p>Two things are kept only briefly, in memory, while you use them (since v2.5):</p>
       <ul>
         <li><strong>An image you asked to load.</strong> Pressing "Load image" on a blocked image creates a rule for that one image's address in that one tab, so Chrome lets it through. The rule is removed as soon as the image loads, and within about a minute in any case.</li>
@@ -101,8 +101,8 @@
             <td class="perm-why">Registers the on-page scripts that pause autoplay video/audio (and, when you press play on a stopped video, offer to play it on that page), show a placeholder with a "Load image" button where an image was blocked, and count how many requests were blocked so the popup can show you your own total. Two further scripts &mdash; answering cookie banners and blocking unrequested pop-ups &mdash; run while those features are on (on by default since v2.5; either can be switched off in the dashboard).</td>
           </tr>
           <tr>
-            <td class="perm-name">webRequest</td>
-            <td class="perm-why">Lets the extension <em>observe</em> — not change or block — each download as it finishes, so it can add its size to the day's "data used" total. Only the size is kept, as part of one number per day. Blocking is still done by <code>declarativeNetRequest</code> above.</td>
+            <td class="perm-name">webRequest (v2.5 only)</td>
+            <td class="perm-why">In v2.5, let the extension <em>observe</em> — not change or block — each download as it finished, so it could add its size to the day's "data used" total. Only the size was kept, as part of one number per day. No longer requested from v2.6.</td>
           </tr>
         </tbody>
       </table></div>

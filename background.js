@@ -81,8 +81,8 @@ const SITE_PROFILE_RULE_PRIORITY = 900;  // above the statics, below a full paus
 // 🔑 Entitlement
 // ----------------------------
 // THE PAYWALL LINE. Everything that shipped in 2.3 is free and stays free —
-// per-site rules, savings history, the data budget, connection-aware mode,
-// cookie banners, pop-up blocking, managed policy, export/import. Those were
+// per-site rules, savings history, connection-aware mode, cookie banners,
+// pop-up blocking, managed policy, export/import. Those were
 // released unlocked, and gating them afterwards would be taking capability
 // away from people who already have it.
 //
@@ -225,109 +225,6 @@ function recordBlocked(counts, host, now = Date.now()) {
 }
 
 // ----------------------------
-// 📶 Data used
-// ----------------------------
-// Everything above counts what was BLOCKED. This counts what Chrome actually
-// DOWNLOADED, which is what a daily-capped plan runs out of.
-//
-// HOW. A non-blocking webRequest listener reads each completed response's
-// Content-Length. Observing is all MV3 allows here and all this needs; the
-// permission adds no install warning beyond the site access the extension
-// already has (checked with management.getPermissionWarningsByManifest in
-// Chrome 154), so the update does not disable anyone's copy.
-//
-// HOW GOOD. Measured in real Chrome against DevTools' own byte counts on 17
-// sites: Content-Length alone caught ~90% of the bytes, because compressed
-// HTML, scripts and styles often arrive without one. Filling those in with
-// the median size of such a response, by type, brought the total to within
-// ~5%. Individual sites still ranged from 0.3x (x.com) to 1.4x (aajtak.in),
-// so the figure is always shown as "about".
-//
-// WHAT IT CANNOT SEE. Other apps on the device, other browsers, and Chrome's
-// own updates. The carrier's cap covers all of them, so the budget's copy tells
-// the user to leave headroom rather than implying this is the whole picture.
-//
-// PRIVACY. One number per day. No URLs, no hostnames.
-const USAGE_DAYS = 60;
-const USAGE_FLUSH_MS = 5000;
-const NO_LENGTH_BYTES = {
-  main_frame: 68 * 1024,
-  sub_frame: 0,
-  script: 9 * 1024,
-  stylesheet: 2 * 1024,
-  image: 1024,
-  xmlhttprequest: 512,
-  ping: 0,
-  other: 2 * 1024
-};
-const HEADER_BYTES = 150;
-
-// LOCAL date, unlike dayKey above: a daily plan resets at the user's midnight,
-// not at UTC's, which is 05:30 in the morning in India.
-function localDayKey(now) {
-  const d = new Date(now);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function responseBytes(details) {
-  if (!details || details.fromCache) return 0;
-  const header = (details.responseHeaders || []).find((h) => h.name.toLowerCase() === 'content-length');
-  const length = header ? parseInt(header.value, 10) : NaN;
-  const body = Number.isFinite(length) && length >= 0
-    ? length
-    : (NO_LENGTH_BYTES[details.type] ?? NO_LENGTH_BYTES.other);
-  return body + HEADER_BYTES;
-}
-
-// Pure, for the same reason addToHistory is.
-function addUsage(usage, bytes, now) {
-  const out = Object.assign({}, usage);
-  const key = localDayKey(now);
-  out[key] = (out[key] || 0) + bytes;
-  const keys = Object.keys(out).sort();
-  for (const k of keys.slice(0, Math.max(0, keys.length - USAGE_DAYS))) delete out[k];
-  return out;
-}
-
-function usedToday(usage, now) {
-  return (usage && usage[localDayKey(now)]) || 0;
-}
-
-// A busy page completes hundreds of requests a second, so bytes are summed in
-// memory and written every few seconds. A worker stopped before the timer
-// fires loses at most that window, which is noise next to the estimate itself.
-let pendingUsage = 0;
-let usageTimer = null;
-
-function flushUsage(now = Date.now()) {
-  usageTimer = null;
-  const bytes = pendingUsage;
-  pendingUsage = 0;
-  if (!bytes) return statsQueue;
-
-  // Same queue as the blocked counts, so the two writes never interleave.
-  statsQueue = statsQueue.then(async () => {
-    const { usage } = await chrome.storage.local.get({ usage: {} });
-    await chrome.storage.local.set({ usage: addUsage(usage, bytes, now) });
-  }).catch((e) => console.warn('⚠️ Could not record data used:', e));
-
-  // A daily budget moves with usage, so this is when its stage can change.
-  statsQueue.then(() => ensureBudgetStage(now))
-    .catch((e) => console.warn('⚠️ Could not re-check the data budget:', e));
-  return statsQueue;
-}
-
-function onResponseCompleted(details) {
-  if (!/^https?:/i.test(details.url || '')) return;
-  const bytes = responseBytes(details);
-  if (!bytes) return;
-  pendingUsage += bytes;
-  if (usageTimer === null) usageTimer = setTimeout(() => flushUsage(), USAGE_FLUSH_MS);
-}
-
-chrome.webRequest.onCompleted.addListener(onResponseCompleted, { urls: ['<all_urls>'] }, ['responseHeaders']);
-
-// ----------------------------
 // ⭐ Review prompt
 // ----------------------------
 // The listing has no ratings at all, which suppresses both search ranking and
@@ -429,10 +326,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const counts = Object.assign({}, msg.counts);
         counts.ads = (counts.ads || 0) + frames;
         return recordBlocked(counts, host);
-      })
-      // Never let a budget re-check break the counting it rides on.
-      .then(() => ensureBudgetStage())
-      .catch((e) => console.warn('⚠️ Could not re-check the data budget:', e));
+      });
     sendResponse({ ok: true });
     return false;
   }
@@ -516,39 +410,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       .catch((e) => {
         console.warn('⚠️ Could not import settings:', e);
         sendResponse({ ok: false, error: String(e && e.message || e) });
-      });
-    return true;
-  }
-
-  if (msg.type === 'ds-budget-state') {
-    readBudget()
-      .then((cfg) => {
-        if (!cfg.budgetEnabled) { sendResponse({ enabled: false }); return; }
-        const { stage, cycle } = budgetStage(cfg);
-        sendResponse({
-          enabled: true,
-          stage,
-          period: cfg.budgetPeriod === 'day' ? 'day' : 'month',
-          day: cycle.dayIndex,
-          days: cycle.days,
-          usedBytes: cfg.usedBytes,
-          allowanceBytes: (cfg.budgetPeriod === 'day' ? cfg.budgetDailyMB : cfg.budgetMB) * 1024 * 1024,
-          eased: Boolean(cfg.budgetEase && cfg.budgetEase.cycleStart === cycle.start)
-        });
-      })
-      .catch((e) => {
-        console.warn('⚠️ Could not read the data budget:', e);
-        sendResponse({ enabled: false });
-      });
-    return true;
-  }
-
-  if (msg.type === 'ds-budget-ease') {
-    easeBudget()
-      .then(() => sendResponse({ ok: true }))
-      .catch((e) => {
-        console.warn('⚠️ Could not ease the data budget:', e);
-        sendResponse({ ok: false });
       });
     return true;
   }
@@ -778,173 +639,6 @@ function setSiteProfile(hostname, profile, merge = false) {
 }
 
 // ----------------------------
-// 🪫 Data budget
-// ----------------------------
-// WHAT THIS IS NOT: a carrier meter.
-//   - stats.bytes is what we BLOCKED, inferred from AVG_BYTES, not what was used.
-//   - "Data used" (above) is an estimate of what CHROME downloaded, from
-//     response headers. Good to ~5% in aggregate, but it cannot see other apps.
-//   - The carrier's cap covers the whole DEVICE. We see one browser.
-// So the UI never says "1.2 GB remaining". It says what it actually did, and
-// on a daily plan, about how much Chrome has used against the allowance.
-//
-// WHAT THIS IS: a pacing policy. On a monthly plan the allowance sets where on
-// the ladder the cycle starts and the calendar walks it up from there — a
-// month is too long for one browser's share of it to mean much. On a daily
-// plan Chrome's own usage walks it up (see dayInfo). Every output is
-// something we control.
-const BUDGET_STAGES = ['relaxed', 'normal', 'tight', 'strict'];
-
-// Where a cycle starts, by allowance. A tiny plan begins cautious; a very
-// large one begins relaxed and is capped below 'strict' further down.
-function budgetBaseStage(budgetMB) {
-  if (!budgetMB || budgetMB <= 0) return 1;      // unset — behave like a normal month
-  if (budgetMB < 1024) return 2;                 // under 1 GB
-  if (budgetMB < 5 * 1024) return 1;             // 1-5 GB
-  return 0;                                      // 5 GB and up
-}
-
-// Billing cycles are anchored to a day of the month. Capped at 28 so the
-// anchor exists in February and the cycle length never silently changes.
-function cycleInfo(resetDay, now) {
-  const day = Math.min(Math.max(parseInt(resetDay, 10) || 1, 1), 28);
-  const d = new Date(now);
-  const start = new Date(d.getFullYear(), d.getMonth(), day);
-  if (d < start) start.setMonth(start.getMonth() - 1);
-  const end = new Date(start.getFullYear(), start.getMonth() + 1, day);
-
-  const days = Math.round((end - start) / DAY_MS);
-  const elapsed = (d - start) / DAY_MS;
-  return {
-    start: start.getTime(),
-    days,
-    dayIndex: Math.min(Math.floor(elapsed) + 1, days),
-    fraction: Math.min(Math.max(elapsed / days, 0), 1)
-  };
-}
-
-// DAILY PLANS. Most prepaid plans in India, and many elsewhere, are a daily
-// cap — 1.5 or 2 GB that resets at midnight — and pacing one of those from the
-// calendar means nothing: the day is the whole cycle. So a daily budget is
-// paced from what Chrome has downloaded today (see "Data used" above) instead.
-// That is a measurement of ONE browser, not of the device, and the dashboard
-// says so; the thresholds sit early enough that other apps have headroom.
-function dayInfo(now) {
-  const d = new Date(now);
-  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  return { start, days: 1, dayIndex: 1, fraction: 0 };
-}
-
-function dailyBaseStage(budgetDailyMB, usedBytes) {
-  if (!budgetDailyMB || budgetDailyMB <= 0) return 1; // unset — behave like a normal day
-  const share = (usedBytes || 0) / (budgetDailyMB * 1024 * 1024);
-  if (share >= 1) return 3;
-  if (share >= 0.8) return 2;
-  if (share >= 0.5) return 1;
-  return 0;
-}
-
-// Pure: the stage this cycle is on right now.
-function budgetStage({ budgetPeriod, budgetMB, budgetResetDay, budgetDailyMB, usedBytes, budgetEase, now }) {
-  const daily = budgetPeriod === 'day';
-  const cycle = daily ? dayInfo(now) : cycleInfo(budgetResetDay, now);
-
-  let index;
-  if (daily) {
-    index = dailyBaseStage(budgetDailyMB, usedBytes);
-    cycle.fraction = budgetDailyMB > 0 ? Math.min((usedBytes || 0) / (budgetDailyMB * 1024 * 1024), 1) : 0;
-  } else {
-    index = budgetBaseStage(budgetMB);
-    if (cycle.fraction >= 0.5) index += 1;
-    if (cycle.fraction >= 0.8) index += 1;
-
-    // A generous allowance never reaches the stage that trims the video
-    // allowlist — at 20 GB the cap is not what is going to bite.
-    const ceiling = (budgetMB && budgetMB >= 20 * 1024) ? 1 : BUDGET_STAGES.length - 1;
-    index = Math.min(index, ceiling);
-  }
-
-  // "Ease off" drops one stage for the REST OF THIS CYCLE only, so the choice
-  // does not silently persist into a month the user never agreed to.
-  if (budgetEase && budgetEase.cycleStart === cycle.start) index -= 1;
-
-  index = Math.min(Math.max(index, 0), BUDGET_STAGES.length - 1);
-  return { stage: BUDGET_STAGES[index], index, cycle };
-}
-
-// What each stage actually switches on. It can only ever ADD blocking —
-// a budget that turned protection off would be a bug, not a feature.
-function applyBudgetStage(data, stage) {
-  const out = Object.assign({}, data);
-  if (stage === 'relaxed') {
-    out.ads = true;
-  } else if (stage === 'normal') {
-    out.ads = true;
-    out.media = true;
-  } else if (stage === 'tight' || stage === 'strict') {
-    out.ads = true;
-    out.images = true;
-    out.media = true;
-  }
-
-  if (stage === 'strict') {
-    // Drop the video platforms we shipped unblocked, but keep anything the
-    // user explicitly chose (userChoices[x] === true) and every call site.
-    // This is exactly the distinction userChoices was added to preserve.
-    const choices = data.userChoices || {};
-    out.allowlist = (data.allowlist || []).filter(
-      (d) => choices[d] === true || CALL_SITES.includes(d)
-    );
-  }
-
-  out.budgetStage = stage;
-  return out;
-}
-
-// The stage advances with the calendar, so it has to be re-applied without
-// the user touching anything. Rather than add an alarms permission for it,
-// this rides on traffic the extension already sees: the counter reports
-// blocked requests constantly while browsing, which is exactly when a stage
-// change matters. One local read, and a reconcile only when it actually moved.
-const BUDGET_DEFAULTS = {
-  budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1,
-  budgetDailyMB: 0, budgetEase: null
-};
-
-// Everything budgetStage needs, read from where it lives: the plan is a synced
-// preference, today's usage is a local observation.
-function readBudget(now = Date.now()) {
-  return Promise.all([
-    chrome.storage.sync.get(BUDGET_DEFAULTS),
-    chrome.storage.local.get({ usage: {} })
-  ]).then(([cfg, { usage }]) => Object.assign({}, cfg, { usedBytes: usedToday(usage, now), now }));
-}
-
-function ensureBudgetStage(now = Date.now()) {
-  return readBudget(now).then((cfg) => {
-    if (!cfg.budgetEnabled) return null;
-    const { stage } = budgetStage(cfg);
-    return chrome.storage.local.get({ appliedBudgetStage: null }).then(({ appliedBudgetStage }) => {
-      if (appliedBudgetStage === stage) return null;
-      return chrome.storage.local
-        .set({ appliedBudgetStage: stage })
-        .then(() => { loadAndSetInitialState(); return stage; });
-    });
-  });
-}
-
-// "Ease off" steps the stage down for the rest of THIS cycle only — this
-// month, or today on a daily plan. Stamped with the cycle start so it expires
-// on its own at the next reset rather than quietly persisting into a cycle
-// the user never agreed to.
-function easeBudget(now = Date.now()) {
-  return readBudget(now).then((cfg) => {
-    const { cycle } = budgetStage(cfg);
-    return chrome.storage.sync.set({ budgetEase: { cycleStart: cycle.start } });
-  });
-}
-
-// ----------------------------
 // 📤 Export / import
 // ----------------------------
 // The same shape an administrator would push through managed storage, so a
@@ -1097,21 +791,10 @@ const DEFAULT_ALLOWLIST = [
   // the top of this list — their chat still works with blocking on — and
   // were added on the owner's call (2.5): voice notes on WhatsApp Web and
   // voice/video in Discord and Slack huddles stop working with media
-  // blocked, and people read that as the extension being broken. Unlike
-  // calls, the strictest budget stage may still re-block them.
+  // blocked, and people read that as the extension being broken.
   'web.whatsapp.com',
   'discord.com',
   'app.slack.com'
-];
-
-// Never trimmed, whatever the data budget says. Dropping a meeting — or a
-// remote-support session — to save a few megabytes is not a trade anyone
-// wants made on their behalf.
-const CALL_SITES = [
-  'meet.google.com', 'zoom.us', 'teams.microsoft.com', 'teams.live.com', 'whereby.com',
-  'webex.com', 'meet.jit.si', 'app.goto.com', 'meet.goto.com', 'meeting.zoho.com', 'meeting.zoho.in',
-  'jiomeetpro.jio.com', 'app.ringcentral.com', 'v.ringcentral.com',
-  'remotedesktop.google.com', 'anydesk.com', 'teamviewer.com', 'my.splashtop.com'
 ];
 
 function hostnameOf(url) {
@@ -1646,20 +1329,11 @@ function refreshAll(data) {
 // Managed policy and auto-mode are layered on top of what the user chose, in
 // that order, and the result is what everything downstream sees. Pure so the
 // precedence can be tested without a browser.
-function mergeSettings(user, managed, autoState, now = Date.now(), usedBytes = 0) {
-  let out = Object.assign({}, user);
+function mergeSettings(user, managed, autoState) {
+  const out = Object.assign({}, user);
 
-  // 1. The data budget sets the baseline for this point in the cycle. It can
-  //    only add blocking, never remove it.
-  if (out.budgetEnabled) {
-    const { stage, cycle } = budgetStage(Object.assign({}, out, { usedBytes, now }));
-    out = applyBudgetStage(out, stage);
-    out.budgetCycle = cycle;
-  }
-
-  // 2. An administrator's policy wins over the user AND over the budget. Only
-  //    keys the policy actually sets are applied — a partial policy leaves the
-  //    rest alone.
+  // An administrator's policy wins over the user's own switches. Only keys the
+  // policy actually sets are applied — a partial policy leaves the rest alone.
   const policy = managed || {};
   for (const k of ['ads', 'images', 'media', 'consent', 'popups']) {
     if (typeof policy[k] === 'boolean') out[k] = policy[k];
@@ -1668,11 +1342,11 @@ function mergeSettings(user, managed, autoState, now = Date.now(), usedBytes = 0
   if (policy.siteProfiles && typeof policy.siteProfiles === 'object') out.siteProfiles = policy.siteProfiles;
   out.managedKeys = Object.keys(policy);
 
-  // 3. Auto-mode relaxes exactly one thing — image blocking on a connection
-  //    that is not short of bandwidth — and it deliberately outranks the
-  //    budget. A fast connection almost certainly is not the metered link, so
-  //    tightening there costs page quality for no saving. It still cannot
-  //    touch ads or video, and it never overrides an enforced policy.
+  // Auto-mode relaxes exactly one thing — image blocking on a connection that
+  // is not short of bandwidth. It deliberately cannot tighten anything and
+  // cannot touch ads or video: a mode that silently changed several settings
+  // would be impossible for a user to reason about, and the churn it targets
+  // is broadband desktops seeing a stripped-back page.
   if (out.autoMode && autoState && autoState.fast && !policy.images) {
     out.images = false;
     out.autoRelaxed = true;
@@ -1681,16 +1355,10 @@ function mergeSettings(user, managed, autoState, now = Date.now(), usedBytes = 0
   return out;
 }
 
-// userChoices is read here because the budget's strict stage needs it: it
-// keeps the sites the user paused themselves and trims only shipped defaults
-// (applyBudgetStage). Without it in this list the reconcile read no choices at
-// all, so a strict budget silently re-blocked every site the user had paused.
 const SETTING_DEFAULTS = {
   ads: true, images: true, media: true,
-  allowlist: [], siteProfiles: {}, userChoices: {},
-  autoMode: false, consent: false, popups: false, siteHistory: false,
-  budgetEnabled: false, budgetPeriod: 'month', budgetMB: 0, budgetResetDay: 1,
-  budgetDailyMB: 0, budgetEase: null
+  allowlist: [], siteProfiles: {},
+  autoMode: false, consent: false, popups: false, siteHistory: false
 };
 
 function readManagedPolicy() {
@@ -1728,10 +1396,9 @@ function loadAndSetInitialState() {
   reconcileChain = reconcileChain.then(() => new Promise((resolve) => {
     reconcileQueued = false;
     chrome.storage.sync.get(SETTING_DEFAULTS, (user) => {
-      chrome.storage.local.get({ autoState: null, usage: {} }, ({ autoState, usage }) => {
-        const now = Date.now();
+      chrome.storage.local.get({ autoState: null }, ({ autoState }) => {
         readManagedPolicy()
-          .then((managed) => refreshAll(mergeSettings(user, managed, autoState, now, usedToday(usage, now))))
+          .then((managed) => refreshAll(mergeSettings(user, managed, autoState)))
           .catch((e) => console.warn('⚠️ Reconcile failed:', e))
           .then(resolve);
       });
@@ -1772,6 +1439,10 @@ chrome.runtime.onInstalled.addListener((details) => {
     if (!installedAt) chrome.storage.local.set({ installedAt: Date.now() });
   });
 
+  if (details.reason === 'update') {
+    dropRetiredKeys().catch((e) => console.warn('⚠️ Could not clear retired settings:', e));
+  }
+
   // Blocking starts the moment this runs, so a brand-new user's next page load
   // looks broken with no explanation. The welcome tab is the explanation — it
   // is shown on first install only, never on update, and never on a browser
@@ -1801,6 +1472,23 @@ function seedOnByDefault() {
   });
 }
 
+// 2.6 dropped the "data used" meter and the data budget. What they stored would
+// otherwise sit on the device with no screen that shows it and no control that
+// clears it — and the privacy policy promises that everything the extension
+// keeps can be cleared from the extension — so it is deleted on the update.
+// Removing a key that is not there is a no-op, so this is safe on every update.
+const RETIRED_SYNC_KEYS = [
+  'budgetEnabled', 'budgetPeriod', 'budgetMB', 'budgetResetDay', 'budgetDailyMB', 'budgetEase'
+];
+const RETIRED_LOCAL_KEYS = ['usage', 'appliedBudgetStage'];
+
+function dropRetiredKeys() {
+  return Promise.all([
+    chrome.storage.sync.remove(RETIRED_SYNC_KEYS),
+    chrome.storage.local.remove(RETIRED_LOCAL_KEYS)
+  ]);
+}
+
 // Where Chrome sends someone who removes the extension: a page on our own site
 // with the common fixes and a way to say what broke. Without it the reasons
 // behind every uninstall are invisible. Nothing is sent from the extension.
@@ -1818,8 +1506,6 @@ chrome.runtime.onStartup.addListener(() => {
     void chrome.runtime.lastError;
     loadAndSetInitialState();
     refreshAllBadges();
-    // A cycle may have rolled over while the browser was closed.
-    ensureBudgetStage().catch((e) => console.warn('⚠️ Could not re-check the data budget:', e));
   });
 });
 
@@ -1827,8 +1513,7 @@ chrome.runtime.onStartup.addListener(() => {
 // 🧠 React to Settings Changes (single source of truth)
 // ----------------------------
 const RECONCILE_KEYS = [
-  'ads', 'images', 'media', 'allowlist', 'siteProfiles', 'autoMode', 'consent', 'popups',
-  'budgetEnabled', 'budgetPeriod', 'budgetMB', 'budgetResetDay', 'budgetDailyMB', 'budgetEase'
+  'ads', 'images', 'media', 'allowlist', 'siteProfiles', 'autoMode', 'consent', 'popups'
 ];
 
 chrome.storage.onChanged.addListener((changes, areaName) => {

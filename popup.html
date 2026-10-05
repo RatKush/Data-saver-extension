@@ -287,43 +287,6 @@
     .pill.override { border-style: dashed; border-color: var(--border-2); color: var(--text); }
     .pill.on.override { border-color: var(--accent-line); color: var(--accent); }
 
-    /* Data budget. Escalation is automatic, so it has to be visible and
-       reversible in one tap — a silently tightening extension is exactly the
-       "this page looks broken" reaction that drives uninstalls. */
-    .budget {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin: 0 14px 10px;
-      padding: 9px 12px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent-line);
-      border-radius: 11px;
-      font-size: 11.5px;
-    }
-
-    .budget[hidden] { display: none; }
-
-    .budget-text { flex: 1; min-width: 0; color: var(--accent); font-weight: 600; }
-
-    #budgetEase {
-      flex: none;
-      font: inherit;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 5px 9px;
-      border-radius: 7px;
-      cursor: pointer;
-      border: 1px solid var(--accent-line);
-      background: transparent;
-      color: var(--accent);
-      transition: background 0.15s ease;
-    }
-
-    #budgetEase:hover:not(:disabled) { background: var(--accent); color: var(--on-accent); }
-    #budgetEase:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-    #budgetEase:disabled { opacity: 0.45; cursor: default; }
-
     /* Opens the dashboard. A real button rather than a text link: it leaves
        the popup for another surface, which is a bigger action than it looked
        like when it was a line of grey text people did not notice. */
@@ -475,19 +438,6 @@
     .savings-stat:nth-child(1) span::before { background: var(--ramp-1); }
     .savings-stat:nth-child(2) span::before { background: var(--ramp-2); }
     .savings-stat:nth-child(3) span::before { background: var(--ramp-3); }
-
-    /* What Chrome actually downloaded today — the other side of the ledger
-       from what was blocked, and the number a daily plan runs out of. */
-    .usage-line {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      font-size: 11.5px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .usage-line[hidden] { display: none; }
 
     /* ---------- Review prompt ---------- */
     /* Asked in the popup rather than injected into the page: it appears only
@@ -793,11 +743,6 @@
       </label>
     </div>
 
-    <div class="budget" id="budgetBar" hidden>
-      <span class="budget-text" id="budgetText"></span>
-      <button id="budgetEase" type="button" data-i18n="budgetEase">Ease off</button>
-    </div>
-
     <div class="card savings">
       <div class="savings-top" id="savedTop" hidden>
         <span id="savedAmount"></span>
@@ -823,7 +768,6 @@
           <span data-i18n="savingsVideos">videos</span>
         </div>
       </div>
-      <div class="usage-line" id="usageLine" hidden></div>
     </div>
 
     <div class="card review" id="reviewCard" hidden>

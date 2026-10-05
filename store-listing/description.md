@@ -31,8 +31,8 @@ pushed "data" to 19 uses. The description now covers the key phrases
 - **The savings meter is an ESTIMATE** derived from blocked-request counts.
   Chrome exposes no per-request byte total to extensions. Do not describe it
   as a measurement.
-- **The data budget does not track consumption** and must never be described
-  as showing data remaining. It paces from the allowance and the date only.
+- **Never claim to show data used or data remaining.** 2.5 had a "data used"
+  meter and a data budget; both were dropped in 2.6. Do not describe either.
 
 A specific figure ("a page that would cost you 8 MB…") was drafted into this
 listing and cut. The same invented benchmark had already been removed from
