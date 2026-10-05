@@ -21,6 +21,8 @@ What it does *not* cover, and you should eyeball once:
 
 - The screenshots in `store-listing/screenshots/` still show the current UI.
   Regenerate with `python3 scripts/make-screenshots.py` after any visual change.
+- The promo video in `store-listing/video/` still shows the current UI.
+  Regenerate with `python3 scripts/make-video.py` (~90 s; needs Edge and ffmpeg).
 - `store-listing/description.txt` matches the features that actually ship.
 - **No keyword stuffing** — 2.5 was rejected for it (see `description.md`).
   No site, app or brand names in a list; no list longer than four items; no
@@ -58,6 +60,7 @@ overwrite a version once published.
 | Screenshots | All five in `screenshots/`, **in filename order** |
 | Small promo tile | `screenshots/promo-440x280.png` |
 | Marquee promo tile | `screenshots/promo-1400x560.png` |
+| Promo video (YouTube URL) | Upload `video/data-saver-promo.mp4` to YouTube (unlisted is fine), thumbnail `video/poster.jpg`, paste the link |
 | Homepage URL | `https://data-saver-extension.pages.dev` |
 | Support URL | `https://github.com/RatKush/Data-saver-extension/issues` |
 

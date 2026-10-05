@@ -293,17 +293,9 @@ def frame_html(body):
     return f"<!doctype html><meta charset=utf-8><style>{FRAME_CSS}</style>{body}"
 
 
-def build(tmp):
-    os.makedirs(OUT, exist_ok=True)
-    url = f"http://127.0.0.1:{PORT}/"
-
-    print("  capturing demo page without the extension …")
-    normal = shoot(url, os.path.join(tmp, "normal.png"), 1000, 620, False)
-    print("  capturing demo page with blocking on …")
-    blocked = shoot(url, os.path.join(tmp, "blocked.png"), 1000, 620, True)
-
-    print("  rendering popup with sample savings …")
-    popup_src = open(os.path.join(ROOT, "popup.html")).read()
+def popup_stub(paused=False):
+    """The chrome.* stub the rendered popup runs against. Shared with
+    make-video.py, so the store art and the video show the same panel."""
     # Stub the APIs popup.js actually uses today. This has to be kept in step
     # with the popup: an out-of-date stub does not error, it just renders an
     # empty panel into the store art.
@@ -332,13 +324,27 @@ def build(tmp):
         reload:()=>{},create:()=>{}},
       runtime:{id:'shot',lastError:undefined,openOptionsPage:()=>{},
         sendMessage:(m,cb)=>{
-          // Review prompt and data budget are OFF by default, so the store art
+          // The review prompt is OFF by default, so the store art
           // shows what a new user actually gets rather than an unusual state.
-          if(m.type==='ds-site-state') cb({paused:false});
+          if(m.type==='ds-site-state') cb({paused:PAUSED});
           else if(m.type==='ds-review-state') cb({show:false});
-          else if(m.type==='ds-budget-state') cb({enabled:false});
           else cb&&cb({ok:true});}}};
     </script>"""
+    return stub.replace('PAUSED', 'true' if paused else 'false')
+
+
+def build(tmp):
+    os.makedirs(OUT, exist_ok=True)
+    url = f"http://127.0.0.1:{PORT}/"
+
+    print("  capturing demo page without the extension …")
+    normal = shoot(url, os.path.join(tmp, "normal.png"), 1000, 620, False)
+    print("  capturing demo page with blocking on …")
+    blocked = shoot(url, os.path.join(tmp, "blocked.png"), 1000, 620, True)
+
+    print("  rendering popup with sample savings …")
+    popup_src = open(os.path.join(ROOT, "popup.html")).read()
+    stub = popup_stub()
     shutil.copy(os.path.join(ROOT, "popup.js"), os.path.join(tmp, "popup.js"))
     os.makedirs(os.path.join(tmp, "icons"), exist_ok=True)
     shutil.copy(os.path.join(ROOT, "icons", "icon48.png"), os.path.join(tmp, "icons", "icon48.png"))
