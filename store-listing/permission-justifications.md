@@ -27,7 +27,7 @@ minimizing the data a webpage downloads.
 Data Saver blocks ads, trackers, images, and video on whatever site
 the user is browsing — not a fixed list of sites. Because the set of
 sites a user visits is unbounded and can't be predicted in advance,
-.the extension needs its network rules and content scripts to be able
+the extension needs its network rules and content scripts to be able
 to apply on any site. It does not use this permission to read, log,
 or transmit page content; it is used exclusively to let Chrome's own
 declarativeNetRequest engine evaluate bundled block rules against
@@ -59,7 +59,7 @@ on the update unless they had switched it off), a capped list of the sites where
 something was blocked is also stored locally so the dashboard can show
 where the savings came from; switching it off deletes the list. Nothing here is transmitted anywhere, and
 there is no server to transmit it to.
->
+
 The same permission is what lets the extension read an administrator
 policy via chrome.storage.managed, so a school or company can deploy
 a fixed configuration. That is read-only and read locally.
@@ -76,7 +76,7 @@ the page so the extension can show the user a running savings total,
 with the most privacy-preserving option the banner offers, and (f) —
 only if the user switches it on — block pop-up windows that the page
 opens without a user gesture.
->
+
 Script (d) observes only load-failure events on the page's own
 images, scripts and media elements; it reads no page content, and
 reports nothing but counts to the extension's own background script.
