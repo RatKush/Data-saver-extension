@@ -26,6 +26,8 @@ CONTROL, NOT ALL-OR-NOTHING
 
 ▶️ The big streaming and social sites work out of the box — you already know they are heavy, and blocking them just breaks them. One tap turns blocking on for any of them.
 
+🗺️ Image searches and maps load in full. You went there to look, so they are left alone.
+
 📞 Calls, chat and remote desktop are never interrupted. Popular video-call, messaging and remote-desktop services are left alone.
 
 ⚡ One tap pauses everything on the current site without touching your other settings, or press Alt+Shift+D. The toolbar icon shows OFF there, and the choice sticks.
