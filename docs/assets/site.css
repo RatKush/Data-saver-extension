@@ -203,6 +203,12 @@ td code { white-space: nowrap; }
   background: var(--accent-soft); border: 1px solid var(--accent-line); border-radius: 12px;
 }
 .cta p { margin: 0; flex: 1; min-width: 220px; font-size: 15px; }
+.cta .lead { display: block; font-size: 17px; line-height: 1.35; margin-bottom: 6px; }
+.cta.fix { border-left: 4px solid var(--accent); }
+kbd {
+  font-family: var(--mono); font-size: .85em; padding: 1px 6px; border-radius: 5px;
+  background: var(--surface); border: 1px solid var(--border-2); white-space: nowrap;
+}
 .btn {
   display: inline-block; font-weight: 600; font-size: 15px; text-decoration: none;
   padding: 10px 18px; border-radius: 9px;

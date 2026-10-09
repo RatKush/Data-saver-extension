@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css?v=2026-09-24">
+<link rel="stylesheet" href="/assets/site.css?v=2026-10-09">
 </head>
 <body>
 <div class="wrap">
@@ -28,6 +28,14 @@
     <h1>What went wrong?</h1>
     <p class="dek">Tap the one that fits. It helps us fix it.</p>
   </header>
+
+  <!-- Most removals are a site that looked broken or slow, and that has a
+       per-site fix people miss. Shown before the reasons so it is read. -->
+  <div class="cta fix">
+    <p><strong class="lead">Did a site look broken or slow? You can switch Data Saver off for just that site.</strong>
+      Click the Data Saver icon and press <strong>Don&rsquo;t block on this site</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>. That site loads in full, and every other site keeps saving data.</p>
+    <a class="btn" href="https://chromewebstore.google.com/detail/cjijlgnefahbmcogbhacnnnlnaeolmjg">Reinstall Data Saver</a>
+  </div>
 
   <form class="reasons" method="post" action="/uninstall-thanks">
     <button class="reason" type="submit" name="reason" value="site-broke">
