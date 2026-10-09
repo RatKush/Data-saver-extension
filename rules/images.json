@@ -69,7 +69,15 @@
         "khms0.google.com",
         "khms1.google.com",
         "khms2.google.com",
-        "khms3.google.com"
+        "khms3.google.com",
+        "maps.googleapis.com",
+        "maps.gstatic.com",
+        "mt0.google.com",
+        "mt1.google.com",
+        "mt2.google.com",
+        "mt3.google.com",
+        "streetviewpixels-pa.googleapis.com",
+        "virtualearth.net"
       ],
       "resourceTypes": [
         "image"
@@ -86,6 +94,72 @@
       "regexFilter": "(?i)/(favicon|apple-touch-icon)[^/?#]*\\.(ico|png|svg|webp)([?#]|$)",
       "resourceTypes": [
         "image"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "priority": 2,
+    "action": {
+      "type": "allowAllRequests"
+    },
+    "condition": {
+      "regexFilter": "^https?://(www\\.)?google\\.[a-z.]+/(search\\?(.*&)?(tbm=isch|udm=2)(&|#|$)|imgres)",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "priority": 2,
+    "action": {
+      "type": "allowAllRequests"
+    },
+    "condition": {
+      "regexFilter": "^https?://((www\\.|maps\\.)?google\\.[a-z.]+/maps|(www\\.)?bing\\.com/maps)",
+      "resourceTypes": [
+        "main_frame",
+        "sub_frame"
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "priority": 2,
+    "action": {
+      "type": "allowAllRequests"
+    },
+    "condition": {
+      "regexFilter": "^https?://images\\.google\\.[a-z.]+/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "priority": 2,
+    "action": {
+      "type": "allowAllRequests"
+    },
+    "condition": {
+      "urlFilter": "||bing.com/images/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "priority": 2,
+    "action": {
+      "type": "allowAllRequests"
+    },
+    "condition": {
+      "urlFilter": "||duckduckgo.com/*ia=images",
+      "resourceTypes": [
+        "main_frame"
       ]
     }
   },

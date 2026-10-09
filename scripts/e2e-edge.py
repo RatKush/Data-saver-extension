@@ -272,6 +272,27 @@ def main():
         rulesets = sw_eval("chrome.declarativeNetRequest.getEnabledRulesets().then(r=>r.join(','))")
         print(f"rulesets on    : {rulesets}")
 
+        # verify.sh only checks a regexFilter's source length. Chrome limits
+        # the COMPILED size, and a 241-byte pattern of alternations went over
+        # it in 2.6 and was dropped without a word. Ask the engine itself.
+        dropped = []
+        for path in sorted(os.listdir(os.path.join(ROOT, "rules"))):
+            if not path.endswith(".json") or path == "build-info.json":
+                continue
+            for rule in json.load(open(os.path.join(ROOT, "rules", path))):
+                rx = rule.get("condition", {}).get("regexFilter")
+                if not rx:
+                    continue
+                res = json.loads(sw_eval(
+                    f"chrome.declarativeNetRequest.isRegexSupported({{regex:{json.dumps(rx)}}})"
+                    ".then(r=>JSON.stringify(r))"))
+                if not res.get("isSupported"):
+                    dropped.append(f"{path} rule {rule.get('id')}: {res.get('reason')}")
+        if dropped:
+            print("\nFAIL: Chrome would silently drop these rules:\n  " + "\n  ".join(dropped), file=sys.stderr)
+            return 1
+        print("regex rules    : all accepted by the engine")
+
         scripts = sw_eval("chrome.scripting.getRegisteredContentScripts().then(s=>s.map(x=>x.id).join(','))")
         print(f"scripts        : {scripts}")
 
