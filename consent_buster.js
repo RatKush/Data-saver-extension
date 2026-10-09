@@ -84,6 +84,7 @@
   // on an unrelated form somewhere on the page.
   const DIALOG_HINT = /(cookie|consent|gdpr|ccpa|privacy|cmp|onetrust|didomi|usercentrics|osano|klaro|termly|complianz|quantcast|trustarc|cookiebot)/i;
 
+  const REJECT_COMPACT = REJECT_TEXT.map((w) => w.replace(/ /g, ''));
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim().toLowerCase();
 
   function looksLikeConsent(el) {
@@ -128,6 +129,13 @@
       'button, [role="button"], a[href="#"], input[type="button"], input[type="submit"]'
     );
     for (const el of candidates) {
+      // Cheap words-only check first. isVisible and innerText both make the
+      // browser lay out the page, and most buttons are nowhere near a reject
+      // word. textContent holds everything innerText shows, so nothing that
+      // would match below is skipped here. Spaces are dropped on both sides,
+      // since a <br> between words leaves none in textContent.
+      const raw = norm((el.textContent || '') + (el.value || '') + (el.getAttribute('aria-label') || '')).replace(/ /g, '');
+      if (!REJECT_COMPACT.some((w) => raw.includes(w))) continue;
       if (!isVisible(el)) continue;
       const text = norm(el.innerText || el.value || el.getAttribute('aria-label'));
       if (!text || text.length > 40) continue;
@@ -147,10 +155,12 @@
     let hidden = false;
     const seen = new Set();
     for (const el of document.querySelectorAll('div, section, aside, dialog')) {
-      if (!isVisible(el)) continue;
+      // The name test is a string match; isVisible makes the browser lay out
+      // the page. Only consent-looking boxes get the costly check.
       const id = el.id || '';
       const cls = typeof el.className === 'string' ? el.className : '';
       if (!DIALOG_HINT.test(id) && !DIALOG_HINT.test(cls)) continue;
+      if (!isVisible(el)) continue;
       if (seen.has(el)) continue;
       const style = getComputedStyle(el);
       // Only overlays: a fixed or sticky box. An inline cookie notice in the
@@ -186,9 +196,16 @@
     if (run()) { done = true; observer.disconnect(); }
   }
 
+  // A busy page fires mutations many times a second, and each attempt scans
+  // the whole page. Coalesce them: at most one attempt per SCAN_GAP_MS.
+  const SCAN_GAP_MS = 250;
+  let scanQueued = false;
+
   const observer = new MutationObserver(() => {
     if (Date.now() - started > WATCH_MS) { observer.disconnect(); return; }
-    attempt();
+    if (scanQueued) return;
+    scanQueued = true;
+    setTimeout(() => { scanQueued = false; attempt(); }, SCAN_GAP_MS);
   });
 
   attempt();

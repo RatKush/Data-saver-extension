@@ -85,11 +85,35 @@ const ICON = 'url("data:image/svg+xml,' + encodeURIComponent(
   + '<circle cx="8.5" cy="10" r="1.6"/><path d="M3.5 16.5l4.7-4.2a2 2 0 0 1 2.7.05L15 16.5"/>'
   + '<path d="M14 14.2l1.9-1.7a2 2 0 0 1 2.7.06l1.9 1.8"/></svg>') + '")';
 
-function markPlaceholder(img) {
-  if (placeholders.has(img) || loading.has(img)) return;
-  const r = img.getBoundingClientRect();
+// A placeholder needs the image's size, and asking for it with
+// getBoundingClientRect makes the browser lay out the page there and then.
+// Once per image, that was most of this extension's cost on image-heavy pages.
+// An IntersectionObserver reports the same box after the browser's own
+// layout, at no extra cost. Its first report covers every observed image, on
+// screen or not, so each one is seen once and then let go.
+const sizer = typeof IntersectionObserver === 'function'
+  ? new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      sizer.unobserve(entry.target);
+      markPlaceholder(entry.target, entry.boundingClientRect);
+    }
+  })
+  : null;
+
+function queueMark(img) {
+  if (sizer) sizer.observe(img);
+  else requestAnimationFrame(() => markPlaceholder(img, img.getBoundingClientRect()));
+}
+
+// How many placeholders this frame has. While there are none, the pointer
+// tracking below does no work at all.
+let placeholderCount = 0;
+
+function markPlaceholder(img, r) {
+  if (placeholders.has(img) || loading.has(img) || !isBlanked(img)) return;
   if (r.width < MIN_W || r.height < MIN_H) return;
   placeholders.add(img);
+  placeholderCount++;
   // Paint only: background and outline change no layout, so the page keeps
   // exactly the shape it had. The site's own inline values are kept to put
   // back once the image loads.
@@ -105,7 +129,7 @@ function markPlaceholder(img) {
 }
 
 function unmark(img) {
-  placeholders.delete(img);
+  if (placeholders.delete(img)) placeholderCount--;
   const s = saved.get(img);
   saved.delete(img);
   if (!s) return;
@@ -120,7 +144,7 @@ document.addEventListener('load', (e) => {
   if (!(img instanceof HTMLImageElement)) return;
   if (isBlanked(img)) {
     // Layout may not be final at load time; one frame later it usually is.
-    requestAnimationFrame(() => markPlaceholder(img));
+    queueMark(img);
   } else if (placeholders.has(img)) {
     // The site swapped in a source that did load (an allowed host, a data:
     // URL). It is not a placeholder any more.
@@ -130,7 +154,7 @@ document.addEventListener('load', (e) => {
 
 // Images that finished before this script attached.
 function sweepPlaceholders() {
-  for (const img of document.images) if (isBlanked(img)) markPlaceholder(img);
+  for (const img of document.images) if (isBlanked(img)) queueMark(img);
 }
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', sweepPlaceholders, { once: true });
@@ -210,17 +234,35 @@ function placeholderAt(x, y) {
   return null;
 }
 
+// Hit-testing costs a layout pass. It used to run on every frame the mouse
+// moved. Now reaching a different element (pointerover) checks on the next
+// frame, and movement within one element checks at most every MOVE_GAP_MS.
+// Movement still has to be followed: one overlay link often covers both an
+// image and its caption, and crossing between them fires no pointerover.
+// With no placeholders on the page, neither does anything.
+const MOVE_GAP_MS = 100;
 let pending = false;
-document.addEventListener('pointermove', (e) => {
-  if (pending || e.pointerType === 'touch') return;
+let pointerX = 0;
+let pointerY = 0;
+
+function track(e, soon) {
+  if (e.pointerType === 'touch' || (placeholderCount === 0 && !current)) return;
+  pointerX = e.clientX;
+  pointerY = e.clientY;
+  if (pending) return;
   pending = true;
-  requestAnimationFrame(() => {
+  const check = () => {
     pending = false;
-    const img = placeholderAt(e.clientX, e.clientY);
+    const img = placeholderAt(pointerX, pointerY);
     if (img && img !== current) place(img);
     else if (!img && current) hide();
-  });
-}, { passive: true, capture: true });
+  };
+  if (soon) requestAnimationFrame(check);
+  else setTimeout(check, MOVE_GAP_MS);
+}
+
+document.addEventListener('pointerover', (e) => track(e, true), { passive: true, capture: true });
+document.addEventListener('pointermove', (e) => track(e, false), { passive: true, capture: true });
 
 // A scroll moves the image out from under a fixed-position button.
 window.addEventListener('scroll', hide, { passive: true, capture: true });

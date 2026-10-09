@@ -207,14 +207,18 @@ document.addEventListener('click', (e) => {
 }, true);
 
 // --- Observe DOM changes for dynamically loaded media ---
+// One batch of records often holds a node AND its own descendants: while a
+// page is parsed, every element is its own record, and by the time this runs
+// each one's subtree is already filled in. Scanning every record's subtree
+// then visits a node once per ancestor in the batch, which on a long page or
+// an infinite feed is what made pages feel slow. Only the topmost added nodes
+// of a batch are scanned, so each new node is visited once.
 const observer = new MutationObserver(mutations => {
+  const added = new Set();
   for (const m of mutations) {
     // New nodes: catch media (or containers holding media) inserted later.
     for (const node of m.addedNodes) {
-      if (node.nodeType !== 1) continue;
-      if (isMediaElement(node)) stopMedia(node);
-      else stopAllMedia(node);
-      observeShadows(node);
+      if (node.nodeType === 1) added.add(node);
     }
     // Attribute changes on existing elements: sites frequently reuse a
     // node and just swap src/autoplay instead of adding a new element.
@@ -222,7 +226,20 @@ const observer = new MutationObserver(mutations => {
       stopMedia(m.target);
     }
   }
+  for (const node of added) {
+    if (hasAddedAncestor(node, added)) continue;
+    if (isMediaElement(node)) stopMedia(node);
+    else stopAllMedia(node);
+    observeShadows(node);
+  }
 });
+
+function hasAddedAncestor(node, added) {
+  for (let p = node.parentNode; p; p = p.parentNode) {
+    if (added.has(p)) return true;
+  }
+  return false;
+}
 
 observer.observe(document, {
   childList: true,
@@ -232,18 +249,29 @@ observer.observe(document, {
 });
 
 // --- Observe Shadow DOMs too (for React/Vue/YouTube embeds) ---
+// A shadow root is watched once. Without this, every re-render that re-adds
+// a host re-attached the observer and re-scanned the same root.
+const watchedShadows = new WeakSet();
+
 function observeShadows(root = document) {
-  root.querySelectorAll('*').forEach(el => {
-    if (el.shadowRoot) {
-      observer.observe(el.shadowRoot, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['src', 'autoplay']
-      });
-      stopAllMedia(el.shadowRoot);
-    }
+  // An added node can itself be a host, which querySelectorAll('*') skips.
+  if (root.nodeType === 1) watchShadow(root);
+  for (const el of root.querySelectorAll('*')) watchShadow(el);
+}
+
+function watchShadow(el) {
+  const shadow = el.shadowRoot;
+  if (!shadow || watchedShadows.has(shadow)) return;
+  watchedShadows.add(shadow);
+  observer.observe(shadow, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['src', 'autoplay']
   });
+  stopAllMedia(shadow);
+  // Players nest web components, so a root can hold further roots.
+  observeShadows(shadow);
 }
 
 // --- Initial execution ---
