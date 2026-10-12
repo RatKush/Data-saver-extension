@@ -347,7 +347,8 @@ await test('a fresh install ships the video platforms unblocked', async () => {
   const { allowlist, seededDefaults } = chrome.storage.sync._dump();
   assert.deepEqual(plain(allowlist).sort(), [...defaults].sort());
   assert.deepEqual(plain(seededDefaults).sort(), [...defaults].sort());
-  for (const d of ['youtube.com', 'netflix.com', 'twitch.tv', 'tiktok.com', 'instagram.com']) {
+  for (const d of ['youtube.com', 'netflix.com', 'twitch.tv', 'tiktok.com', 'instagram.com',
+                   'screenconnect.com', 'windows.cloud.microsoft', 'loom.com']) {
     assert.ok(defaults.includes(d), `${d} should be a default`);
   }
 });

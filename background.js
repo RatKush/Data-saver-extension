@@ -524,7 +524,7 @@ function pruneOldest(map, max, protectedKeys) {
     delete out[k];
   }
   // Only if the protected set alone still exceeds the cap — it cannot today,
-  // DEFAULT_ALLOWLIST is 47 entries — fall back to dropping oldest outright.
+  // DEFAULT_ALLOWLIST is 62 entries — fall back to dropping oldest outright.
   for (const k of Object.keys(out)) {
     if (Object.keys(out).length <= max) break;
     delete out[k];
@@ -797,6 +797,23 @@ const DEFAULT_ALLOWLIST = [
   'anydesk.com',
   'teamviewer.com',
   'my.splashtop.com',
+  // Added in 2.6: the browser-based remote-support and cloud-desktop clients,
+  // and the screen-sharing tools whose whole page is someone else's screen.
+  'assist.zoho.com',         // Zoho Assist
+  'assist.zoho.in',
+  'remotepc.com',
+  'getscreen.me',
+  'logmein.com',
+  'screenconnect.com',       // ConnectWise ScreenConnect cloud instances are subdomains
+  'client.wvd.microsoft.com', // Azure Virtual Desktop web client
+  'windows365.microsoft.com',
+  'windows.cloud.microsoft', // the Windows App on the web (Windows 365, AVD)
+  'clients.amazonworkspaces.com',
+  'web.parsec.app',
+  'screenleap.com',
+  'loom.com',                // a shared screen recording is the video itself
+  '8x8.vc',                  // Jitsi as a service: calls with screen share
+  'app.gather.town',         // virtual office: calls and screen share
 
   // --- Messaging with calls and voice notes. These do NOT pass the test at
   // the top of this list — their chat still works with blocking on — and
