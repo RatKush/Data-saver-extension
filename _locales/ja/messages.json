@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "閉じる",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "最初から例外が設定された写真・デザイン・講座サイト（$COUNT$）",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

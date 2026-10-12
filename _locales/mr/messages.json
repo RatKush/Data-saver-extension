@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "बंद करा",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "फोटो, डिझाइन आणि कोर्स साइट्स ज्यांना आधीपासून सूट दिलेली आहे ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

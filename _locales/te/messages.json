@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "మూసివేయండి",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "డిఫాల్ట్‌గా మినహాయింపు ఉన్న ఫోటో, డిజైన్ మరియు కోర్సు సైట్‌లు ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

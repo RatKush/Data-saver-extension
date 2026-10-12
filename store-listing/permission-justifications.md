@@ -43,15 +43,17 @@ the extension's own code never inspects network traffic directly.
 declarativeNetRequestWithHostAccess is needed because the bundled
 rules must apply across the full breadth of host_permissions above.
 A small number of dynamic rules are also used, all of them ALLOW
-rules that exempt a site the user chose to unblock or a category they
-chose to permit on one site. No dynamic rule ever blocks anything.
+rules that exempt a site the user chose to unblock, or a category
+permitted on one site, whether the user chose it or it shipped as a
+removable default. No dynamic rule ever blocks anything.
 
 ## Permission: storage
 
 Stores the user's own settings on their own device: the on/off
 preference for each blocking category (ads/images/video), the list of
 sites they've chosen not to block on, any per-site exceptions they've
-created, and a local tally of how
+created or that ship as defaults (for example, letting pictures through
+on photo sites, which the user can remove), and a local tally of how
 many requests have been blocked so the extension can show them their
 own savings total. While the "Remember which sites" setting is on
 (on by default since 2.5 — for new installs, and for existing users

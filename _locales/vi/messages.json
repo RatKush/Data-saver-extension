@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "Đóng",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Trang ảnh, thiết kế và khóa học có ngoại lệ mặc định ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

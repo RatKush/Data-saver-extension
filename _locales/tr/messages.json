@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "Kapat",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Varsayılan istisnası olan fotoğraf, tasarım ve kurs siteleri ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

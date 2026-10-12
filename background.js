@@ -581,7 +581,14 @@ const PROFILE_RESOURCE_TYPES = {
 
 // One allow rule per (site, category the site wants unblocked). initiatorDomains
 // matches the page making the request and covers subdomains on its own.
-function siteProfileRules(data, startId) {
+//
+// Video needs more than the 'media' type. Most players stream in small pieces
+// fetched by script (.m3u8, .ts, .m4s), which rules/media.json blocks as
+// xmlhttprequest, so a 'media'-only allow left them blocked: a site set to
+// play video still could not. With mediaConditions (media.json's own
+// conditions), a video exception mirrors every media rule, the same set
+// allowMediaOnce uses for one tab.
+function siteProfileRules(data, startId, mediaConditions) {
   const rules = [];
   let id = startId;
   const profiles = data.siteProfiles || {};
@@ -594,15 +601,17 @@ function siteProfileRules(data, startId) {
       if (profile[key] !== false) continue;
       // Nothing to override if the category is globally off anyway.
       if (!data[key]) continue;
-      rules.push({
-        id: id++,
-        priority: SITE_PROFILE_RULE_PRIORITY,
-        action: { type: 'allow' },
-        condition: {
-          initiatorDomains: [domain],
-          resourceTypes: PROFILE_RESOURCE_TYPES[key]
-        }
-      });
+      const conditions = key === 'media' && mediaConditions && mediaConditions.length
+        ? mediaConditions
+        : [{ resourceTypes: PROFILE_RESOURCE_TYPES[key] }];
+      for (const condition of conditions) {
+        rules.push({
+          id: id++,
+          priority: SITE_PROFILE_RULE_PRIORITY,
+          action: { type: 'allow' },
+          condition: Object.assign({}, condition, { initiatorDomains: [domain] })
+        });
+      }
     }
   }
   return rules;
@@ -633,7 +642,9 @@ function setSiteProfile(hostname, profile, merge = false) {
       else next[key] = clean;
 
       return chrome.storage.sync
-        .set({ siteProfiles: pruneOldest(next, SITE_PROFILES_MAX) })
+        // Shipped defaults are protected from pruning: once offered they are
+        // never re-seeded, so pruning one would silently lose it for good.
+        .set({ siteProfiles: pruneOldest(next, SITE_PROFILES_MAX, Object.keys(DEFAULT_SITE_PROFILES)) })
         .then(() => clean);
     });
 }
@@ -886,6 +897,73 @@ function seedDefaultAllowlist() {
       return chrome.storage.sync.set({
         allowlist: [...new Set([...allowlist, ...toAdd])],
         seededDefaults: [...new Set([...offered, ...DEFAULT_ALLOWLIST])]
+      });
+    });
+}
+
+// ----------------------------
+// 🧩 Default site profiles (2.6)
+// ----------------------------
+// The allowlist above turns ALL blocking off. These sites need less than that:
+// one category is the whole point of the site, and only that one is let
+// through. Ads stay blocked everywhere here, and so does whatever the site
+// does not need.
+//
+// The bar is the same as for the allowlist: with this category blocked, the
+// site does not do what people came for. That is not true of news or shops,
+// where the text still works and the images are most of the data saved.
+//
+// They ship as ordinary site profiles, so the popup shows them, the dashboard
+// lists them, and changing one sticks, exactly like a profile the user made.
+const DEFAULT_SITE_PROFILES = {
+  // Pictures are the content: boards, photo sites, the user's own photos and
+  // files, and design tools where a design with its images blanked is unusable.
+  'pinterest.com': { images: false },
+  'pinterest.co.uk': { images: false },
+  'pinterest.ca': { images: false },
+  'pinterest.com.au': { images: false },
+  'pinterest.de': { images: false },
+  'pinterest.fr': { images: false },
+  'pinterest.es': { images: false },
+  'pinterest.it': { images: false },
+  'pinterest.jp': { images: false },
+  'pinterest.com.mx': { images: false },
+  'flickr.com': { images: false },
+  'imgur.com': { images: false },
+  'unsplash.com': { images: false },
+  'photos.google.com': { images: false },
+  'drive.google.com': { images: false },
+  'docs.google.com': { images: false },
+  'canva.com': { images: false },
+  'figma.com': { images: false },
+
+  // The lesson is the video.
+  'coursera.org': { media: false },
+  'udemy.com': { media: false },
+  'khanacademy.org': { media: false }
+};
+
+// Offered once per site, tracked in seededProfiles, for the same reason as
+// seededDefaults: a site the user has changed or removed must never come back
+// on a later update. A site that already has a profile of the user's own is
+// recorded as offered and left exactly as it is.
+function seedDefaultProfiles() {
+  return chrome.storage.sync
+    .get({ siteProfiles: {}, seededProfiles: [] })
+    .then(({ siteProfiles, seededProfiles }) => {
+      const offered = new Set(seededProfiles || []);
+      const next = Object.assign({}, siteProfiles);
+      let changed = false;
+      for (const [domain, profile] of Object.entries(DEFAULT_SITE_PROFILES)) {
+        if (offered.has(domain)) continue;
+        offered.add(domain);
+        changed = true;
+        if (!next[domain]) next[domain] = Object.assign({}, profile);
+      }
+      if (!changed) return;
+      return chrome.storage.sync.set({
+        siteProfiles: pruneOldest(next, SITE_PROFILES_MAX, Object.keys(DEFAULT_SITE_PROFILES)),
+        seededProfiles: [...offered]
       });
     });
 }
@@ -1223,6 +1301,14 @@ function allowlistMatchPatterns(allowlist) {
 // profile rules used to be able to collide on ids if they were written
 // separately; generating both from one counter makes that impossible.
 function syncDynamicRules(data) {
+  // Without media.json's conditions a video exception still covers the
+  // 'media' type, so a failed read degrades rather than stopping the sync.
+  return loadMediaConditions()
+    .catch(() => null)
+    .then((mediaConditions) => writeDynamicRules(data, mediaConditions));
+}
+
+function writeDynamicRules(data, mediaConditions) {
   const allowlist = data.allowlist || [];
   return new Promise((resolve) => chrome.declarativeNetRequest.getDynamicRules((existingRules) => {
     const removeRuleIds = (existingRules || []).map((r) => r.id);
@@ -1239,7 +1325,7 @@ function syncDynamicRules(data) {
 
     // Profile rules sit below a full pause but above every static block rule,
     // so a paused site still wins over its own profile.
-    for (const rule of siteProfileRules(data, addRules.length + 1)) addRules.push(rule);
+    for (const rule of siteProfileRules(data, addRules.length + 1, mediaConditions)) addRules.push(rule);
 
     chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds, addRules }, () => {
       if (chrome.runtime.lastError) {
@@ -1421,6 +1507,8 @@ chrome.runtime.onInstalled.addListener((details) => {
   // "defaults missing", never to "extension does nothing".
   seedDefaultAllowlist()
     .catch((e) => console.warn('⚠️ Could not seed default allowlist:', e))
+    .then(() => seedDefaultProfiles())
+    .catch((e) => console.warn('⚠️ Could not seed default site profiles:', e))
     // Before the first reconcile, not beside it, so that reconcile already
     // registers the scripts these switches turn on.
     .then(() => (details.reason === 'install' || details.reason === 'update') && seedOnByDefault())

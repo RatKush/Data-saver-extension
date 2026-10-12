@@ -402,6 +402,68 @@ await test('upgrading from the v2.2 boolean flag adds only the new entries', asy
   assert.ok(list.includes('mysite.example'));
 });
 
+// ---------------------------------------------------------------------------
+// background.js — default site profiles (2.6)
+// ---------------------------------------------------------------------------
+
+console.log('\nbackground.js — default site profiles');
+
+await test('photo and design sites ship with images through, course sites with video', async () => {
+  const { chrome, ctx } = loadBackground();
+  await vm.runInContext('seedDefaultProfiles', ctx)();
+  const { siteProfiles, seededProfiles } = chrome.storage.sync._dump();
+  assert.deepEqual(plain(siteProfiles['pinterest.com']), { images: false });
+  assert.deepEqual(plain(siteProfiles['canva.com']), { images: false });
+  assert.deepEqual(plain(siteProfiles['coursera.org']), { media: false });
+  const defaults = Object.keys(plain(vm.runInContext('DEFAULT_SITE_PROFILES', ctx)));
+  assert.deepEqual(plain(seededProfiles).sort(), defaults.sort());
+
+  // And the rules follow: an images-only allow rule, so ads stay blocked there.
+  const rules = vm.runInContext('siteProfileRules', ctx)(
+    { ads: true, images: true, media: true, siteProfiles }, 1);
+  const pin = rules.find((r) => r.condition.initiatorDomains[0] === 'pinterest.com');
+  assert.deepEqual(plain(pin.condition.resourceTypes), ['image']);
+});
+
+await test('a video exception also lets through streamed pieces, not just <video> files', async () => {
+  const { ctx } = loadBackground();
+  const conditions = JSON.parse(readFileSync(join(ROOT, 'rules/media.json'), 'utf8')).map((r) => r.condition);
+  const rules = vm.runInContext('siteProfileRules', ctx)(
+    { ads: true, images: true, media: true, siteProfiles: { 'coursera.org': { media: false } } }, 1, conditions);
+  assert.equal(rules.length, conditions.length, 'one allow rule per media.json rule');
+  for (const r of rules) assert.deepEqual(plain(r.condition.initiatorDomains), ['coursera.org']);
+  assert.ok(rules.some((r) => /m3u8/.test(r.condition.regexFilter || '')
+    && r.condition.resourceTypes.includes('xmlhttprequest')), 'HLS playlists fetched by script must be covered');
+});
+
+await test('a site profile the user already had is left exactly as it was', async () => {
+  const { chrome, ctx } = loadBackground();
+  chrome.storage.sync.set({ siteProfiles: { 'pinterest.com': { ads: false } } });
+  await vm.runInContext('seedDefaultProfiles', ctx)();
+  assert.deepEqual(plain(chrome.storage.sync._dump().siteProfiles['pinterest.com']), { ads: false });
+});
+
+await test('removing a shipped profile sticks across later updates', async () => {
+  const { chrome, ctx } = loadBackground();
+  const seed = vm.runInContext('seedDefaultProfiles', ctx);
+  await seed();
+  await vm.runInContext('setSiteProfile', ctx)('www.pinterest.com', {});
+  assert.ok(!('pinterest.com' in chrome.storage.sync._dump().siteProfiles));
+  await seed();
+  assert.ok(!('pinterest.com' in chrome.storage.sync._dump().siteProfiles),
+            'pinterest.com came back after the user removed it');
+});
+
+await test('a full profile list never prunes a shipped profile', async () => {
+  const { chrome, ctx } = loadBackground();
+  await vm.runInContext('seedDefaultProfiles', ctx)();
+  const set = vm.runInContext('setSiteProfile', ctx);
+  for (let i = 0; i < 120; i++) await set(`site${i}.example`, { images: false });
+  const profiles = chrome.storage.sync._dump().siteProfiles;
+  assert.ok(Object.keys(profiles).length <= 100);
+  assert.deepEqual(plain(profiles['coursera.org']), { media: false });
+});
+
 await test('a storage failure during seeding still turns blocking on', async () => {
   const { chrome } = loadBackground();
 

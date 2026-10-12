@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "மூடு",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "இயல்பாகவே விதிவிலக்கு கொண்ட புகைப்படம், வடிவமைப்பு மற்றும் பாடநெறி தளங்கள் ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

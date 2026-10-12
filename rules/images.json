@@ -164,6 +164,19 @@
     }
   },
   {
+    "id": 20,
+    "priority": 5,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "regexFilter": "(?i)(captcha|kaptcha|securimage)",
+      "resourceTypes": [
+        "image"
+      ]
+    }
+  },
+  {
     "id": 2,
     "priority": 1,
     "action": {

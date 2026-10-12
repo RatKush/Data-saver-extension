@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "বন্ধ করুন",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "ছবি, ডিজাইন ও কোর্সের সাইট, যেগুলোতে শুরু থেকেই ছাড় দেওয়া আছে ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

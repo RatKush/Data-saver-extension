@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "Funga",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Tovuti za picha, usanifu na kozi zenye msamaha wa chaguo-msingi ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

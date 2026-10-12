@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "Закрыть",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Сайты с фото, дизайном и курсами с исключением по умолчанию ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "ปิด",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "เว็บไซต์รูปภาพ การออกแบบ และคอร์สเรียนที่มีข้อยกเว้นตั้งแต่ต้น ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

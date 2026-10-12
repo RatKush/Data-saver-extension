@@ -356,5 +356,15 @@
   "dismiss": {
     "message": "Dismiss",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Photo, design and course sites that ship with an exception ($COUNT$)",
+    "description": "Dashboard / per-site rules: collapsible group of default site profiles (images or video let through on photo, design and course sites).",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "21"
+      }
+    }
   }
 }

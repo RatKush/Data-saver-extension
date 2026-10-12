@@ -208,6 +208,53 @@ function renderPaused(box, sync, managedKeys) {
   return all.length;
 }
 
+// A profile that shipped with 2.6 (photo, design and course sites) and is
+// still exactly as shipped: one category let through, nothing else. Folded
+// away like the shipped paused sites. Once the user changes one, it is theirs
+// and is listed with the rest.
+function isShippedProfile(host, profile, offered) {
+  const keys = Object.keys(profile);
+  return offered.has(host) && keys.length === 1 && profile[keys[0]] === false;
+}
+
+function profileRow(host, profile) {
+  const el = document.createElement('div');
+  el.className = 'prof';
+
+  const left = document.createElement('div');
+  const name = document.createElement('div');
+  name.className = 'prof-host';
+  name.textContent = host;
+  const chips = document.createElement('div');
+  chips.className = 'chips';
+  for (const key of ['ads', 'images', 'media']) {
+    if (typeof profile[key] !== 'boolean') continue;
+    const chip = document.createElement('span');
+    chip.className = profile[key] ? 'chip on' : 'chip';
+    // Say which way the exception runs in words. The old "✕ images" read as
+    // "images blocked" when it meant the opposite.
+    chip.textContent = profile[key]
+      ? (t('dashChipBlocked', LABELS[key]()) || `Blocking ${LABELS[key]()}`)
+      : (t('dashChipAllowed', LABELS[key]()) || `Allowing ${LABELS[key]()}`);
+    chips.appendChild(chip);
+  }
+  left.append(name, chips);
+
+  const remove = document.createElement('button');
+  remove.className = 'quiet';
+  remove.type = 'button';
+  remove.textContent = t('dashRemove') || 'Remove';
+  remove.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'ds-site-profile', hostname: host, profile: {} }, () => {
+      void chrome.runtime.lastError;
+      load();
+    });
+  });
+
+  el.append(left, remove);
+  return el;
+}
+
 function renderProfiles(siteProfiles, sync, managedKeys) {
   const box = document.getElementById('profiles');
   box.textContent = '';
@@ -224,43 +271,21 @@ function renderProfiles(siteProfiles, sync, managedKeys) {
     return;
   }
 
+  const offered = new Set((sync && sync.seededProfiles) || []);
+  const shipped = hosts.filter((h) => isShippedProfile(h, siteProfiles[h] || {}, offered));
   for (const host of hosts) {
-    const profile = siteProfiles[host] || {};
-    const el = document.createElement('div');
-    el.className = 'prof';
+    if (!shipped.includes(host)) box.appendChild(profileRow(host, siteProfiles[host] || {}));
+  }
 
-    const left = document.createElement('div');
-    const name = document.createElement('div');
-    name.className = 'prof-host';
-    name.textContent = host;
-    const chips = document.createElement('div');
-    chips.className = 'chips';
-    for (const key of ['ads', 'images', 'media']) {
-      if (typeof profile[key] !== 'boolean') continue;
-      const chip = document.createElement('span');
-      chip.className = profile[key] ? 'chip on' : 'chip';
-      // Say which way the exception runs in words. The old "✕ images" read as
-      // "images blocked" when it meant the opposite.
-      chip.textContent = profile[key]
-        ? (t('dashChipBlocked', LABELS[key]()) || `Blocking ${LABELS[key]()}`)
-        : (t('dashChipAllowed', LABELS[key]()) || `Allowing ${LABELS[key]()}`);
-      chips.appendChild(chip);
-    }
-    left.append(name, chips);
-
-    const remove = document.createElement('button');
-    remove.className = 'quiet';
-    remove.type = 'button';
-    remove.textContent = t('dashRemove') || 'Remove';
-    remove.addEventListener('click', () => {
-      chrome.runtime.sendMessage({ type: 'ds-site-profile', hostname: host, profile: {} }, () => {
-        void chrome.runtime.lastError;
-        load();
-      });
-    });
-
-    el.append(left, remove);
-    box.appendChild(el);
+  if (shipped.length) {
+    const group = document.createElement('details');
+    group.className = 'shipped';
+    const summary = document.createElement('summary');
+    summary.textContent = t('dashShippedProfiles', String(shipped.length))
+      || `Photo, design and course sites that ship with an exception (${shipped.length})`;
+    group.appendChild(summary);
+    for (const host of shipped) group.appendChild(profileRow(host, siteProfiles[host] || {}));
+    box.appendChild(group);
   }
 }
 
@@ -348,7 +373,7 @@ function initBackup() {
 function load() {
   chrome.storage.sync.get(
     { siteProfiles: {}, autoMode: false, consent: false, popups: false, siteHistory: false,
-      allowlist: [], seededDefaults: [], userChoices: {} },
+      allowlist: [], seededDefaults: [], seededProfiles: [], userChoices: {} },
     (settings) => {
       chrome.storage.local.get({ stats: {}, history: {}, siteStats: {} }, (local) => {
         renderHistory(local.history || {}, local.stats || {});

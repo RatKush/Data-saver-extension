@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "بستن",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "سایت‌های عکس، طراحی و دوره‌های آموزشی با استثنای پیش‌فرض ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

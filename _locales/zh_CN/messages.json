@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "关闭",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "默认设有例外的图片、设计和课程网站（$COUNT$）",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

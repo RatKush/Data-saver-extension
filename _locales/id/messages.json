@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "Tutup",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Situs foto, desain, dan kursus dengan pengecualian bawaan ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

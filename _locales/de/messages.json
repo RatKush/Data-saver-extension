@@ -327,5 +327,14 @@
   "dismiss": {
     "message": "Schließen",
     "description": "In-page control (shown on the website itself). Accessible label of the close (✕) button."
+  },
+  "dashShippedProfiles": {
+    "message": "Foto-, Design- und Kurs-Websites mit voreingestellter Ausnahme ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   }
 }

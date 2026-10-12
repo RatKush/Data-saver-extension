@@ -15,6 +15,7 @@ For the biggest savings keep all three blocks on (ads, images and video). Measur
 - **One tap to unblock the current site**, from the top of the popup or with `Alt+Shift+D`. The toolbar badge reads `OFF` where blocking is paused.
 - **Video, call and remote-desktop sites ship unblocked** — YouTube, Netflix, Instagram, Twitch and other video platforms; Google Meet, Zoom, Teams, Webex, JioMeet and other meeting apps; Chrome Remote Desktop, AnyDesk, TeamViewer and Splashtop; and WhatsApp Web, Discord and Slack, so voice notes and calls play. Blocking them just breaks them.
 - **Per-site rules** — block ads on a site but let its images through, or the reverse. Subdomain-aware.
+- **Pictures and lessons where they are the point** (2.6) — image searches and maps load in full; Pinterest, Flickr, Imgur, Unsplash, Google Photos, Drive and Docs, Canva and Figma ship with images let through; Coursera, Udemy and Khan Academy ship with video let through. Ads stay blocked on all of them, and each is an ordinary per-site rule you can remove. Image captchas on login and payment pages always load.
 - **Savings meter** — the exact number of blocked requests, with an estimate of the data that saved beside it.
 - **Dashboard** — a 14-day trend, your per-site rules, and everything below. Open it from the popup.
 - **Cookie banners** (on by default) — answers them with "reject" or "necessary only". It never accepts on your behalf.
